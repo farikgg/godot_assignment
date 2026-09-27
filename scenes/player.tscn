@@ -20,4 +20,6 @@ shape = SubResource("SphereShape3D_7yv6r")
 mesh = SubResource("SphereMesh_cj8ji")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=392905629]
-transform = Transform3D(1, 0, 0, 0, 0.84932214, 0.5278751, 0, -0.5278751, 0.84932214, 0, 3, 6)
+transform = Transform3D(0.70710677, -0.40557978, 0.57922797, 0, 0.81915206, 0.57357645, -0.70710677, -0.40557978, 0.57922797, 0, 8, 8)
+projection = 1
+size = 10.0
