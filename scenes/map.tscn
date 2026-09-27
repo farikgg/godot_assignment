@@ -3,12 +3,9 @@
 [ext_resource type="Script" uid="uid://o800sigabfwg" path="res://scripts/main.gd" id="1_0cso3"]
 [ext_resource type="PackedScene" uid="uid://com1yoydlpm6f" path="res://scenes/coin.tscn" id="2_2klcf"]
 [ext_resource type="PackedScene" uid="uid://b3b70jygclukh" path="res://scenes/player.tscn" id="3_2lpho"]
-[ext_resource type="PackedScene" uid="uid://bdgmf5kwg47lj" path="res://scenes/wall.tscn" id="4_nakos"]
 [ext_resource type="PackedScene" uid="uid://cwvs6ktxem67x" path="res://assets/Map/banner.glb" id="d_banner"]
 [ext_resource type="PackedScene" uid="uid://7qdwxgq7undh" path="res://assets/Map/barrel.glb" id="d_barrel"]
 [ext_resource type="PackedScene" uid="uid://bfm0docs5h48j" path="res://assets/Map/chair.glb" id="d_chair"]
-[ext_resource type="PackedScene" uid="uid://dfv7hlfukfxg7" path="res://assets/Map/character-human.glb" id="d_character_human"]
-[ext_resource type="PackedScene" uid="uid://bmwjkilbtovwm" path="res://assets/Map/character-orc.glb" id="d_character_orc"]
 [ext_resource type="PackedScene" uid="uid://cejikhqwrf4gs" path="res://assets/Map/chest.glb" id="d_chest"]
 [ext_resource type="PackedScene" uid="uid://bnsypw4x3176d" path="res://assets/Map/column.glb" id="d_column"]
 [ext_resource type="PackedScene" uid="uid://vbm0ua56nkut" path="res://assets/Map/dirt.glb" id="d_dirt"]
@@ -48,6 +45,30 @@ size = Vector3(100, 0.2, 100)
 
 [sub_resource type="BoxMesh" id="BoxMesh_uocsc"]
 size = Vector3(20, 0.2, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col0"]
+size = Vector3(6.2, 2.2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col1"]
+size = Vector3(2, 1.8, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col2"]
+size = Vector3(2, 2.2, 4.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col3"]
+size = Vector3(2, 2.2, 6.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col4"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col5"]
+size = Vector3(0.4, 1.5, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col6"]
+size = Vector3(1, 2.2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col7"]
+size = Vector3(2.16, 2, 2.16)
 
 [node name="Main" type="Node3D" unique_id=1563209637]
 script = ExtResource("1_0cso3")
@@ -96,18 +117,6 @@ mesh = SubResource("BoxMesh_uocsc")
 
 [node name="Player" parent="." unique_id=1620244565 instance=ExtResource("3_2lpho")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-
-[node name="Wall" parent="." unique_id=62795596 instance=ExtResource("4_nakos")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.5, -0.031)
-
-[node name="Wall2" parent="." unique_id=1504214335 instance=ExtResource("4_nakos")]
-transform = Transform3D(-4.3711385e-08, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -4.3711385e-08, 0, 2.5, 10)
-
-[node name="Wall3" parent="." unique_id=5483515 instance=ExtResource("4_nakos")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 2.5, -10)
-
-[node name="Wall4" parent="." unique_id=1983551366 instance=ExtResource("4_nakos")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.5, 0)
 
 [node name="Decor" type="Node3D" parent="." unique_id=795425564]
 
@@ -219,12 +228,6 @@ transform = Transform3D(1.414214, 0, 1.414214, 0, 2, 0, -1.414214, 0, 1.414214, 
 [node name="ShieldRect" parent="Decor" unique_id=1339319143 instance=ExtResource("d_shield_rectangle")]
 transform = Transform3D(1.414214, 0, -1.414214, 0, 2, 0, 1.414214, 0, 1.414214, 7, 0.1, -1)
 
-[node name="Human" parent="Decor" unique_id=1357440634 instance=ExtResource("d_character_human")]
-transform = Transform3D(1.414214, 0, 1.414214, 0, 2, 0, -1.414214, 0, 1.414214, -7, 0.1, 3)
-
-[node name="Orc" parent="Decor" unique_id=951864842 instance=ExtResource("d_character_orc")]
-transform = Transform3D(1.414214, 0, 1.414214, 0, 2, 0, -1.414214, 0, 1.414214, 7, 0.1, 1)
-
 [node name="FloorDetail1" parent="Decor" unique_id=206492238 instance=ExtResource("d_floor_detail")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -7, 0.1, -3)
 
@@ -236,6 +239,74 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5, 0.1, 9)
 
 [node name="FloorDetail4" parent="Decor" unique_id=1295428767 instance=ExtResource("d_floor_detail")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -3, 0.1, 9)
+
+[node name="Colliders" type="Node3D" parent="." unique_id=1071477686]
+
+[node name="WallColN_West" type="StaticBody3D" parent="Colliders" unique_id=1959167398]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.9, 1.2, -9)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/WallColN_West" unique_id=1302102035]
+shape = SubResource("BoxShape3D_col0")
+
+[node name="WallColN_East" type="StaticBody3D" parent="Colliders" unique_id=1940099285]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.2, -9)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/WallColN_East" unique_id=2084727110]
+shape = SubResource("BoxShape3D_col0")
+
+[node name="WallColN_Tower" type="StaticBody3D" parent="Colliders" unique_id=1777652994]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1, -9)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/WallColN_Tower" unique_id=1099975904]
+shape = SubResource("BoxShape3D_col1")
+
+[node name="WallColW_North" type="StaticBody3D" parent="Colliders" unique_id=1070302523]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1.2, -5.9)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/WallColW_North" unique_id=1190580830]
+shape = SubResource("BoxShape3D_col2")
+
+[node name="WallColW_South" type="StaticBody3D" parent="Colliders" unique_id=1936196520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1.2, 0.9)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/WallColW_South" unique_id=1361399321]
+shape = SubResource("BoxShape3D_col3")
+
+[node name="WallColD_North" type="StaticBody3D" parent="Colliders" unique_id=507811516]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.1, -7)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/WallColD_North" unique_id=496555068]
+shape = SubResource("BoxShape3D_col4")
+
+[node name="WallColD_South" type="StaticBody3D" parent="Colliders" unique_id=1826362772]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.1, -3)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/WallColD_South" unique_id=1199315425]
+shape = SubResource("BoxShape3D_col4")
+
+[node name="GateCol" type="StaticBody3D" parent="Colliders" unique_id=1121693763]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.85, -5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/GateCol" unique_id=1452662844]
+shape = SubResource("BoxShape3D_col5")
+
+[node name="ColumnCol" type="StaticBody3D" parent="Colliders" unique_id=1418466550]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.2, 5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/ColumnCol" unique_id=1802904873]
+shape = SubResource("BoxShape3D_col6")
+
+[node name="WoodStructureBackCol" type="StaticBody3D" parent="Colliders" unique_id=499804946]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.1, -3)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/WoodStructureBackCol" unique_id=302128585]
+shape = SubResource("BoxShape3D_col7")
+
+[node name="WoodStructureMidCol" type="StaticBody3D" parent="Colliders" unique_id=1059051491]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.1, 1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colliders/WoodStructureMidCol" unique_id=751549248]
+shape = SubResource("BoxShape3D_col7")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1684676044]
 
