@@ -1,0 +1,100 @@
+[gd_scene format=3 uid="uid://dpdskwx6d4h04"]
+
+[ext_resource type="Script" uid="uid://o800sigabfwg" path="res://scripts/main.gd" id="1_0cso3"]
+[ext_resource type="PackedScene" uid="uid://com1yoydlpm6f" path="res://scenes/coin.tscn" id="2_2klcf"]
+[ext_resource type="PackedScene" uid="uid://b3b70jygclukh" path="res://scenes/player.tscn" id="3_2lpho"]
+[ext_resource type="PackedScene" uid="uid://bdgmf5kwg47lj" path="res://scenes/wall.tscn" id="4_nakos"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sgp6g"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_o5qli"]
+sky_material = SubResource("ProceduralSkyMaterial_sgp6g")
+
+[sub_resource type="Environment" id="Environment_0wfyh"]
+background_mode = 2
+sky = SubResource("Sky_o5qli")
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7yv6r"]
+size = Vector3(100, 0.2, 100)
+
+[sub_resource type="BoxMesh" id="BoxMesh_uocsc"]
+size = Vector3(20, 0.2, 20)
+
+[node name="Main" type="Node3D" unique_id=1563209637]
+script = ExtResource("1_0cso3")
+
+[node name="Coin6" parent="." unique_id=1355599650 instance=ExtResource("2_2klcf")]
+transform = Transform3D(-0.025093317, -4.3697618e-08, -0.99968505, -0.99968505, 1.0968649e-09, 0.025093317, 3.5834402e-15, 1, -4.371139e-08, -6.616507, 1.2789707, -0.13342762)
+
+[node name="Coin7" parent="." unique_id=627944915 instance=ExtResource("2_2klcf")]
+transform = Transform3D(-0.025093317, -4.3697618e-08, -0.99968505, -0.99968505, 1.0968649e-09, 0.025093317, 3.5834402e-15, 1, -4.371139e-08, -3.9200463, 1.2789707, 5.5702972)
+
+[node name="Coin8" parent="." unique_id=1336429440 instance=ExtResource("2_2klcf")]
+transform = Transform3D(-0.025093317, -4.3697618e-08, -0.99968505, -0.99968505, 1.0968649e-09, 0.025093317, 3.5834402e-15, 1, -4.371139e-08, 4.695377, 1.2789707, -3.2873926)
+
+[node name="Coin9" parent="." unique_id=1112838911 instance=ExtResource("2_2klcf")]
+transform = Transform3D(-0.025093317, -4.3697618e-08, -0.99968505, -0.99968505, 1.0968649e-09, 0.025093317, 3.5834402e-15, 1, -4.371139e-08, -3.5435023, 1.2789707, -7.860219)
+
+[node name="Coin10" parent="." unique_id=7637384 instance=ExtResource("2_2klcf")]
+transform = Transform3D(-0.025093317, -4.3697618e-08, -0.99968505, -0.99968505, 1.0968649e-09, 0.025093317, 3.5834402e-15, 1, -4.371139e-08, -6.616507, 2.306982, -5.316988)
+
+[node name="Coin11" parent="." unique_id=1710208152 instance=ExtResource("2_2klcf")]
+transform = Transform3D(-0.025093317, -4.3697618e-08, -0.99968505, -0.99968505, 1.0968649e-09, 0.025093317, 3.5834402e-15, 1, -4.371139e-08, 5.4686923, 1.2789707, 6.9019136)
+
+[node name="Coin12" parent="." unique_id=1941388823 instance=ExtResource("2_2klcf")]
+transform = Transform3D(-0.025093317, -4.3697618e-08, -0.99968505, -0.99968505, 1.0968649e-09, 0.025093317, 3.5834402e-15, 1, -4.371139e-08, 7.775005, 1.2789707, 3.832921)
+
+[node name="Coin13" parent="." unique_id=356219932 instance=ExtResource("2_2klcf")]
+transform = Transform3D(-0.025093317, -4.3697618e-08, -0.99968505, -0.99968505, 1.0968649e-09, 0.025093317, 3.5834402e-15, 1, -4.371139e-08, 8.269726, 2.0364065, -7.2663727)
+
+[node name="Coin14" parent="." unique_id=516119425 instance=ExtResource("2_2klcf")]
+transform = Transform3D(-0.025093317, -4.3697618e-08, -0.99968505, -0.99968505, 1.0968649e-09, 0.025093317, 3.5834402e-15, 1, -4.371139e-08, -6.616507, 1.2789707, -0.13342762)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1778103733]
+environment = SubResource("Environment_0wfyh")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=781231604]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=2098183661]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=878119072]
+shape = SubResource("BoxShape3D_7yv6r")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1367348105]
+mesh = SubResource("BoxMesh_uocsc")
+
+[node name="Player" parent="." unique_id=1620244565 instance=ExtResource("3_2lpho")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Wall" parent="." unique_id=62795596 instance=ExtResource("4_nakos")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.5, -0.031)
+
+[node name="Wall2" parent="." unique_id=1504214335 instance=ExtResource("4_nakos")]
+transform = Transform3D(-4.3711385e-08, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -4.3711385e-08, 0, 2.5, 10)
+
+[node name="Wall3" parent="." unique_id=5483515 instance=ExtResource("4_nakos")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 2.5, -10)
+
+[node name="Wall4" parent="." unique_id=1983551366 instance=ExtResource("4_nakos")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.5, 0)
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1684676044]
+
+[node name="CoinLabel" type="Label" parent="UI" unique_id=504721018]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 103.0
+offset_bottom = 43.0
+theme_override_font_sizes/font_size = 32
+text = "Монеты: 0"
+
+[node name="NameLabel" type="Label" parent="UI" unique_id=2009308255]
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 60.0
+offset_bottom = 83.0
