@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://46vti5t2abc6" path="res://assets/Map/key.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0"]
+size = Vector3(0.591, 0.356, 0.157)
+
+[node name="Key" type="StaticBody3D" unique_id=153186663]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=327418003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.178, 0)
+shape = SubResource("BoxShape3D_0")
+
+[node name="Model" parent="." unique_id=284198446 instance=ExtResource("1_model")]

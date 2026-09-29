@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://bpeujrv813y4y" path="res://assets/Map/shield-rectangle.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0"]
+size = Vector3(0.276, 0.298, 0.13)
+
+[node name="ShieldRectangle" type="StaticBody3D" unique_id=1755225194]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=223597416]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.149, 0.012)
+shape = SubResource("BoxShape3D_0")
+
+[node name="Model" parent="." unique_id=541580072 instance=ExtResource("1_model")]

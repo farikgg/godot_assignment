@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://vbm0ua56nkut" path="res://assets/Map/dirt.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0"]
+size = Vector3(1, 0.9, 1)
+
+[node name="Dirt" type="StaticBody3D" unique_id=1658975055]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=512310753]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("BoxShape3D_0")
+
+[node name="Model" parent="." unique_id=674198346 instance=ExtResource("1_model")]
