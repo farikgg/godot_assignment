@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://cyvajmjnj0na4" path="res://assets/Map/wall-opening.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0"]
+size = Vector3(0.1, 1, 1.05)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(0.1, 1, 1.05)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2"]
+size = Vector3(1, 0.1, 1.05)
+
+[node name="WallOpening" type="StaticBody3D" unique_id=1118049897]
+
+[node name="CollisionShape3D1" type="CollisionShape3D" parent="." unique_id=481461256]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 0.5, 0.025)
+shape = SubResource("BoxShape3D_0")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1641708576]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.5, 0.025)
+shape = SubResource("BoxShape3D_1")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=1137415390]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0.025)
+shape = SubResource("BoxShape3D_2")
+
+[node name="Model" parent="." unique_id=1368324660 instance=ExtResource("1_model")]
