@@ -16,17 +16,17 @@
 [ext_resource type="PackedScene" path="res://scenes/props/potion.tscn" id="d_potion"]
 [ext_resource type="PackedScene" path="res://scenes/props/rocks.tscn" id="d_rocks"]
 [ext_resource type="PackedScene" path="res://scenes/props/shield-rectangle.tscn" id="d_shield_rectangle"]
-[ext_resource type="PackedScene" path="res://scenes/props/stairs.tscn" id="d_stairs"]
-[ext_resource type="PackedScene" path="res://scenes/props/stones.tscn" id="d_stones"]
+[ext_resource type="PackedScene" uid="uid://bk43ik023imvv" path="res://scenes/props/stairs.tscn" id="d_stairs"]
+[ext_resource type="PackedScene" uid="uid://bgkuco0tckl8e" path="res://scenes/props/stones.tscn" id="d_stones"]
 [ext_resource type="PackedScene" path="res://scenes/props/table.tscn" id="d_table"]
 [ext_resource type="PackedScene" path="res://scenes/props/trap.tscn" id="d_trap"]
 [ext_resource type="PackedScene" path="res://scenes/props/wall.tscn" id="d_wall"]
 [ext_resource type="PackedScene" path="res://scenes/props/wall-half.tscn" id="d_wall_half"]
 [ext_resource type="PackedScene" path="res://scenes/props/wall-narrow.tscn" id="d_wall_narrow"]
-[ext_resource type="PackedScene" path="res://scenes/props/wall-opening.tscn" id="d_wall_opening"]
+[ext_resource type="PackedScene" uid="uid://dd7mqbk7l6tao" path="res://scenes/props/wall-opening.tscn" id="d_wall_opening"]
 [ext_resource type="PackedScene" path="res://scenes/props/weapon-sword.tscn" id="d_weapon_sword"]
-[ext_resource type="PackedScene" path="res://scenes/props/wood-structure.tscn" id="d_wood_structure"]
-[ext_resource type="PackedScene" path="res://scenes/props/wood-support.tscn" id="d_wood_support"]
+[ext_resource type="PackedScene" uid="uid://e3vwwi846ly2" path="res://scenes/props/wood-structure.tscn" id="d_wood_structure"]
+[ext_resource type="PackedScene" uid="uid://b5o03p63xwhhs" path="res://scenes/props/wood-support.tscn" id="d_wood_support"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sgp6g"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -118,10 +118,10 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 1, 0.1, -9)
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 3, 0.1, -9)
 
 [node name="Stairs1" parent="Decor" unique_id=1250797845 instance=ExtResource("d_stairs")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5, 0.1, -9)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5, -0.17541352, -9)
 
 [node name="Stairs2" parent="Decor" unique_id=302142728 instance=ExtResource("d_stairs")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 7, 0.1, -9)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 7, -0.17914954, -9)
 
 [node name="DirtNE" parent="Decor" unique_id=885310972 instance=ExtResource("d_dirt")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 9, 0.1, -9)
