@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://c2q7axaw3xb3j" path="res://assets/Map/trap.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_enemy"]
+size = Vector3(1.58, 0.566, 1.58)
+
+[node name="Enemy" type="StaticBody3D" groups=["enemy"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.283, 0)
+shape = SubResource("BoxShape3D_enemy")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
