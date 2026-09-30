@@ -93,6 +93,8 @@ mesh = SubResource("BoxMesh_uocsc")
 
 [node name="Player" parent="." unique_id=1620244565 instance=ExtResource("3_2lpho")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+SPEED = null
+JUMP_VELOCITY = null
 
 [node name="Decor" type="Node3D" parent="." unique_id=795425564]
 
@@ -231,3 +233,8 @@ offset_left = 20.0
 offset_top = 60.0
 offset_right = 60.0
 offset_bottom = 83.0
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1226447461]
+transform = Transform3D(0.70710677, -0.40557978, 0.579228, 0, 0.81915206, 0.57357645, -0.70710677, -0.40557978, 0.579228, 0, 8, 8)
+projection = 1
+size = 10.0
