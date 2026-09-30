@@ -10,7 +10,6 @@
 [ext_resource type="PackedScene" path="res://scenes/props/column.tscn" id="d_column"]
 [ext_resource type="PackedScene" path="res://scenes/props/dirt.tscn" id="d_dirt"]
 [ext_resource type="PackedScene" path="res://scenes/props/floor-detail.tscn" id="d_floor_detail"]
-[ext_resource type="PackedScene" path="res://scenes/props/gate.tscn" id="d_gate"]
 [ext_resource type="PackedScene" path="res://scenes/props/key.tscn" id="d_key"]
 [ext_resource type="PackedScene" path="res://scenes/props/pot.tscn" id="d_pot"]
 [ext_resource type="PackedScene" path="res://scenes/props/potion.tscn" id="d_potion"]
@@ -27,10 +26,10 @@
 [ext_resource type="PackedScene" path="res://scenes/props/weapon-sword.tscn" id="d_weapon_sword"]
 [ext_resource type="PackedScene" uid="uid://e3vwwi846ly2" path="res://scenes/props/wood-structure.tscn" id="d_wood_structure"]
 [ext_resource type="PackedScene" uid="uid://b5o03p63xwhhs" path="res://scenes/props/wood-support.tscn" id="d_wood_support"]
+[ext_resource type="PackedScene" uid="uid://bkwmqvj85xlsc" path="res://scenes/props/door.tscn" id="g_door"]
 [ext_resource type="PackedScene" path="res://scenes/props/enemy.tscn" id="g_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="g_exit"]
-[ext_resource type="PackedScene" path="res://scenes/props/door.tscn" id="g_door"]
-[ext_resource type="Script" path="res://scripts/camera_rig.gd" id="h_camera_rig"]
+[ext_resource type="Script" uid="uid://crrm2h0pfyy37" path="res://scripts/camera_rig.gd" id="h_camera_rig"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sgp6g"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -97,8 +96,6 @@ mesh = SubResource("BoxMesh_uocsc")
 
 [node name="Player" parent="." unique_id=1620244565 instance=ExtResource("3_2lpho")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-SPEED = null
-JUMP_VELOCITY = null
 
 [node name="Decor" type="Node3D" parent="." unique_id=795425564]
 
@@ -155,9 +152,6 @@ transform = Transform3D(0, 0, 2, 0, 2, 0, -2, 0, 0, -9, 0.1, 3)
 
 [node name="WallD1" parent="Decor" unique_id=1031247021 instance=ExtResource("d_wall_narrow")]
 transform = Transform3D(0, 0, 2, 0, 2, 0, -2, 0, 0, 1, 0.1, -7)
-
-[node name="GateD" parent="Decor" unique_id=998017869 instance=ExtResource("d_gate")]
-transform = Transform3D(0, 0, 2, 0, 2, 0, -2, 0, 0, 1, 0.1, -5)
 
 [node name="WallD3" parent="Decor" unique_id=250013383 instance=ExtResource("d_wall_narrow")]
 transform = Transform3D(0, 0, 2, 0, 2, 0, -2, 0, 0, 1, 0.1, -3)
@@ -269,6 +263,6 @@ transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70
 script = ExtResource("h_camera_rig")
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot" unique_id=1226447461]
-transform = Transform3D(1, 0, 0, 0, 0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, 0, 8, 11.425)
+transform = Transform3D(1, 0, 0, 0, 0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, 0, 17.2, 24.6)
 projection = 1
-size = 10.0
+size = 15.0

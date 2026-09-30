@@ -1,6 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bkwmqvj85xlsc"]
 
-[ext_resource type="Script" path="res://scripts/door.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://xwto77xt4g3u" path="res://scripts/door.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://buerts481w52p" path="res://assets/Map/gate.glb" id="2_model"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]
@@ -9,21 +9,21 @@ size = Vector3(1.6, 1.5, 0.4)
 [sub_resource type="BoxShape3D" id="BoxShape3D_sensor"]
 size = Vector3(2.4, 2, 3)
 
-[node name="Door" type="Node3D"]
+[node name="Door" type="Node3D" unique_id=968738810]
 script = ExtResource("1_script")
 
-[node name="Body" type="AnimatableBody3D" parent="."]
-sync_to_physics = true
+[node name="Body" type="AnimatableBody3D" parent="." unique_id=353133351]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body" unique_id=1434107420]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0.75, 0)
 shape = SubResource("BoxShape3D_body")
 
-[node name="Model" parent="Body" instance=ExtResource("2_model")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+[node name="Model" parent="Body" unique_id=738561711 instance=ExtResource("2_model")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.8, 0, 0)
 
-[node name="Sensor" type="Area3D" parent="."]
+[node name="Sensor" type="Area3D" parent="." unique_id=863407294]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Sensor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sensor" unique_id=390100643]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("BoxShape3D_sensor")
