@@ -10,7 +10,12 @@ albedo_color = Color(1, 0, 0, 1)
 [sub_resource type="SphereMesh" id="SphereMesh_cj8ji"]
 material = SubResource("StandardMaterial3D_dourm")
 
-[node name="Player" type="CharacterBody3D" unique_id=1620244565 groups=["player"]]
+[node name="Player" type="RigidBody3D" unique_id=473262185 groups=["player"]]
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 4
+linear_damp = 1.0
+angular_damp = 1.0
 script = ExtResource("1_3vyb7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1893843639]
@@ -18,8 +23,3 @@ shape = SubResource("SphereShape3D_7yv6r")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1140989638]
 mesh = SubResource("SphereMesh_cj8ji")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=392905629]
-transform = Transform3D(0.70710677, -0.40557978, 0.57922797, 0, 0.81915206, 0.57357645, -0.70710677, -0.40557978, 0.57922797, 0, 8, 8)
-projection = 1
-size = 10.0
