@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+.claude/
+.DS_Store
+export_presets.cfg
+*.translation
