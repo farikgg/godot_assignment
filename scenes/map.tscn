@@ -30,6 +30,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/enemy.tscn" id="g_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="g_exit"]
 [ext_resource type="PackedScene" path="res://scenes/props/door.tscn" id="g_door"]
+[ext_resource type="Script" path="res://scripts/camera_rig.gd" id="h_camera_rig"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sgp6g"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -263,7 +264,11 @@ offset_top = 60.0
 offset_right = 60.0
 offset_bottom = 83.0
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1226447461]
-transform = Transform3D(0.70710677, -0.40557978, 0.579228, 0, 0.81915206, 0.57357645, -0.70710677, -0.40557978, 0.579228, 0, 8, 8)
+[node name="CameraPivot" type="Node3D" parent="." unique_id=1647215093]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
+script = ExtResource("h_camera_rig")
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot" unique_id=1226447461]
+transform = Transform3D(1, 0, 0, 0, 0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, 0, 8, 11.425)
 projection = 1
 size = 10.0
