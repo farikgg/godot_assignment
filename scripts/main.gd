@@ -4,9 +4,9 @@ const HINT_DURATION: float = 2.0
 const HINT_TEXT: String = "Collect all coins first!"
 const WIN_TEXT: String = "Победа!"
 
-@onready var coin_label: Label = $UI/CoinLabel
-@onready var name_label: Label = $UI/NameLabel
-@onready var message_label: Label = $UI/MessageLabel
+@onready var coin_label: Label = %CoinLabel
+@onready var name_label: Label = %NameLabel
+@onready var message_label: Label = %MessageLabel
 
 var coins_collected: int = 0
 var coins_total: int = 0

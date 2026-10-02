@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://kya2x2ycmcrp"]
 
-[ext_resource type="Theme" uid="uid://u7d848r1d0a5" path="res://assets/UI/theme.tres" id="1_l6cm7"]
+[ext_resource type="Texture2D" path="res://assets/ui_gen/bg_menu.jpg" id="4_bg"]
+[ext_resource type="Texture2D" path="res://assets/ui_gen/sign.png" id="5_sign"]
+[ext_resource type="Script" path="res://scripts/title_label.gd" id="6_title"]
 [ext_resource type="Script" uid="uid://cs0w83a1volfc" path="res://scripts/main_menu.gd" id="2_ekxnf"]
 [ext_resource type="AudioStream" uid="uid://8v83gducqjtt" path="res://assets/Audio/8-bit_sound.ogg" id="3_bqqt6"]
 
@@ -11,89 +13,131 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_l6cm7")
 script = ExtResource("2_ekxnf")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1730021457]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Sign" type="TextureRect" parent="." unique_id=1069341285]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -340.0
+offset_right = 340.0
+offset_bottom = 449.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = ExtResource("5_sign")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="Sign" unique_id=1591662370]
+layout_mode = 0
+offset_left = 74.0
+offset_top = 141.0
+offset_right = 616.0
+offset_bottom = 387.0
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(0.909804, 0.913725, 0.960784, 1)
+text = "Dungeon Roller"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("6_title")
 
 [node name="MainPanel" type="PanelContainer" parent="." unique_id=915186810]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -180.0
+offset_top = 520.0
+offset_right = 180.0
+offset_bottom = 890.0
 grow_horizontal = 2
-grow_vertical = 2
+theme_type_variation = &"ClearPanel"
 
 [node name="Buttons" type="VBoxContainer" parent="MainPanel" unique_id=1288575377]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 18
 
 [node name="NameField" type="LineEdit" parent="MainPanel/Buttons" unique_id=839725896]
-custom_minimum_size = Vector2(300, 50)
+custom_minimum_size = Vector2(360, 64)
 layout_mode = 2
-placeholder_text = "Ваше имя..."
+placeholder_text = "Ваше имя…"
 max_length = 15
 
 [node name="ButtonStart" type="Button" parent="MainPanel/Buttons" unique_id=1718474551]
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
-text = "Start"
+text = "Играть"
 
 [node name="ButtonSetting" type="Button" parent="MainPanel/Buttons" unique_id=223931339]
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
-text = "Settings"
+text = "Настройки"
 
 [node name="ButtonQuit" type="Button" parent="MainPanel/Buttons" unique_id=540039282]
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
-text = "Quit
-"
+text = "Выход"
 
 [node name="SettingsPanel" type="PanelContainer" parent="." unique_id=1845780512]
 visible = false
+custom_minimum_size = Vector2(640, 520)
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -320.0
+offset_top = 460.0
+offset_right = 320.0
+offset_bottom = 980.0
 grow_horizontal = 2
-grow_vertical = 2
 
 [node name="Content" type="VBoxContainer" parent="SettingsPanel" unique_id=1678515835]
 layout_mode = 2
-theme = ExtResource("1_l6cm7")
-theme_override_constants/separation = 20
+theme_override_constants/separation = 18
+
+[node name="SettingsTitle" type="Label" parent="SettingsPanel/Content" unique_id=1288310774]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "Настройки"
+horizontal_alignment = 1
+
+[node name="ColorCaption" type="Label" parent="SettingsPanel/Content" unique_id=1960017733]
+layout_mode = 2
+text = "Цвет шара"
+
+[node name="ColorDropdown" type="OptionButton" parent="SettingsPanel/Content" unique_id=1940472681]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
 
 [node name="Label" type="Label" parent="SettingsPanel/Content" unique_id=863042915]
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Music volume"
-
-[node name="ColorDropdown" type="OptionButton" parent="SettingsPanel/Content" unique_id=1940472681]
-layout_mode = 2
+text = "Громкость музыки"
 
 [node name="Music volume" type="HSlider" parent="SettingsPanel/Content" unique_id=298705229]
-custom_minimum_size = Vector2(0, 24)
+custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 value = 1.0
 
 [node name="ButtonBack" type="Button" parent="SettingsPanel/Content" unique_id=1392890709]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
-text = "Back
-"
+size_flags_horizontal = 4
+text = "Назад"
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=1334639074]
 stream = ExtResource("3_bqqt6")

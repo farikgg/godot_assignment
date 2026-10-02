@@ -2,6 +2,30 @@
 
 Файлы, написанные или изменённые ИИ-ассистентом (Claude Code). Всё остальное в проекте, включая `player.tscn` / `player.gd`, написано автором.
 
+## Единый стиль меню и HUD
+
+Созданы:
+- `tools/prep_ui_assets.py`: готовит текстуры из исходников `assets_src/ui/` (палитровые PNG 2752×1536, сгенерированные рендеры).
+  - Переводит в RGBA и обрезает по bbox (alpha > 10, отступ 2 px).
+  - Убирает розовую кайму: всем пикселям с alpha < 250 ставит RGB ближайшего непрозрачного пикселя (`scipy.ndimage.distance_transform_edt`), альфа не меняется.
+  - Уменьшает LANCZOS, рисует бегунок слайдера с суперсэмплингом ×8. С ключом `--preview` пишет наложения на тёмный и светлый фон.
+  - Порог 250, а не 255, потому что после квантования палитры тело картинки имеет alpha 250–254, а ровно 255 почти нет.
+- `assets_src/ui/` (исходники и `.gdignore`), `assets/ui_gen/*.png|jpg`: результат скрипта.
+- `assets/ui_gen/ui_theme.tres`: глобальная тема. Шрифт Rubik-Bold. Стили Button и OptionButton, PopupMenu, LineEdit, PanelContainer, HSlider, Label, плюс вариации `HudPanel` (рамка `frame_small`) и `ClearPanel` (прозрачная панель).
+- `scripts/title_label.gd`: константа `GAME_TITLE` («Dungeon Roller»), ставится в Label на вывеске. В `config/name` то же значение.
+- `scripts/message_panel.gd`: показывает панель сообщения, только пока в `MessageLabel` есть текст. `main.gd` пишет только текст, поэтому видимость рамки решает панель.
+
+Изменены:
+- `project.godot`: `config/name`, секция `[gui]` (`theme/custom`, `theme/custom_font`).
+- `scenes/main_menu.tscn`:
+  - Фон и вывеска с названием.
+  - Колонка меню без рамки, с y = 520.
+  - SettingsPanel в рамке, с заголовком и подписями.
+  - Убрана явная ссылка на старый `theme.tres` (сам файл оставлен).
+  - Тексты кнопок переведены на русский.
+- `scenes/map.tscn`: HUD перестроен на `HudPanel` (NameRow + CoinLabel) и `MessagePanel`. У `CoinLabel`, `NameLabel` и `MessageLabel` включён `unique_name_in_owner`.
+- `scripts/main.gd`: только пути `@onready`: `$UI/CoinLabel` → `%CoinLabel`, `$UI/NameLabel` → `%NameLabel`, `$UI/MessageLabel` → `%MessageLabel`.
+
 ## Поворот камеры (4 изометрических ракурса)
 
 Создан:
