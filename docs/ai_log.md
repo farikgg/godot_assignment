@@ -2,6 +2,14 @@
 
 Файлы, написанные или изменённые ИИ-ассистентом (Claude Code). Всё остальное в проекте, включая `player.tscn` / `player.gd`, написано автором.
 
+## Ник над шаром
+
+Создан:
+- `scripts/name_tag.gd`: на Label3D «NameTag». Берёт текст из `Profile.player_name` и каждый кадр ставит `global_position` = позиция родителя + `follow_offset` (0, 1, 0). У узла включён `top_level`: шар-RigidBody вращается при качении, и обычный дочерний узел облетал бы его по кругу. Экспорт назван `follow_offset`, потому что у Label3D уже есть своё свойство `offset`.
+
+Изменён:
+- `scenes/player.tscn`: добавлен дочерний `NameTag` (billboard, no_depth_test, pixel_size 0.01, font_size 48, outline_size 12, цвета палитры). `player.gd` не менялся.
+
 ## Единый стиль меню и HUD
 
 Созданы:

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b3b70jygclukh"]
 
 [ext_resource type="Script" uid="uid://dbu6vcpp1315k" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="Script" path="res://scripts/name_tag.gd" id="2_nametag"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7yv6r"]
 
@@ -23,3 +24,15 @@ shape = SubResource("SphereShape3D_7yv6r")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1140989638]
 mesh = SubResource("SphereMesh_cj8ji")
+
+[node name="NameTag" type="Label3D" parent="." unique_id=1534078627]
+top_level = true
+pixel_size = 0.01
+billboard = 1
+no_depth_test = true
+modulate = Color(0.909804, 0.913725, 0.960784, 1)
+outline_modulate = Color(0.145098, 0.14902, 0.227451, 1)
+text = "Player"
+font_size = 48
+outline_size = 12
+script = ExtResource("2_nametag")
