@@ -13,12 +13,12 @@
 ## Единый стиль меню и HUD
 
 Созданы:
-- `tools/prep_ui_assets.py`: готовит текстуры из исходников `assets_src/ui/` (палитровые PNG 2752×1536, сгенерированные рендеры).
+- `tools/prep_ui_assets.py`: готовит текстуры из исходников в `assets/UI/` (палитровые PNG 2752×1536, сгенерированные рендеры; файлы ищутся по префиксу имени, потому что в имени есть метка времени).
   - Переводит в RGBA и обрезает по bbox (alpha > 10, отступ 2 px).
   - Убирает розовую кайму: всем пикселям с alpha < 250 ставит RGB ближайшего непрозрачного пикселя (`scipy.ndimage.distance_transform_edt`), альфа не меняется.
   - Уменьшает LANCZOS, рисует бегунок слайдера с суперсэмплингом ×8. С ключом `--preview` пишет наложения на тёмный и светлый фон.
   - Порог 250, а не 255, потому что после квантования палитры тело картинки имеет alpha 250–254, а ровно 255 почти нет.
-- `assets_src/ui/` (исходники и `.gdignore`), `assets/ui_gen/*.png|jpg`: результат скрипта.
+- `assets/ui_gen/*.png|jpg`: результат скрипта. Исходники автор хранит в `assets/UI/`; папка `assets_src/` удалена.
 - `assets/ui_gen/ui_theme.tres`: глобальная тема. Шрифт Rubik-Bold. Стили Button и OptionButton, PopupMenu, LineEdit, PanelContainer, HSlider, Label, плюс вариации `HudPanel` (рамка `frame_small`) и `ClearPanel` (прозрачная панель).
 - `scripts/title_label.gd`: константа `GAME_TITLE` («Dungeon Roller»), ставится в Label на вывеске. В `config/name` то же значение.
 - `scripts/message_panel.gd`: показывает панель сообщения, только пока в `MessageLabel` есть текст. `main.gd` пишет только текст, поэтому видимость рамки решает панель.

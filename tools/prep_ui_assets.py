@@ -1,4 +1,4 @@
-"""Prepare UI textures from the generated source renders in assets_src/ui/.
+"""Prepare UI textures from the generated source renders in assets/UI/.
 
 Run from the project root:  python tools/prep_ui_assets.py [--preview DIR]
 Needs Pillow, NumPy and SciPy.
@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw
 from scipy.ndimage import distance_transform_edt
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "assets_src" / "ui"
+SRC = ROOT / "assets" / "UI"
 OUT = ROOT / "assets" / "ui_gen"
 
 ALPHA_CROP = 10   # pixels at or below this alpha don't count for the bbox
@@ -23,6 +23,14 @@ ALPHA_OPAQUE = 250
 GOLD = (0xF2, 0xB3, 0x3D)
 LAVENDER = (0x8E, 0x93, 0xCF)
 DARK = (0x25, 0x26, 0x3A)
+
+
+def find_source(prefix: str) -> Path:
+    # source names carry a generation timestamp (and one has a "…"), so match by prefix
+    matches = sorted(p for p in SRC.glob(prefix + "*") if p.suffix.lower() in (".png", ".jpg"))
+    if len(matches) != 1:
+        raise FileNotFoundError(f"expected one source matching {prefix}* in {SRC}, found {len(matches)}")
+    return matches[0]
 
 
 def load_rgba(path: Path) -> Image.Image:
@@ -89,9 +97,10 @@ def preview(im: Image.Image, name: str, out_dir: Path) -> None:
     sheet.save(out_dir / f"preview_{name}.png")
 
 
-def process(src: str, outputs: dict[str, int], preview_dir: Path | None) -> None:
-    im = defringe(crop_to_content(load_rgba(SRC / src)))
-    print(f"{src}: cropped to {im.size}")
+def process(prefix: str, outputs: dict[str, int], preview_dir: Path | None) -> None:
+    src = find_source(prefix)
+    im = defringe(crop_to_content(load_rgba(src)))
+    print(f"{src.name}: cropped to {im.size}")
     for name, width in outputs.items():
         out = resize_to_width(im, width)
         out.save(OUT / name, optimize=True)
@@ -108,14 +117,15 @@ def main() -> None:
         args.preview.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
 
-    process("button_src.png", {"button.png": 640}, args.preview)
-    process("frame_src.png", {"frame_large.png": 768, "frame_small.png": 384}, args.preview)
-    process("sign_src.png", {"sign.png": 680}, args.preview)
+    process("Lavender-blue_stone_game_button_", {"button.png": 640}, args.preview)
+    process("UI_window_frame_3D_render_", {"frame_large.png": 768, "frame_small.png": 384}, args.preview)
+    process("Wooden_signboard_", {"sign.png": 680}, args.preview)
 
-    bg = Image.open(SRC / "bg_menu_src.jpg").convert("RGB")
+    bg_src = find_source("Isometric_dungeon_hall_background_")
+    bg = Image.open(bg_src).convert("RGB")
     bg = resize_to_width(bg, 1920)
     bg.save(OUT / "bg_menu.jpg", quality=90, optimize=True)
-    print(f"bg_menu_src.jpg -> bg_menu.jpg {bg.size}")
+    print(f"{bg_src.name} -> bg_menu.jpg {bg.size}")
 
     grabber = make_grabber()
     grabber.save(OUT / "grabber.png", optimize=True)
