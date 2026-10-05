@@ -25,6 +25,7 @@
 [ext_resource type="PackedScene" uid="uid://b5o03p63xwhhs" path="res://scenes/props/wood-support.tscn" id="d_wood_support"]
 [ext_resource type="PackedScene" uid="uid://bkwmqvj85xlsc" path="res://scenes/props/door.tscn" id="g_door"]
 [ext_resource type="PackedScene" path="res://scenes/props/enemy.tscn" id="g_enemy"]
+[ext_resource type="PackedScene" path="res://scenes/props/blade_trap.tscn" id="j_blade"]
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="g_exit"]
 [ext_resource type="Script" uid="uid://crrm2h0pfyy37" path="res://scripts/camera_rig.gd" id="h_camera_rig"]
 [ext_resource type="Script" path="res://scripts/message_panel.gd" id="i_message_panel"]
@@ -216,6 +217,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.1, -2)
 
 [node name="Enemy2" parent="Enemies" unique_id=1188465023 instance=ExtResource("g_enemy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0.1, 2.5)
+
+[node name="Blade1" parent="Enemies" unique_id=1584203317 instance=ExtResource("j_blade")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.78, 0.1, 1.33)
+
+[node name="Blade2" parent="Enemies" unique_id=1093368241 instance=ExtResource("j_blade")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.1, -4)
 
 [node name="Exit" parent="." unique_id=1567730921 instance=ExtResource("g_exit")]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 8.94953, 0.1, 8.583394)
