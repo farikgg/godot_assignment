@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/exit.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://cejikhqwrf4gs" path="res://assets/Map/chest.glb" id="2_model"]
+[ext_resource type="PackedScene" path="res://scenes/props/pulse_zone.tscn" id="3_pulse"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_exit"]
 height = 2.0
@@ -16,5 +17,8 @@ shape = SubResource("CylinderShape3D_exit")
 
 [node name="Model" parent="." instance=ExtResource("2_model")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="PulseZone" parent="." instance=ExtResource("3_pulse")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.012, 0)
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
