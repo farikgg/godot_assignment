@@ -2,6 +2,24 @@
 
 Файлы, написанные или изменённые ИИ-ассистентом (Claude Code). Всё остальное в проекте, включая `player.tscn` / `player.gd`, написано автором.
 
+## Лабораторная A5 — анимация (3D)
+
+Ворота (`scenes/props/door.tscn`, клипы и AnimationTree собраны автором):
+- Причина самопроизвольного открытия: у AnimationTree было сохранено `parameters/conditions/open = true`, поэтому переход closed → open (Auto, условие `open`, Immediate) срабатывал сразу. Значение удалено, у экземпляра Door в `map.tscn` переопределений не было.
+- Удалён узел `Sensor` с коллизией. `door.gd` (автора): `add_to_group("gate")` и `open()`.
+- `scripts/main.gd`: убраны отладочный `print`, ссылка на несуществующий `$AnimationTree` и `add_to_group("gate")` у Main (иначе `call_group("gate", "open")` вызывал бы `open()` у Main). Ворота открываются в `_on_coin_collected`, когда собраны все монеты.
+
+Созданы:
+- `scenes/props/blade_trap.tscn`: AnimatableBody3D в группе `enemy`, лезвие 2×0.2×0.3 на y 0.5, клип `spin`.
+- `scenes/props/moving_platform.tscn`: Node3D с AnimatableBody3D `Body`, плита 2×0.2×2, клип `move` по `Body:position:x`. Анимируется дочернее тело, а не корень, чтобы экземпляр сохранял свою позицию на карте.
+- `scenes/props/pulse_zone.tscn`: золотой светящийся диск r 1.4, клип `pulse` (масштаб диска).
+- `tools/test_anim.gd`: headless-проверка ворот, движения всех анимированных объектов, `loop_mode`/`autoplay` циклов и `callback_mode_process` у проигрывателей, двигающих AnimatableBody3D. Печатает PASS/FAIL и выходит с кодом 0 или 1.
+
+Изменены:
+- `scenes/coin.tscn`: AnimationPlayer с клипом `spin_bob` на узел `Model`. `scripts/coin.gd`: убраны `_process` и связанные с ним переменные.
+- `scenes/map.tscn`: `Enemies/Blade1` (7.78, 0.1, 1.33), `Enemies/Blade2` (−6, 0.1, −4), `MovingPlatform` (1.5, 0.1, 4.9).
+- `scenes/props/exit.tscn`: дочерний `PulseZone` на y 0.012 над верхом пола.
+
 ## Ник над шаром
 
 Создан:
