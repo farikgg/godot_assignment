@@ -7,6 +7,7 @@ const WIN_TEXT: String = "Победа!"
 @onready var coin_label: Label = %CoinLabel
 @onready var name_label: Label = %NameLabel
 @onready var message_label: Label = %MessageLabel
+@onready var tree: AnimationTree = $AnimationTree
 
 var coins_collected: int = 0
 var coins_total: int = 0
@@ -14,6 +15,8 @@ var _has_won: bool = false
 var _hint_timer: Timer
 
 func _ready() -> void:
+	add_to_group("gate")
+	print("open at start: ", tree.get("parameters/conditions/open"))
 	name_label.text = Profile.player_name
 
 	var coins: Array[Node] = get_tree().get_nodes_in_group("coins")
@@ -37,6 +40,8 @@ func _ready() -> void:
 func _on_coin_collected() -> void:
 	coins_collected += 1
 	_update_label()
+	if coins_collected >= coins_total:
+		get_tree().call_group("gate", "open")
 
 func _on_exit_reached() -> void:
 	# after a win the exit is inert, so re-entering can't print or reset the message

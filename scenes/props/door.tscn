@@ -9,6 +9,80 @@ size = Vector3(1.6, 1.5, 0.4)
 [sub_resource type="BoxShape3D" id="BoxShape3D_sensor"]
 size = Vector3(2.4, 2, 3)
 
+[sub_resource type="Animation" id="Animation_yepiq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_8dmq6"]
+resource_name = "closed"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_lbmyp"]
+resource_name = "open"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 1.7453293, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vinnd"]
+_data = {
+&"RESET": SubResource("Animation_yepiq"),
+&"closed": SubResource("Animation_8dmq6"),
+&"open": SubResource("Animation_lbmyp")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mctn1"]
+animation = &"closed"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_t1sgj"]
+animation = &"open"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4i3ya"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_d4kwg"]
+advance_mode = 2
+advance_condition = &"open"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_g4v7s"]
+states/closed/node = SubResource("AnimationNodeAnimation_mctn1")
+states/closed/position = Vector2(443, 95)
+states/open/node = SubResource("AnimationNodeAnimation_t1sgj")
+states/open/position = Vector2(652, 100)
+transitions = ["Start", "closed", SubResource("AnimationNodeStateMachineTransition_4i3ya"), "closed", "open", SubResource("AnimationNodeStateMachineTransition_d4kwg")]
+
 [node name="Door" type="Node3D" unique_id=968738810]
 script = ExtResource("1_script")
 
@@ -23,7 +97,19 @@ shape = SubResource("BoxShape3D_body")
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.8, 0, 0)
 
 [node name="Sensor" type="Area3D" parent="." unique_id=863407294]
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Sensor" unique_id=390100643]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
 shape = SubResource("BoxShape3D_sensor")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=870760451]
+callback_mode_process = 0
+libraries/ = SubResource("AnimationLibrary_vinnd")
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=932067762]
+callback_mode_process = 0
+tree_root = SubResource("AnimationNodeStateMachine_g4v7s")
+anim_player = NodePath("../AnimationPlayer")
+parameters/conditions/open = true
