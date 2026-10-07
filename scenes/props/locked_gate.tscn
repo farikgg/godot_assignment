@@ -1,24 +1,29 @@
 [gd_scene format=3 uid="uid://bkwmqvj85xlsc"]
 
-[ext_resource type="Script" uid="uid://xwto77xt4g3u" path="res://scripts/door.gd" id="1_script"]
-[ext_resource type="PackedScene" uid="uid://buerts481w52p" path="res://assets/Map/gate.glb" id="2_model"]
+[ext_resource type="Script" uid="uid://xwto77xt4g3u" path="res://scripts/locked_gate.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://b47h3fyv6rmx" path="res://assets/Map/iron-fence.glb" id="2_model"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]
-size = Vector3(1.6, 1.5, 0.4)
+size = Vector3(2, 1.758, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iron"]
+albedo_color = Color(0.227451, 0.239216, 0.360784, 1)
+metallic = 0.8
+roughness = 0.4
 
 [sub_resource type="Animation" id="Animation_yepiq"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Body:rotation")
+tracks/0/path = NodePath("Body:position:y")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0, 0, 0)]
+"values": [0.0]
 }
 
 [sub_resource type="Animation" id="Animation_8dmq6"]
@@ -27,30 +32,30 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Body:rotation")
+tracks/0/path = NodePath("Body:position:y")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0, 0, 0)]
+"values": [0.0]
 }
 
 [sub_resource type="Animation" id="Animation_lbmyp"]
 resource_name = "open"
-length = 0.6
+length = 0.8
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Body:rotation")
+tracks/0/path = NodePath("Body:position:y")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.8),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, 1.7453293, 0)]
+"values": [0.0, 2.058]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vinnd"]
@@ -80,18 +85,20 @@ states/open/node = SubResource("AnimationNodeAnimation_t1sgj")
 states/open/position = Vector2(652, 100)
 transitions = ["Start", "closed", SubResource("AnimationNodeStateMachineTransition_4i3ya"), "closed", "open", SubResource("AnimationNodeStateMachineTransition_d4kwg")]
 
-[node name="Door" type="Node3D" unique_id=968738810]
+[node name="LockedGate" type="Node3D" unique_id=968738810]
 script = ExtResource("1_script")
 
 [node name="Body" type="AnimatableBody3D" parent="." unique_id=353133351]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Body" unique_id=1434107420]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.879, 0)
 shape = SubResource("BoxShape3D_body")
 
 [node name="Model" parent="Body" unique_id=738561711 instance=ExtResource("2_model")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.8, 0, 0)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0.65)
+
+[node name="iron-fence" parent="Body/Model" index="0"]
+material_override = SubResource("StandardMaterial3D_iron")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=870760451]
 callback_mode_process = 0
@@ -101,3 +108,5 @@ libraries/ = SubResource("AnimationLibrary_vinnd")
 callback_mode_process = 0
 tree_root = SubResource("AnimationNodeStateMachine_g4v7s")
 anim_player = NodePath("../AnimationPlayer")
+
+[editable path="Body/Model"]

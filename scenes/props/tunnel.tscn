@@ -1,0 +1,48 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://dd7mqbk7l6tao" path="res://scenes/props/wall-opening.tscn" id="1_arch"]
+[ext_resource type="PackedScene" path="res://scenes/props/wall.tscn" id="2_wall"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_color = Color(0.145098, 0.14902, 0.227451, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+material = SubResource("StandardMaterial3D_floor")
+size = Vector3(6, 0.02, 10)
+
+[node name="Tunnel" type="Node3D"]
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+mesh = SubResource("BoxMesh_floor")
+
+[node name="Arch" parent="." unique_id=1600000000 instance=ExtResource("1_arch")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, -1)
+
+[node name="WallL0" parent="." unique_id=1600000001 instance=ExtResource("2_wall")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2, 0, -1)
+
+[node name="WallL1" parent="." unique_id=1600000002 instance=ExtResource("2_wall")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2, 0, -3)
+
+[node name="WallL2" parent="." unique_id=1600000003 instance=ExtResource("2_wall")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2, 0, -5)
+
+[node name="WallL3" parent="." unique_id=1600000004 instance=ExtResource("2_wall")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2, 0, -7)
+
+[node name="WallR0" parent="." unique_id=1600000005 instance=ExtResource("2_wall")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2, 0, -1)
+
+[node name="WallR1" parent="." unique_id=1600000006 instance=ExtResource("2_wall")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2, 0, -3)
+
+[node name="WallR2" parent="." unique_id=1600000007 instance=ExtResource("2_wall")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2, 0, -5)
+
+[node name="WallR3" parent="." unique_id=1600000008 instance=ExtResource("2_wall")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2, 0, -7)
+
+[node name="WallEnd" parent="." unique_id=1600000009 instance=ExtResource("2_wall")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, -9)

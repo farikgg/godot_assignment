@@ -1,0 +1,56 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/key_pickup.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://46vti5t2abc6" path="res://assets/Map/key.glb" id="2_model"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_key"]
+radius = 0.45
+
+[sub_resource type="Animation" id="Animation_spin_bob"]
+resource_name = "spin_bob"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Model:rotation_degrees:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 360.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Model:position:y")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [-0.267, -0.117, -0.267]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_key"]
+_data = {
+&"spin_bob": SubResource("Animation_spin_bob")
+}
+
+[node name="KeyPickup" type="Area3D" groups=["key"]]
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_key")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, -0.267, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("AnimationLibrary_key")
+autoplay = &"spin_bob"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
