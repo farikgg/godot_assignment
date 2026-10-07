@@ -28,6 +28,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/blade_trap.tscn" id="j_blade"]
 [ext_resource type="PackedScene" path="res://scenes/props/moving_platform.tscn" id="k_platform"]
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="g_exit"]
+[ext_resource type="PackedScene" path="res://scenes/props/key_pickup.tscn" id="l_key"]
 [ext_resource type="Script" uid="uid://crrm2h0pfyy37" path="res://scripts/camera_rig.gd" id="h_camera_rig"]
 [ext_resource type="Script" path="res://scripts/message_panel.gd" id="i_message_panel"]
 
@@ -227,6 +228,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.1, -4)
 
 [node name="MovingPlatform" parent="." unique_id=1418829764 instance=ExtResource("k_platform")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.1, 4.9)
+
+[node name="KeyPickup" parent="." unique_id=1739046512 instance=ExtResource("l_key")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.1, 0.9, 2.4)
 
 [node name="Exit" parent="." unique_id=1567730921 instance=ExtResource("g_exit")]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 8.94953, 0.1, 8.583394)
