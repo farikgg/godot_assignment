@@ -49,6 +49,9 @@ glow_enabled = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_7yv6r"]
 size = Vector3(100, 0.2, 100)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_gate_hint"]
+size = Vector3(1.6, 2, 2.6)
+
 [sub_resource type="BoxMesh" id="BoxMesh_uocsc"]
 size = Vector3(20, 0.2, 20)
 
@@ -240,6 +243,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -10)
 [node name="LockedGate" parent="." unique_id=1650031178 instance=ExtResource("n_locked_gate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -12.3)
 
+[node name="GateHint" type="Area3D" parent="." unique_id=1650031181 groups=["gate_hint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.1, -10.6)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GateHint" unique_id=1650031182]
+shape = SubResource("BoxShape3D_gate_hint")
+
 [node name="Exit" parent="." unique_id=1567730921 instance=ExtResource("g_exit")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -16.5)
 
@@ -274,6 +283,11 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Монеты: 0 / 0"
+
+[node name="KeyLabel" type="Label" parent="UI/HudPanel/HudBox" unique_id=1650031180]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Ключ: нет"
 
 [node name="MessagePanel" type="PanelContainer" parent="UI" node_paths=PackedStringArray("label") unique_id=1922750468]
 visible = false
