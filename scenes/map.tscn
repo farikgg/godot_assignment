@@ -23,7 +23,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/weapon-sword.tscn" id="d_weapon_sword"]
 [ext_resource type="PackedScene" uid="uid://e3vwwi846ly2" path="res://scenes/props/wood-structure.tscn" id="d_wood_structure"]
 [ext_resource type="PackedScene" uid="uid://b5o03p63xwhhs" path="res://scenes/props/wood-support.tscn" id="d_wood_support"]
-[ext_resource type="PackedScene" uid="uid://bkwmqvj85xlsc" path="res://scenes/props/door.tscn" id="g_door"]
+[ext_resource type="PackedScene" path="res://scenes/props/swing_door.tscn" id="g_door"]
 [ext_resource type="PackedScene" path="res://scenes/props/enemy.tscn" id="g_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/props/blade_trap.tscn" id="j_blade"]
 [ext_resource type="PackedScene" path="res://scenes/props/moving_platform.tscn" id="k_platform"]
