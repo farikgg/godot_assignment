@@ -27,7 +27,6 @@
 [ext_resource type="PackedScene" path="res://scenes/props/enemy.tscn" id="g_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap.tscn" id="j_saw"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap_patrol.tscn" id="j_saw_patrol"]
-[ext_resource type="PackedScene" path="res://scenes/props/moving_platform.tscn" id="k_platform"]
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="g_exit"]
 [ext_resource type="PackedScene" path="res://scenes/props/key_pickup.tscn" id="l_key"]
 [ext_resource type="PackedScene" path="res://scenes/props/tunnel.tscn" id="m_tunnel"]
@@ -231,9 +230,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.78, 0.1, 1.33)
 
 [node name="SawPatrol" parent="Enemies" unique_id=1093368241 instance=ExtResource("j_saw_patrol")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.1, -4)
-
-[node name="MovingPlatform" parent="." unique_id=1418829764 instance=ExtResource("k_platform")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.1, 4.9)
 
 [node name="KeyPickup" parent="." unique_id=1739046512 instance=ExtResource("l_key")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.1, 0.9, 2.4)
