@@ -1,0 +1,61 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/pause_menu.gd" id="1_script"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 10
+script = ExtResource("1_script")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784314, 0.0823529, 0.137255, 0.65)
+
+[node name="Panel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(560, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -260.0
+offset_right = 280.0
+offset_bottom = 260.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Title" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "Пауза"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="Panel/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 84)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Продолжить"
+
+[node name="RestartButton" type="Button" parent="Panel/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 84)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Рестарт"
+
+[node name="MenuButton" type="Button" parent="Panel/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 84)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "В главное меню"

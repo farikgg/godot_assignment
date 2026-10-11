@@ -34,6 +34,7 @@
 [ext_resource type="PackedScene" path="res://scenes/hazards/bomb.tscn" id="p_bomb"]
 [ext_resource type="PackedScene" path="res://scenes/hazards/potion.tscn" id="p_potion"]
 [ext_resource type="AudioStream" path="res://assets/Audio/pickup.wav" id="q_pickup"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="r_pause"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap.tscn" id="j_saw"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap_patrol.tscn" id="j_saw_patrol"]
 [ext_resource type="PackedScene" path="res://scenes/props/key_pickup.tscn" id="l_key"]
@@ -358,3 +359,5 @@ script = ExtResource("h_camera_rig")
 transform = Transform3D(1, 0, 0, 0, 0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, 0, 17.2, 24.6)
 projection = 1
 size = 15.0
+
+[node name="PauseMenu" parent="." unique_id=1771300060 instance=ExtResource("r_pause")]
