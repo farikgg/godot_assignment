@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dbu6vcpp1315k" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" path="res://scripts/name_tag.gd" id="2_nametag"]
 [ext_resource type="Script" path="res://scripts/health.gd" id="3_health"]
+[ext_resource type="PackedScene" path="res://scenes/weapons/sword.tscn" id="4_sword"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7yv6r"]
 
@@ -41,3 +42,5 @@ script = ExtResource("2_nametag")
 [node name="Health" type="Node" parent="." unique_id=1771300001]
 script = ExtResource("3_health")
 blink_target = NodePath("../MeshInstance3D")
+
+[node name="Sword" parent="." unique_id=1771300030 instance=ExtResource("4_sword")]
