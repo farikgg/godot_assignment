@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="AudioStream" path="res://assets/Audio/explosion.wav" id="2_boom"]
 
 [ext_resource type="Script" path="res://scripts/hazards/bomb_hazard.gd" id="1_script"]
 
@@ -37,6 +38,7 @@ height = 0.12
 
 [node name="Bomb" type="RigidBody3D"]
 script = ExtResource("1_script")
+explosion_sound = ExtResource("2_boom")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_bomb")

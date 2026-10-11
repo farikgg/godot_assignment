@@ -8,15 +8,19 @@ extends RigidBody3D
 
 @onready var mesh: MeshInstance3D = $MeshInstance3D
 @onready var health: Health = $Health
+@onready var hurt_sfx: AudioStreamPlayer = $HurtSfx
 
 const BALL_COLORS: Array[Color] = [Color.RED, Color.DODGER_BLUE, Color.GREEN]
 
 var _is_dead: bool = false
 var _on_ground: bool = false
+var _last_hp: int = 0
 
 func _ready() -> void:
 	assert(health != null, "Player needs a Health child")
 	health.died.connect(_on_died)
+	health.changed.connect(_on_health_changed)
+	_last_hp = health.current
 	var material := StandardMaterial3D.new()
 	material.albedo_color = BALL_COLORS[Profile.ball_color_index]
 	mesh.material_override = material
@@ -65,6 +69,11 @@ func _on_body_entered(body: Node) -> void:
 		away = Vector3.BACK
 	apply_central_impulse(away.normalized() * knockback_impulse + Vector3.UP * knockback_lift)
 	health.take_damage(1)
+
+func _on_health_changed(current: int, _max_hp: int) -> void:
+	if current < _last_hp:
+		hurt_sfx.play()
+	_last_hp = current
 
 func _on_died() -> void:
 	_is_dead = true

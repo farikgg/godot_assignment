@@ -6,6 +6,8 @@ const KEY_FOUND_TEXT: String = "Ключ найден! Путь открыт"
 const NEED_KEY_TEXT: String = "Нужен ключ"
 const GAME_OVER_TEXT: String = "Game over"
 const RESTART_DELAY: float = 1.5
+const SURVIVAL_TIME: float = 60.0
+const SURVIVED_TEXT: String = "Продержался! Путь открыт"
 const HEART_FULL: Texture2D = preload("res://assets/ui_gen/heart_full.png")
 const HEART_EMPTY: Texture2D = preload("res://assets/ui_gen/heart_empty.png")
 
@@ -14,6 +16,8 @@ const HEART_EMPTY: Texture2D = preload("res://assets/ui_gen/heart_empty.png")
 @onready var key_label: Label = %KeyLabel
 @onready var message_label: Label = %MessageLabel
 @onready var hearts_box: HBoxContainer = %HeartsBox
+@onready var survival_label: Label = %SurvivalLabel
+@onready var pickup_sfx: AudioStreamPlayer = $PickupSfx
 
 var coins_collected: int = 0
 var coins_total: int = 0
@@ -21,6 +25,7 @@ var has_key: bool = false
 var _has_won: bool = false
 var _game_over: bool = false
 var _message_timer: Timer
+var _survival_timer: Timer
 
 func _ready() -> void:
 	name_label.text = Profile.player_name
@@ -54,17 +59,31 @@ func _ready() -> void:
 	_message_timer.timeout.connect(_on_message_timeout)
 	add_child(_message_timer)
 
+	# one-shot Timer: stops counting while the tree is paused
+	_survival_timer = Timer.new()
+	_survival_timer.one_shot = true
+	_survival_timer.wait_time = SURVIVAL_TIME
+	_survival_timer.timeout.connect(_on_survived)
+	add_child(_survival_timer)
+	_survival_timer.start()
+
 	_set_message("")
 	_update_label()
 	_update_key_label()
+	_update_survival_label()
+
+func _process(_delta: float) -> void:
+	_update_survival_label()
 
 func _on_coin_collected() -> void:
 	coins_collected += 1
 	_update_label()
+	pickup_sfx.play()
 
 func _on_key_collected() -> void:
 	has_key = true
 	_update_key_label()
+	pickup_sfx.play()
 	get_tree().call_group("locked_gate", "open")
 	_show_message(KEY_FOUND_TEXT)
 
@@ -96,11 +115,22 @@ func _on_player_died() -> void:
 		return
 	_game_over = true
 	_message_timer.stop()
+	_survival_timer.paused = true
 	_set_message(GAME_OVER_TEXT)
 	# process_always = false: the countdown waits while the game is paused
 	await get_tree().create_timer(RESTART_DELAY, false).timeout
 	get_tree().paused = false
 	get_tree().reload_current_scene()
+
+func _on_survived() -> void:
+	if _game_over or _has_won:
+		return
+	get_tree().call_group("locked_gate", "open")
+	_show_message(SURVIVED_TEXT)
+
+func _update_survival_label() -> void:
+	var left: int = ceili(_survival_timer.time_left) if not _survival_timer.is_stopped() else 0
+	survival_label.text = "Выжить: %d" % left
 
 func _on_exit_reached() -> void:
 	# after a win the exit is inert, so re-entering can't print or reset the message
@@ -108,6 +138,7 @@ func _on_exit_reached() -> void:
 		return
 	_has_won = true
 	_message_timer.stop()
+	_survival_timer.paused = true
 	print("You win!")
 	_set_message(WIN_TEXT % [coins_collected, coins_total])
 
