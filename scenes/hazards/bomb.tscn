@@ -1,0 +1,53 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/hazards/bomb_hazard.gd" id="1_script"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bomb"]
+radius = 0.35
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_body"]
+albedo_color = Color(0.145098, 0.14902, 0.227451, 1)
+metallic = 0.3
+roughness = 0.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_body"]
+material = SubResource("StandardMaterial3D_body")
+radius = 0.35
+height = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fuse"]
+albedo_color = Color(0.85098, 0.517647, 0.313726, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_fuse"]
+material = SubResource("StandardMaterial3D_fuse")
+top_radius = 0.04
+bottom_radius = 0.06
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark"]
+albedo_color = Color(0.94902, 0.701961, 0.239216, 1)
+emission_enabled = true
+emission = Color(0.94902, 0.701961, 0.239216, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_spark"]
+material = SubResource("StandardMaterial3D_spark")
+radius = 0.06
+height = 0.12
+
+[node name="Bomb" type="RigidBody3D"]
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_bomb")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_body")
+
+[node name="Fuse" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+mesh = SubResource("CylinderMesh_fuse")
+
+[node name="Spark" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.52, 0)
+mesh = SubResource("SphereMesh_spark")
