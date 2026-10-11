@@ -28,6 +28,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="g_exit"]
 [ext_resource type="Script" uid="uid://crrm2h0pfyy37" path="res://scripts/camera_rig.gd" id="h_camera_rig"]
 [ext_resource type="Script" uid="uid://dua30ftusyt0g" path="res://scripts/message_panel.gd" id="i_message_panel"]
+[ext_resource type="Texture2D" path="res://assets/ui_gen/heart_full.png" id="o_heart_full"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap.tscn" id="j_saw"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap_patrol.tscn" id="j_saw_patrol"]
 [ext_resource type="PackedScene" path="res://scenes/props/key_pickup.tscn" id="l_key"]
@@ -274,6 +275,32 @@ text = "Игрок:"
 [node name="NameLabel" type="Label" parent="UI/HudPanel/HudBox/NameRow" unique_id=2009308255]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="HeartsBox" type="HBoxContainer" parent="UI/HudPanel/HudBox" unique_id=1771300010]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Heart1" type="TextureRect" parent="UI/HudPanel/HudBox/HeartsBox" unique_id=1771300011]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("o_heart_full")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart2" type="TextureRect" parent="UI/HudPanel/HudBox/HeartsBox" unique_id=1771300012]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("o_heart_full")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart3" type="TextureRect" parent="UI/HudPanel/HudBox/HeartsBox" unique_id=1771300013]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("o_heart_full")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="CoinLabel" type="Label" parent="UI/HudPanel/HudBox" unique_id=504721018]
 unique_name_in_owner = true
