@@ -1,8 +1,31 @@
 # AI log
 
-Файлы, написанные или изменённые ИИ-ассистентом (Claude Code). Остальное написано автором, с одной оговоркой:
+Файлы, написанные или изменённые ИИ-ассистентами. Остальное написано автором, с оговоркой:
 
-- `scripts/player.gd`: каркас (RigidBody3D, экспорты, цвет шара из профиля) — автор; ввод, приложение силы с ограничением скорости, прыжок и обработка столкновения с врагом написаны чат-ассистентом (не Claude Code), автор перенёс их в проект.
+- `scripts/player.gd` и `scenes/player.tscn`: скелет автора (RigidBody3D, экспорты, цвет шара из профиля). Управление, силу с ограничением скорости, прыжок, проверку земли (`_integrate_forces`) и обработку врагов писал ИИ-ассистент Claude в чате; автор перенёс это в проект. Правки Claude Code в этих файлах перечислены в разделах ниже (NameTag, A6).
+
+## Лабораторная A6 — Scripting I
+
+Созданы:
+- `scripts/health.gd` (`class_name Health`): сигналы `changed(current, max_hp)` и `died`, `take_damage` / `heal`. Урон не проходит во время неуязвимости и после смерти, лечение не выше `max_hp`. Корутина `_invincibility()` мигает `blink_target` через `create_timer(blink_interval, false)` (замирает на паузе) и в конце всегда возвращает `visible = true`.
+- `scripts/hazards/hazard.gd` (`class_name Hazard`, RigidBody3D): группа `hazard`, contact monitor, CCD (падение с 12 м сквозь пол 0.2 м), Timer на `lifetime`. Касание игрока → виртуальный `_on_hit_player(health)`, первое другое касание → `_on_landed()`, `hit_by_weapon(damage = 1)` по умолчанию удаляет объект.
+- `scripts/hazards/rock.gd`, `bomb_hazard.gd`, `potion.gd` + `scenes/hazards/{rock,bomb,potion}.tscn`: камень (урон 1), бомба (фитиль 2 с после приземления, взрыв по радиусу 2.5 м на 2 урона, вспышка, звук, защита от двойного взрыва, удар мечом взрывает сразу), зелье (`heal(1)` + звук).
+- `scripts/sfx.gd` (`class_name Sfx`): разовый звук, который доигрывает после `queue_free` источника.
+- `scripts/spawner.gd`: Timer с autostart, `RandomNumberGenerator` выбирает сцену и точку в прямоугольнике 18 × 18 м на высоте 12 м, инстанс приводится к `Hazard` (иначе ошибка и `free`), лимит `max_alive` по группе `hazard`.
+- `scripts/weapons/sword.gd` + `scenes/weapons/sword.tscn`: модель `weapon-sword.glb` на `top_level`-узле у шара, смотрит по последнему направлению движения; атака по `attack` с кулдауном через `Time.get_ticks_msec()`, взмах Tween'ом, звук, хитбокс.
+- `scripts/weapons/slash.gd` (`class_name Slash`) + `scenes/weapons/slash.tscn`: Area3D 1.2 м, живёт 0.15 с, вызывает `hit_by_weapon(damage)` у каждого тела один раз, включая уже стоявшие внутри.
+- `scripts/pause_menu.gd` + `scenes/ui/pause_menu.tscn`: CanvasLayer с `PROCESS_MODE_ALWAYS`, затемнение, «Продолжить» / «Рестарт» / «В главное меню»; перед сменой сцены пауза снимается.
+- `tools/gen_sfx.py`: swing / hurt / pickup / explosion (numpy + wave) в `assets/Audio/` (существующая папка: путь в нижнем регистре сломался бы вне Windows).
+- `tools/gen_heart_icons.py` → `assets/ui_gen/heart_full.png`, `heart_empty.png`: в Rubik нет U+2665, поэтому вместо Label «♥» иконки.
+- `tools/test_a6.gd`: headless-проверки Health, иерархии Hazard, лимита спавнера и Slash.
+
+Изменены:
+- `scripts/player.gd`: столкновение с `enemy` даёт `take_damage(1)` и импульс от врага вместо мгновенной смерти; звук урона по `Health.changed`; ввод отключается после смерти. `scenes/player.tscn`: дочерние `Health`, `Sword`, `HurtSfx`.
+- `scripts/main.gd`: сердца по `Health.changed`; по `Health.died` — «Game over», через 1.5 с снятие паузы и перезагрузка (один раз); таймер выживания 60 с с меткой «Выжить: N», на нуле открывает группу `locked_gate` (в проекте ворота теперь в этой группе); звук подбора монет и ключа.
+- `scripts/camera_rig.gd`: пивот следует за игроком (`1 - exp(-follow_speed * delta)`, мёртвая зона 1.5 м), на старте сразу на игроке; поворот на 4 ракурса прежний.
+- `scenes/map.tscn`: `HeartsBox`, `SurvivalLabel`, `Spawner`, `PickupSfx`, `PauseMenu`; `GateHint` перенесён перед решёткой после её сдвига автором.
+- `project.godot`: действия `attack` (J, ЛКМ) и `pause` (Escape, P).
+- `tools/test_anim.gd`: восстановлен (автор удалил его в `c3fa8a5`).
 
 ## Ключ, решётка и туннель
 
