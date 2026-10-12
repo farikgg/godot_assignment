@@ -9,7 +9,7 @@ extends Node3D
 @export var swing_arc_degrees: float = 75.0
 @export var swing_time: float = 0.12
 
-@onready var _player: RigidBody3D = get_parent() as RigidBody3D
+@onready var _player: CharacterBody3D = get_parent() as CharacterBody3D
 @onready var _pivot: Node3D = $Pivot
 @onready var _swing_sfx: AudioStreamPlayer = $SwingSfx
 
@@ -18,7 +18,7 @@ var _last_attack_ms: int = -1_000_000
 var _tween: Tween
 
 func _ready() -> void:
-	assert(_player != null, "Sword must be a child of the player RigidBody3D")
+	assert(_player != null, "Sword must be a child of the player CharacterBody3D")
 	if slash_scene == null:
 		push_error("Sword: slash_scene is not set")
 	# the ball rolls, so the sword must not inherit its rotation
@@ -26,9 +26,7 @@ func _ready() -> void:
 	_follow()
 
 func _process(_delta: float) -> void:
-	var flat := Vector3(_player.linear_velocity.x, 0.0, _player.linear_velocity.z)
-	if flat.length() > 0.3:
-		_facing = flat.normalized()
+	_facing = _player.call("get_facing")
 	_follow()
 
 func _unhandled_input(event: InputEvent) -> void:
