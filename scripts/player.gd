@@ -21,6 +21,7 @@ var _data: CharacterData
 var _model: Node3D
 var _anim: AnimationPlayer
 var _skeleton: Skeleton3D
+var _hand_socket: Node3D
 var _is_dead: bool = false
 var _last_hp: int = 0
 var _knockback_left: float = 0.0
@@ -99,6 +100,27 @@ func get_character_data() -> CharacterData:
 
 func get_skeleton() -> Skeleton3D:
 	return _skeleton
+
+## Node that follows the right hand: a BoneAttachment3D on hand_bone, or a Marker3D at the right
+## side when the rig has no such bone. Its local space is in model units, arm along -X.
+func get_hand_socket() -> Node3D:
+	if _hand_socket != null:
+		return _hand_socket
+	var bone: StringName = _data.hand_bone if _data != null else &""
+	if _skeleton != null and bone != &"" and _skeleton.find_bone(bone) != -1:
+		var attachment := BoneAttachment3D.new()
+		attachment.name = "HandSocket"
+		attachment.bone_name = bone
+		_skeleton.add_child(attachment)
+		_hand_socket = attachment
+	else:
+		push_warning("Player: bone '%s' not found, sword goes to the right side" % bone)
+		var marker := Marker3D.new()
+		marker.name = "HandSocket"
+		marker.position = Vector3(-0.3, 0.2, 0.05)
+		visual.add_child(marker)
+		_hand_socket = marker
+	return _hand_socket
 
 ## Plays the hero's attack clip; false if the hero has none (the sword then animates itself).
 func play_attack() -> bool:

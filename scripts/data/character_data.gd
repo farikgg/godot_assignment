@@ -11,6 +11,8 @@ extends Resource
 @export var model_scale: float = 1.4
 ## Bone the sword attaches to (Kenney mini characters: "arm-right").
 @export var hand_bone: StringName = &"arm-right"
+## Shoulder-to-fingertip length of the arm in model units (Kenney rig: ~0.28, arm along -X of the bone).
+@export var arm_length: float = 0.28
 
 @export_group("Animations")
 ## Empty string = the character has no such animation; it is skipped.
