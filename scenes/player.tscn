@@ -4,7 +4,6 @@
 [ext_resource type="Script" path="res://scripts/name_tag.gd" id="2_nametag"]
 [ext_resource type="Script" path="res://scripts/health.gd" id="3_health"]
 [ext_resource type="PackedScene" path="res://scenes/weapons/sword.tscn" id="4_sword"]
-[ext_resource type="AudioStream" path="res://assets/Audio/hurt.wav" id="5_hurt"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.3
@@ -50,5 +49,4 @@ blink_target = NodePath("../Visual")
 [node name="Sword" parent="." unique_id=1771300030 instance=ExtResource("4_sword")]
 
 [node name="HurtSfx" type="AudioStreamPlayer" parent="." unique_id=1771300040]
-stream = ExtResource("5_hurt")
 max_polyphony = 4

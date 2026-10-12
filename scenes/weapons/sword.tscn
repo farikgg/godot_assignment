@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://scripts/weapons/sword.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://10vjxdluiayx" path="res://assets/Map/weapon-sword.glb" id="2_model"]
 [ext_resource type="PackedScene" path="res://scenes/weapons/slash.tscn" id="3_slash"]
-[ext_resource type="AudioStream" path="res://assets/Audio/swing.wav" id="4_swing"]
 
 [node name="Sword" type="Node3D"]
 script = ExtResource("1_script")
@@ -14,5 +13,4 @@ slash_scene = ExtResource("3_slash")
 [node name="Model" parent="Pivot" instance=ExtResource("2_model")]
 
 [node name="SwingSfx" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_swing")
 max_polyphony = 4

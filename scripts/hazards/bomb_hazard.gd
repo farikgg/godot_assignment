@@ -4,14 +4,16 @@ extends Hazard
 @export var fuse_time: float = 2.0
 @export var blast_radius: float = 2.5
 @export var blast_damage: int = 2
-@export var explosion_sound: AudioStream
+@export_file("*.ogg", "*.wav") var explosion_sound_path: String = "res://assets/audio/explosion.ogg"
 ## Particle burst (with its own flash light) spawned on explosion.
 @export var explosion_fx: PackedScene
 
 var _exploded: bool = false
+var _explosion_sound: AudioStream
 
 func _ready() -> void:
 	super._ready()
+	_explosion_sound = Sfx.load_stream(explosion_sound_path)
 
 # Fuse starts on the first landing (Unity's Invoke): a one-shot Timer that respects pause.
 func _on_landed() -> void:
@@ -37,7 +39,7 @@ func explode() -> void:
 		else:
 			health.take_damage(blast_damage)
 	_spawn_flash()
-	Sfx.play(explosion_sound, self)
+	Sfx.play(_explosion_sound, self)
 	queue_free()
 
 func _spawn_flash() -> void:

@@ -11,6 +11,7 @@ extends CharacterBody3D
 @export var knockback_time: float = 0.25
 ## Horizontal speed above which the run animation plays.
 @export var run_threshold: float = 0.5
+@export_file("*.ogg", "*.wav") var hurt_sound_path: String = "res://assets/audio/hurt.ogg"
 
 @onready var visual: Node3D = $Visual
 @onready var health: Health = $Health
@@ -32,6 +33,7 @@ func _ready() -> void:
 	assert(health != null, "Player needs a Health child")
 	assert(visual != null, "Player needs a Visual child")
 	_build_model()
+	hurt_sfx.stream = Sfx.load_stream(hurt_sound_path)
 	health.died.connect(_on_died)
 	health.changed.connect(_on_health_changed)
 	_last_hp = health.current

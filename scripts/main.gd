@@ -14,6 +14,8 @@ const SURVIVAL_TIME: float = 60.0
 const HEART_FULL: Texture2D = preload("res://assets/ui_gen/heart_full.png")
 const HEART_EMPTY: Texture2D = preload("res://assets/ui_gen/heart_empty.png")
 
+@export_file("*.ogg", "*.wav") var pickup_sound_path: String = "res://assets/audio/pickup.ogg"
+
 @onready var coin_label: Label = %CoinLabel
 @onready var name_label: Label = %NameLabel
 @onready var key_label: Label = %KeyLabel
@@ -32,6 +34,7 @@ var _survival_timer: Timer
 
 func _ready() -> void:
 	name_label.text = Profile.player_name
+	pickup_sfx.stream = Sfx.load_stream(pickup_sound_path)
 
 	var coins: Array[Node] = get_tree().get_nodes_in_group("coins")
 	coins_total = coins.size()

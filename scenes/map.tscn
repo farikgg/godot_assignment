@@ -33,7 +33,6 @@
 [ext_resource type="PackedScene" path="res://scenes/hazards/rock.tscn" id="p_rock"]
 [ext_resource type="PackedScene" path="res://scenes/hazards/bomb.tscn" id="p_bomb"]
 [ext_resource type="PackedScene" path="res://scenes/hazards/potion.tscn" id="p_potion"]
-[ext_resource type="AudioStream" path="res://assets/Audio/pickup.wav" id="q_pickup"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="r_pause"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap.tscn" id="j_saw"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap_patrol.tscn" id="j_saw_patrol"]
@@ -264,7 +263,6 @@ script = ExtResource("p_spawner")
 hazard_scenes = Array[PackedScene]([ExtResource("p_rock"), ExtResource("p_rock"), ExtResource("p_bomb"), ExtResource("p_potion")])
 
 [node name="PickupSfx" type="AudioStreamPlayer" parent="." unique_id=1771300051]
-stream = ExtResource("q_pickup")
 max_polyphony = 4
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1684676044]

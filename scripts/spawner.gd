@@ -13,17 +13,21 @@ extends Node3D
 @export var telegraph_time: float = 0.8
 @export var shadow_radius: float = 0.7
 @export var shadow_color: Color = Color(0.05, 0.05, 0.09, 0.55)
+## Optional rumble played when a drop is telegraphed.
+@export_file("*.ogg", "*.wav") var rumble_sound_path: String = "res://assets/audio/rumble.ogg"
 
 var _rng := RandomNumberGenerator.new()
 var _timer: Timer
 var _pending: int = 0
 var _shadow_mesh: CylinderMesh
+var _rumble: AudioStream
 
 func _ready() -> void:
 	_rng.randomize()
 	if hazard_scenes.is_empty():
 		push_error("Spawner: hazard_scenes is empty")
 	_shadow_mesh = _make_shadow_mesh()
+	_rumble = Sfx.load_stream(rumble_sound_path)
 	# InvokeRepeating: a looping Timer that stops while the tree is paused
 	_timer = Timer.new()
 	_timer.wait_time = interval
@@ -48,6 +52,7 @@ func spawn_one() -> bool:
 	var drop_y: float = global_position.y + spawn_height
 	var ground_y: float = _ground_height(x, z, drop_y)
 	_pending += 1
+	Sfx.play(_rumble, self)
 	var shadow: MeshInstance3D = _spawn_shadow(Vector3(x, ground_y + 0.03, z))
 	var tween: Tween = shadow.create_tween()
 	tween.tween_property(shadow, "scale", Vector3(1.0, 1.0, 1.0), telegraph_time).from(Vector3(0.15, 1.0, 0.15))

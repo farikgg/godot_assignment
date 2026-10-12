@@ -1,5 +1,4 @@
 [gd_scene format=3]
-[ext_resource type="AudioStream" path="res://assets/Audio/pickup.wav" id="3_pickup"]
 
 [ext_resource type="Script" path="res://scripts/hazards/potion.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://c7fo23n6m6gkg" path="res://assets/Map/potion.glb" id="2_model"]
@@ -11,7 +10,6 @@ radius = 0.25
 [node name="Potion" type="RigidBody3D"]
 mass = 0.5
 script = ExtResource("1_script")
-pickup_sound = ExtResource("3_pickup")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CylinderShape3D_potion")
