@@ -5,9 +5,8 @@ extends Hazard
 @export var blast_radius: float = 2.5
 @export var blast_damage: int = 2
 @export var explosion_sound: AudioStream
-
-const FLASH_COLOR: Color = Color(0.94902, 0.701961, 0.239216)
-const FLASH_TIME: float = 0.35
+## Particle burst (with its own flash light) spawned on explosion.
+@export var explosion_fx: PackedScene
 
 var _exploded: bool = false
 
@@ -42,28 +41,9 @@ func explode() -> void:
 	queue_free()
 
 func _spawn_flash() -> void:
+	if explosion_fx == null:
+		return
+	var fx: Node3D = explosion_fx.instantiate() as Node3D
 	var parent: Node = get_tree().current_scene if get_tree().current_scene != null else get_parent()
-	var flash := Node3D.new()
-	var mesh := MeshInstance3D.new()
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.5
-	sphere.height = 1.0
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.albedo_color = FLASH_COLOR
-	sphere.material = material
-	mesh.mesh = sphere
-	flash.add_child(mesh)
-	var light := OmniLight3D.new()
-	light.light_color = FLASH_COLOR
-	light.light_energy = 6.0
-	light.omni_range = blast_radius * 2.0
-	flash.add_child(light)
-	parent.add_child(flash)
-	flash.global_position = global_position
-	var tween: Tween = flash.create_tween().set_parallel(true)
-	tween.tween_property(mesh, "scale", Vector3.ONE * blast_radius * 2.0, FLASH_TIME)
-	tween.tween_property(material, "albedo_color:a", 0.0, FLASH_TIME)
-	tween.tween_property(light, "light_energy", 0.0, FLASH_TIME)
-	tween.chain().tween_callback(flash.queue_free)
+	parent.add_child(fx)
+	fx.global_position = global_position
