@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_data"]
+[ext_resource type="PackedScene" uid="uid://biw1uktvuup0i" path="res://assets/Characters/character-male-f.glb" id="2_model"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"male_f"
+display_name = "Эйнар"
+model = ExtResource("2_model")
+price = 500
+unlocked_by_default = false

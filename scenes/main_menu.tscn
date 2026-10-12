@@ -114,14 +114,6 @@ theme_override_font_sizes/font_size = 44
 text = "Настройки"
 horizontal_alignment = 1
 
-[node name="ColorCaption" type="Label" parent="SettingsPanel/Content" unique_id=1960017733]
-layout_mode = 2
-text = "Цвет шара"
-
-[node name="ColorDropdown" type="OptionButton" parent="SettingsPanel/Content" unique_id=1940472681]
-custom_minimum_size = Vector2(0, 84)
-layout_mode = 2
-
 [node name="Label" type="Label" parent="SettingsPanel/Content" unique_id=863042915]
 layout_mode = 2
 text = "Громкость музыки"
@@ -147,6 +139,5 @@ autoplay = true
 [connection signal="pressed" from="MainPanel/Buttons/ButtonStart" to="." method="_on_button_start_pressed"]
 [connection signal="pressed" from="MainPanel/Buttons/ButtonSetting" to="." method="_on_button_settings_pressed"]
 [connection signal="pressed" from="MainPanel/Buttons/ButtonQuit" to="." method="_on_button_quit_pressed"]
-[connection signal="item_selected" from="SettingsPanel/Content/ColorDropdown" to="." method="_on_color_dropdown_item_selected"]
 [connection signal="value_changed" from="SettingsPanel/Content/Music volume" to="." method="_on_volume_slider_value_changed"]
 [connection signal="pressed" from="SettingsPanel/Content/ButtonBack" to="." method="_on_button_back_pressed"]

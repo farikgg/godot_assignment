@@ -10,8 +10,6 @@ extends RigidBody3D
 @onready var health: Health = $Health
 @onready var hurt_sfx: AudioStreamPlayer = $HurtSfx
 
-const BALL_COLORS: Array[Color] = [Color.RED, Color.DODGER_BLUE, Color.GREEN]
-
 var _is_dead: bool = false
 var _on_ground: bool = false
 var _last_hp: int = 0
@@ -21,9 +19,6 @@ func _ready() -> void:
 	health.died.connect(_on_died)
 	health.changed.connect(_on_health_changed)
 	_last_hp = health.current
-	var material := StandardMaterial3D.new()
-	material.albedo_color = BALL_COLORS[Profile.ball_color_index]
-	mesh.material_override = material
 
 	contact_monitor = true
 	max_contacts_reported = 6
