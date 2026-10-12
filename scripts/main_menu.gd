@@ -4,12 +4,26 @@ extends Control
 @onready var main_menu: Control = $MainPanel
 @onready var music: AudioStreamPlayer = $Music
 @onready var volume_slider: HSlider = $"SettingsPanel/Content/Music volume"
+@onready var sign_board: Control = $Sign
+@onready var character_select: Control = $CharacterSelect
+
+func _ready() -> void:
+	character_select.connect("closed", _on_character_select_closed)
 
 func _on_button_start_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/map.tscn")
 
 func _on_button_quit_pressed() -> void:
 	get_tree().quit()
+
+func _on_button_heroes_pressed() -> void:
+	main_menu.visible = false
+	sign_board.visible = false
+	character_select.call("open")
+
+func _on_character_select_closed() -> void:
+	sign_board.visible = true
+	main_menu.visible = true
 
 func _on_button_settings_pressed() -> void:
 	main_menu.visible = false
