@@ -1,7 +1,7 @@
 extends Label
 
 # keep in sync with application/config/name in project.godot
-const GAME_TITLE: String = "Dungeon Roller"
+const GAME_TITLE: String = "Dungeon Delver"
 
 func _ready() -> void:
 	text = GAME_TITLE

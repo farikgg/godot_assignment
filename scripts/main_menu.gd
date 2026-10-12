@@ -1,5 +1,11 @@
 extends Control
 
+const START_TEXT: String = "Спуститься"
+const HEROES_TEXT: String = "Герои"
+const SETTINGS_TEXT: String = "Настройки"
+const QUIT_TEXT: String = "Выход"
+const NAME_PLACEHOLDER: String = "Имя героя"
+
 @onready var settings_panel: Control = $SettingsPanel
 @onready var main_menu: Control = $MainPanel
 @onready var music: AudioStreamPlayer = $Music
@@ -8,6 +14,11 @@ extends Control
 @onready var character_select: Control = $CharacterSelect
 
 func _ready() -> void:
+	($MainPanel/Buttons/ButtonStart as Button).text = START_TEXT
+	($MainPanel/Buttons/ButtonHeroes as Button).text = HEROES_TEXT
+	($MainPanel/Buttons/ButtonSetting as Button).text = SETTINGS_TEXT
+	($MainPanel/Buttons/ButtonQuit as Button).text = QUIT_TEXT
+	($MainPanel/Buttons/NameField as LineEdit).placeholder_text = NAME_PLACEHOLDER
 	character_select.connect("closed", _on_character_select_closed)
 
 func _on_button_start_pressed() -> void:

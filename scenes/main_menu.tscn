@@ -50,7 +50,7 @@ offset_right = 616.0
 offset_bottom = 387.0
 theme_override_font_sizes/font_size = 56
 theme_override_colors/font_color = Color(0.909804, 0.913725, 0.960784, 1)
-text = "Dungeon Roller"
+text = "Dungeon Delver"
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("6_title")
@@ -74,13 +74,13 @@ theme_override_constants/separation = 18
 [node name="NameField" type="LineEdit" parent="MainPanel/Buttons" unique_id=839725896]
 custom_minimum_size = Vector2(360, 64)
 layout_mode = 2
-placeholder_text = "Ваше имя…"
+placeholder_text = "Имя героя"
 max_length = 15
 
 [node name="ButtonStart" type="Button" parent="MainPanel/Buttons" unique_id=1718474551]
 custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
-text = "Играть"
+text = "Спуститься"
 
 [node name="ButtonHeroes" type="Button" parent="MainPanel/Buttons" unique_id=1771300080]
 custom_minimum_size = Vector2(360, 84)

@@ -320,7 +320,7 @@ stretch_mode = 5
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Монеты: 0 / 0"
+text = "Золото: 0 / 0"
 
 [node name="KeyLabel" type="Label" parent="UI/HudPanel/HudBox" unique_id=1650031180]
 unique_name_in_owner = true
@@ -330,7 +330,7 @@ text = "Ключ: нет"
 [node name="SurvivalLabel" type="Label" parent="UI/HudPanel/HudBox" unique_id=1771300050]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Выжить: 60"
+text = "Обвал стихнет через 60"
 
 [node name="MessagePanel" type="PanelContainer" parent="UI" unique_id=1922750468 node_paths=PackedStringArray("label")]
 visible = false

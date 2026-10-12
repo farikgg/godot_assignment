@@ -36,7 +36,7 @@ theme_override_constants/separation = 18
 [node name="Title" type="Label" parent="Panel/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 44
-text = "Пауза"
+text = "Привал"
 horizontal_alignment = 1
 
 [node name="ResumeButton" type="Button" parent="Panel/Content"]
@@ -44,18 +44,18 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "Продолжить"
+text = "Продолжить путь"
 
 [node name="RestartButton" type="Button" parent="Panel/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "Рестарт"
+text = "Начать заново"
 
 [node name="MenuButton" type="Button" parent="Panel/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "В главное меню"
+text = "Покинуть подземелье"
