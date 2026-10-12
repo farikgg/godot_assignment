@@ -1,15 +1,20 @@
 extends Node3D
 
 const MESSAGE_DURATION: float = 2.0
-const WIN_TEXT: String = "Победа!\nМонеты: %d / %d"
-const KEY_FOUND_TEXT: String = "Ключ найден! Путь открыт"
-const NEED_KEY_TEXT: String = "Нужен ключ"
-const GAME_OVER_TEXT: String = "Game over"
+const WIN_TEXT: String = "Ты выбрался на свет!"
+const GATE_OPEN_TEXT: String = "Решётка поднялась. Путь свободен"
+const GATE_CLOSED_TEXT: String = "Решётка опущена. Продержись, пока не стихнет обвал"
+const GAME_OVER_TEXT: String = "Тьма поглотила тебя…"
+const GOLD_TEXT: String = "Золото: %d / %d"
+const CAVE_IN_TEXT: String = "Обвал стихнет через %d"
+const KEY_YES_TEXT: String = "Ключ: есть"
+const KEY_NO_TEXT: String = "Ключ: нет"
 const RESTART_DELAY: float = 1.5
 const SURVIVAL_TIME: float = 60.0
-const SURVIVED_TEXT: String = "Продержался! Путь открыт"
 const HEART_FULL: Texture2D = preload("res://assets/ui_gen/heart_full.png")
 const HEART_EMPTY: Texture2D = preload("res://assets/ui_gen/heart_empty.png")
+
+@export_file("*.ogg", "*.wav") var pickup_sound_path: String = "res://assets/audio/pickup.ogg"
 
 @onready var coin_label: Label = %CoinLabel
 @onready var name_label: Label = %NameLabel
@@ -29,6 +34,7 @@ var _survival_timer: Timer
 
 func _ready() -> void:
 	name_label.text = Profile.player_name
+	pickup_sfx.stream = Sfx.load_stream(pickup_sound_path)
 
 	var coins: Array[Node] = get_tree().get_nodes_in_group("coins")
 	coins_total = coins.size()
@@ -85,11 +91,11 @@ func _on_key_collected() -> void:
 	_update_key_label()
 	pickup_sfx.play()
 	get_tree().call_group("locked_gate", "open")
-	_show_message(KEY_FOUND_TEXT)
+	_show_message(GATE_OPEN_TEXT)
 
 func _on_gate_hint_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player") and not has_key and not _has_won:
-		_show_message(NEED_KEY_TEXT)
+		_show_message(GATE_CLOSED_TEXT)
 
 func _find_player_health() -> Health:
 	var player: Node = get_tree().get_first_node_in_group("player")
@@ -126,11 +132,11 @@ func _on_survived() -> void:
 	if _game_over or _has_won:
 		return
 	get_tree().call_group("locked_gate", "open")
-	_show_message(SURVIVED_TEXT)
+	_show_message(GATE_OPEN_TEXT)
 
 func _update_survival_label() -> void:
 	var left: int = ceili(_survival_timer.time_left) if not _survival_timer.is_stopped() else 0
-	survival_label.text = "Выжить: %d" % left
+	survival_label.text = CAVE_IN_TEXT % left
 
 func _on_exit_reached() -> void:
 	# after a win the exit is inert, so re-entering can't print or reset the message
@@ -140,7 +146,7 @@ func _on_exit_reached() -> void:
 	_message_timer.stop()
 	_survival_timer.paused = true
 	print("You win!")
-	_set_message(WIN_TEXT % [coins_collected, coins_total])
+	_set_message(WIN_TEXT)
 
 func _show_message(text: String) -> void:
 	_set_message(text)
@@ -156,8 +162,8 @@ func _set_message(text: String) -> void:
 
 func _update_label() -> void:
 	if coin_label != null:
-		coin_label.text = "Монеты: %d / %d" % [coins_collected, coins_total]
+		coin_label.text = GOLD_TEXT % [coins_collected, coins_total]
 
 func _update_key_label() -> void:
 	if key_label != null:
-		key_label.text = "Ключ: есть" if has_key else "Ключ: нет"
+		key_label.text = KEY_YES_TEXT if has_key else KEY_NO_TEXT

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/hazards/rock.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://pw3gcqqyl76m" path="res://assets/Map/rocks.glb" id="2_model"]
+[ext_resource type="PackedScene" path="res://scenes/fx/dust_puff.tscn" id="3_dust"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rock"]
 size = Vector3(0.7, 0.35, 0.7)
@@ -9,6 +10,7 @@ size = Vector3(0.7, 0.35, 0.7)
 [node name="Rock" type="RigidBody3D"]
 mass = 2.0
 script = ExtResource("1_script")
+landing_fx = ExtResource("3_dust")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_rock")

@@ -3,6 +3,31 @@
 Файлы, написанные или изменённые ИИ-ассистентами. Остальное написано автором, с оговоркой:
 
 - `scripts/player.gd` и `scenes/player.tscn`: скелет автора (RigidBody3D, экспорты, цвет шара из профиля). Управление, силу с ограничением скорости, прыжок, проверку земли (`_integrate_forces`) и обработку врагов писал ИИ-ассистент Claude в чате; автор перенёс это в проект. Правки Claude Code в этих файлах перечислены в разделах ниже (NameTag, A6).
+- Начиная с раздела «A6 — персонаж и выбор героя» `player.gd` и `player.tscn` целиком переписаны Claude Code под CharacterBody3D; версия с шаром осталась в истории git.
+
+## A6 — персонаж и выбор героя
+
+Найдено в моделях (`assets/Characters/character-{male,female}-{a..f}.glb`, 12 штук, у всех одинаково):
+- кости: `root`, `leg-left`, `leg-right`, `torso`, `arm-left`, `arm-right`, `head`; рука в T-позе вдоль −X кости, длина около 0.28 единицы модели;
+- анимации (32): `static`, `idle`, `walk`, `sprint`, `jump`, `fall`, `crouch`, `sit`, `drive`, `die`, `pick-up`, `emote-yes`, `emote-no`, `holding-*`, `attack-melee-right/left`, `attack-kick-right/left`, `interact-*`, `wheelchair-*`. Клипа «получил удар» нет, поэтому `anim_hit` пустой и пропускается.
+
+Созданы:
+- `scripts/data/character_data.gd` (`CharacterData`): id, имя, модель, цена (пока не используется), `unlocked_by_default`, `model_scale`, `hand_bone`, `arm_length`, имена анимаций (пустая строка = нет).
+- `scripts/data/character_roster.gd` (`CharacterRoster`) + `data/character_roster.tres` + `data/characters/*.tres` (12 героев) + автозагрузка `scripts/roster.gd` (`Roster`): `get_by_id` при неизвестном id откатывается на первого с `push_warning`.
+- `scenes/ui/character_select.tscn` + `scripts/ui/character_select.gd`: панель «Выбери героя», стрелки, имя, 3D-превью в SubViewport (модель вращается и играет idle), «Выбрать» сохраняет `Profile.character_id`. Стрелки — иконки `assets/ui_gen/arrow_{left,right}.png`: в Rubik нет ◀ ▶.
+- `scripts/fx/one_shot_fx.gd` + `scenes/fx/dust_puff.tscn`, `explosion_burst.tscn`: одноразовые GPUParticles3D, удаляются сами (по `finished` и по таймеру, т. к. без рендера `finished` не приходит).
+
+Изменены:
+- `scripts/profile.gd`: `ball_color_index` → `character_id`; старое сохранение с одним цветом мигрирует на первого героя. `save_path` можно подменить (для теста).
+- `scripts/player.gd`, `scenes/player.tscn`: CharacterBody3D (капсула r 0.3, h 1.1, начало координат у ног), движение относительно камеры с ускорением, гравитация, прыжок; `Visual` с моделью из ростера (×1.4), поворот через `lerp_angle`; анимации idle/run/attack/hit/die с пропуском отсутствующих, idle и run зацикливаются в коде (glTF импортируется без цикла); урон через `Hurtbox` + отталкивание скоростью; `get_hand_socket()` — BoneAttachment3D на `hand_bone`, иначе Marker3D с предупреждением. `jump_velocity` 5.0, чтобы не перепрыгивать закрытую решётку.
+- `scripts/name_tag.gd`: только текст; тело больше не вращается, `top_level` и слежение не нужны.
+- `scripts/weapons/sword.gd`, `sword.tscn`: меч в правой руке, клинок = 0.65 длины руки; удар — `anim_attack` героя, иначе tween.
+- `scripts/spawner.gd`: обвал — высота 6 м, тень-предупреждение растёт 0.8 с, затем падение; ожидающие падения учитываются в `max_alive`.
+- `scripts/hazards/rock.gd` (пыль при приземлении), `bomb_hazard.gd` (частицы вместо сферы), `scenes/hazards/bomb.tscn` — пороховая бочка `barrel.glb`.
+- `scripts/sfx.gd`: `load_stream(path)` — нет файла = одно предупреждение и тишина. Пути к звукам — экспорты (`res://assets/audio/*.ogg`) в мече, игроке, зелье, бомбе, `main.gd`, спавнере; сгенерированные wav удалены.
+- Тексты (константы в начале каждого скрипта): «Dungeon Delver», «Спуститься», «Герои», «Имя героя», «Золото», «Обвал стихнет через N», сообщения решётки, смерти и победы, «Привал».
+- `scenes/main_menu.tscn`, `scripts/main_menu.gd`: кнопка «Герои» вместо выбора цвета шара.
+- `tools/test_a6.gd`, `tools/test_anim.gd`: восстановлены (автор удалил `tools/` в `5215d53`), test_a6 дополнен проверками героя, ростера и миграции профиля.
 
 ## Лабораторная A6 — Scripting I
 

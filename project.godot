@@ -10,13 +10,14 @@ config_version=5
 
 [application]
 
-config/name="Dungeon Roller"
+config/name="Dungeon Delver"
 run/main_scene="uid://kya2x2ycmcrp"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
+Roster="*res://scripts/roster.gd"
 Profile="*uid://yslerpjvmluu"
 
 [display]
