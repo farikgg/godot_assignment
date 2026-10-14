@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://b35gdsv7hqjem"]
+
+[ext_resource type="PackedScene" uid="uid://cs2fjukhl0c17" path="res://assets/Characters/character-female-a.glb" id="1_teqdl"]
+
+[node name="character-female-a2" unique_id=35573983 instance=ExtResource("1_teqdl")]
+
+[node name="Skeleton3D" parent="character-female-a" parent_id_path=PackedInt32Array(232972733) index="0" unique_id=175915840]
+bones/4/rotation = Quaternion(0, 0, -0.38268346, 0.9238795)
+bones/5/rotation = Quaternion(0, 0, 0.3826835, 0.92387956)
