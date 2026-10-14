@@ -7,7 +7,7 @@ const BLADE_LENGTH: float = 0.348
 const GRIP_Y: float = -0.05
 
 @export var cooldown: float = 0.5
-@export_file("*.ogg", "*.wav") var swing_sound_path: String = "res://assets/audio/swing.ogg"
+@export_file("*.ogg", "*.wav") var swing_sound_path: String = ""
 @export var slash_scene: PackedScene
 ## Hitbox centre in front of the hero, metres.
 @export var slash_distance: float = 0.9

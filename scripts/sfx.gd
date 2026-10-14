@@ -4,7 +4,7 @@ extends RefCounted
 # paths already reported missing, so each one warns once per run
 static var _missing: Dictionary = {}
 
-## Loads a sound by path; a missing file gives one warning and null (silence), never an error.
+## Loads a sound by path. Empty path: silence, no message. Missing file: one warning per path, silence.
 static func load_stream(path: String) -> AudioStream:
 	if path.is_empty():
 		return null

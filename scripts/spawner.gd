@@ -16,7 +16,7 @@ extends Node3D
 @export var shadow_radius: float = 0.7
 @export var shadow_color: Color = Color(0.05, 0.05, 0.09, 0.55)
 ## Optional rumble played when a drop is telegraphed.
-@export_file("*.ogg", "*.wav") var rumble_sound_path: String = "res://assets/audio/rumble.ogg"
+@export_file("*.ogg", "*.wav") var rumble_sound_path: String = ""
 
 var _rng := RandomNumberGenerator.new()
 var _timer: Timer

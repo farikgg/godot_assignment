@@ -4,7 +4,7 @@ extends Hazard
 @export var fuse_time: float = 2.0
 @export var blast_radius: float = 2.5
 @export var blast_damage: int = 2
-@export_file("*.ogg", "*.wav") var explosion_sound_path: String = "res://assets/audio/explosion.ogg"
+@export_file("*.ogg", "*.wav") var explosion_sound_path: String = ""
 ## Particle burst (with its own flash light) spawned on explosion.
 @export var explosion_fx: PackedScene
 

@@ -2,7 +2,7 @@ class_name Potion
 extends Hazard
 
 @export var heal_amount: int = 1
-@export_file("*.ogg", "*.wav") var pickup_sound_path: String = "res://assets/audio/pickup.ogg"
+@export_file("*.ogg", "*.wav") var pickup_sound_path: String = ""
 
 var _pickup_sound: AudioStream
 

@@ -11,7 +11,7 @@ extends CharacterBody3D
 @export var knockback_time: float = 0.25
 ## Horizontal speed above which the run animation plays.
 @export var run_threshold: float = 0.5
-@export_file("*.ogg", "*.wav") var hurt_sound_path: String = "res://assets/audio/hurt.ogg"
+@export_file("*.ogg", "*.wav") var hurt_sound_path: String = ""
 
 @onready var visual: Node3D = $Visual
 @onready var health: Health = $Health
