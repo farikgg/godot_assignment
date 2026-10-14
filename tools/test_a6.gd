@@ -107,6 +107,7 @@ func _test_spawner() -> void:
 	var spawner := Node3D.new()
 	spawner.set_script(load(SPAWNER_SCRIPT))
 	spawner.set("hazard_scenes", [load(HAZARD_SCENES["Rock"]) as PackedScene] as Array[PackedScene])
+	spawner.set("spawn_weights", [1.0] as Array[float])
 	spawner.set("max_alive", 3)
 	spawner.set("interval", 100.0)
 	spawner.set("telegraph_time", 0.2)
@@ -123,6 +124,51 @@ func _test_spawner() -> void:
 	_check("spawner respects max_alive (telegraphed drops count)", started == 3 and pending == 3 and alive == 3,
 		"started=%d pending=%d alive=%d (max 3)" % [started, pending, alive])
 	world.queue_free()
+	await process_frame
+	await _test_spawn_weights()
+
+func _make_spawner(world: Node3D, scenes: Array[PackedScene], weights: Array[float]) -> Node3D:
+	var spawner := Node3D.new()
+	spawner.set_script(load(SPAWNER_SCRIPT))
+	spawner.set("hazard_scenes", scenes)
+	spawner.set("spawn_weights", weights)
+	spawner.set("max_alive", 50)
+	spawner.set("interval", 100.0)
+	spawner.set("telegraph_time", 0.05)
+	spawner.set("rumble_sound_path", "")
+	world.add_child(spawner)
+	return spawner
+
+func _test_spawn_weights() -> void:
+	var scenes: Array[PackedScene] = [
+		load(HAZARD_SCENES["BombHazard"]) as PackedScene,
+		load(HAZARD_SCENES["Rock"]) as PackedScene,
+		load(HAZARD_SCENES["Potion"]) as PackedScene,
+	]
+	var world := Node3D.new()
+	root.add_child(world)
+	var spawner: Node3D = _make_spawner(world, scenes, [1.0, 0.0, 0.0] as Array[float])
+	await process_frame
+	for i in 12:
+		spawner.call("spawn_one")
+	await create_timer(0.3).timeout
+	var kinds: Dictionary = {}
+	for hazard in get_nodes_in_group("hazard"):
+		kinds[(hazard.get_script() as Script).get_global_name()] = true
+	_check("weights 1/0/0 spawn only powder kegs", kinds.keys() == [&"BombHazard"], "spawned kinds=%s" % [kinds.keys()])
+	world.queue_free()
+	await process_frame
+
+	# a broken table is reported and the spawner stays idle (the ERROR line below is expected)
+	print("  (expected ERROR: 2 weights for 3 scenes)")
+	var broken_world := Node3D.new()
+	root.add_child(broken_world)
+	var broken: Node3D = _make_spawner(broken_world, scenes, [1.0, 0.0] as Array[float])
+	await process_frame
+	var started: bool = broken.call("spawn_one")
+	_check("mismatched weights stop the spawner without crashing", not broken.call("is_valid") and not started,
+		"valid=%s spawn_one=%s" % [broken.call("is_valid"), started])
+	broken_world.queue_free()
 	await process_frame
 
 func _test_slash() -> void:

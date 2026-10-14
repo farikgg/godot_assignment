@@ -7,4 +7,5 @@
 
 [node name="Spawner" type="Node3D"]
 script = ExtResource("1_script")
-hazard_scenes = Array[PackedScene]([ExtResource("2_rock"), ExtResource("2_rock"), ExtResource("3_bomb"), ExtResource("4_potion")])
+hazard_scenes = Array[PackedScene]([ExtResource("3_bomb"), ExtResource("2_rock"), ExtResource("4_potion")])
+spawn_weights = Array[float]([1.0, 0.0, 0.0])
