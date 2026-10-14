@@ -7,8 +7,8 @@ const STEP_DEGREES: float = 90.0
 ## The pivot stays put while the player is closer than this (metres, ground plane).
 @export var dead_zone: float = 1.5
 
-# accumulated, never wrapped to 0–360: a wrapped target would make the tween
-# spin the long way round when crossing 360 -> 0
+# accumulated during a turn (wrapping mid-tween would spin the long way round),
+# folded back into 0–360 once the turn is over
 var _target_yaw: float = 0.0
 var _tween: Tween
 var _target: Node3D
@@ -38,6 +38,9 @@ func _ground_point() -> Vector3:
 	return Vector3(_target.global_position.x, global_position.y, _target.global_position.z)
 
 func _unhandled_input(event: InputEvent) -> void:
+	# one turn at a time: presses during a turn are dropped
+	if _tween != null and _tween.is_running():
+		return
 	# allow_echo = false: holding the key must not repeat the turn
 	if event.is_action_pressed("camera_left", false):
 		_turn_by(-STEP_DEGREES)
@@ -53,3 +56,8 @@ func _turn_by(delta_degrees: float) -> void:
 	_tween = create_tween()
 	_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_tween.tween_property(self, "rotation_degrees:y", _target_yaw, turn_duration)
+	_tween.finished.connect(_on_turn_finished)
+
+func _on_turn_finished() -> void:
+	_target_yaw = fposmod(_target_yaw, 360.0)
+	rotation_degrees.y = _target_yaw
