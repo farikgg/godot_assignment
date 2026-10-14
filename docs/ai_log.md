@@ -5,6 +5,37 @@
 - `scripts/player.gd` и `scenes/player.tscn`: скелет автора (RigidBody3D, экспорты, цвет шара из профиля). Управление, силу с ограничением скорости, прыжок, проверку земли (`_integrate_forces`) и обработку врагов писал ИИ-ассистент Claude в чате; автор перенёс это в проект. Правки Claude Code в этих файлах перечислены в разделах ниже (NameTag, A6).
 - Начиная с раздела «A6 — персонаж и выбор героя» `player.gd` и `player.tscn` целиком переписаны Claude Code под CharacterBody3D; версия с шаром осталась в истории git.
 
+## A6 — правки
+
+Камера:
+- `scripts/camera_rig.gd`: пока идёт поворот, `camera_left` / `camera_right` игнорируются; после поворота угол сворачивается `fposmod` в 0–360. Слежение не менялось.
+
+Ресурсы героев:
+- `git mv data resources`: `resources/characters/*.tres`, `resources/character_roster.tres`; путь в автозагрузке `Roster` обновлён. У ресурсов теперь есть uid (у `female_a` — тот, что уже выдал редактор автора), ростер ссылается на героев по uid и пути. Проверено: uid разрешаются в новые пути, ростер грузится по uid.
+
+Разделение `map.tscn` (в карте остались `Main` со скриптом, инстансы сцен с трансформами и пустые группирующие `Decor` / `Enemies`):
+- `WorldEnvironment` (+ небо и окружение) и `DirectionalLight3D` → `scenes/systems/lighting.tscn`;
+- `Floor` (StaticBody3D, коллизия, меш) → `scenes/props/floor.tscn`;
+- `GateHint` (Area3D + форма) → `scenes/props/gate_hint.tscn`;
+- `Spawner` (скрипт и список опасностей) → `scenes/systems/spawner.tscn`;
+- `CameraPivot` (`camera_rig.gd`) + `Camera3D` → `scenes/systems/camera_rig.tscn`;
+- `UI` (HudPanel, HeartsBox, CoinLabel, KeyLabel, SurvivalLabel, MessagePanel) → `scenes/ui/hud.tscn` + `scripts/ui/hud.gd` (`set_player_name`, `set_hearts`, `set_coins`, `set_key`, `set_survival_time`, `show_message`, `clear_message`); `main.gd` обращается к HUD только через эти методы;
+- `PickupSfx` → звук подбора у самих монеты и ключа (`Sfx.play`, доигрывает после `queue_free`).
+
+Спавн:
+- `scripts/spawner.gd`: `spawn_weights` параллельно `hazard_scenes`, выбор через `rand_weighted`; пустой список, несовпадение длин, отрицательный вес или нулевая сумма — `push_error`, спавнер не запускается. В карте: бочка 1.0, камень 0.0, зелье 0.0.
+
+Меч:
+- `scenes/pickups/sword_pickup.tscn` + `scripts/pickups/sword_pickup.gd`: меч на полу (клип `spin_bob`), при входе игрока вызывает `equip_weapon` и удаляется; подсказка «Меч найден. J или ЛКМ — удар».
+- `scripts/player.gd`: `equip_weapon(scene)` / `has_weapon()`; `Sword` убран из `player.tscn`, без оружия атака ничего не делает.
+- `scripts/weapons/sword.gd`: рукоять в кулаке (0.92 руки от плеча), клинок вперёд и вверх (37°) в позе idle; поворот считается в пространстве кости из наклона руки в idle (45°, одинаково у всех 12 моделей), поэтому отдельный `weapon_offset` на героя не понадобился. `blade_length` в метрах (0.35 ≈ 0.9 руки).
+
+Звуки:
+- Все пути к звукам по умолчанию пустые; пустой путь — тишина без сообщений, предупреждение только для непустого пути к отсутствующему файлу.
+
+Тесты:
+- `tools/test_a6.gd`: веса 1/0/0 дают только бочки, несовпадение длин — ошибка без падения; до подбора атака не создаёт Slash, после `equip_weapon` создаёт.
+
 ## A6 — персонаж и выбор героя
 
 Найдено в моделях (`assets/Characters/character-{male,female}-{a..f}.glb`, 12 штук, у всех одинаково):
@@ -13,7 +44,7 @@
 
 Созданы:
 - `scripts/data/character_data.gd` (`CharacterData`): id, имя, модель, цена (пока не используется), `unlocked_by_default`, `model_scale`, `hand_bone`, `arm_length`, имена анимаций (пустая строка = нет).
-- `scripts/data/character_roster.gd` (`CharacterRoster`) + `data/character_roster.tres` + `data/characters/*.tres` (12 героев) + автозагрузка `scripts/roster.gd` (`Roster`): `get_by_id` при неизвестном id откатывается на первого с `push_warning`.
+- `scripts/data/character_roster.gd` (`CharacterRoster`) + `data/character_roster.tres` + `data/characters/*.tres` (12 героев; позже перенесены в `resources/`) + автозагрузка `scripts/roster.gd` (`Roster`): `get_by_id` при неизвестном id откатывается на первого с `push_warning`.
 - `scenes/ui/character_select.tscn` + `scripts/ui/character_select.gd`: панель «Выбери героя», стрелки, имя, 3D-превью в SubViewport (модель вращается и играет idle), «Выбрать» сохраняет `Profile.character_id`. Стрелки — иконки `assets/ui_gen/arrow_{left,right}.png`: в Rubik нет ◀ ▶.
 - `scripts/fx/one_shot_fx.gd` + `scenes/fx/dust_puff.tscn`, `explosion_burst.tscn`: одноразовые GPUParticles3D, удаляются сами (по `finished` и по таймеру, т. к. без рендера `finished` не приходит).
 
