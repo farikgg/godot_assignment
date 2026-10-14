@@ -12,6 +12,7 @@ const SPAWNER_SCRIPT: String = "res://scripts/spawner.gd"
 const SLASH_SCENE: String = "res://scenes/weapons/slash.tscn"
 const PLAYER_SCENE: String = "res://scenes/player.tscn"
 const SCRATCH_PROFILE: String = "user://test_a6_profile.cfg"
+const SWORD_SCENE: String = "res://scenes/weapons/sword.tscn"
 const WATCHDOG_SECONDS: float = 45.0
 
 class WeaponTarget extends StaticBody3D:
@@ -218,6 +219,20 @@ func _test_player() -> void:
 		await physics_frame
 	_check("player stands on the floor", body.is_on_floor(), "y=%.2f" % body.global_position.y)
 
+	_check("player starts without a weapon", not player.call("has_weapon"), "")
+	_press("attack")
+	for i in 3:
+		await physics_frame
+	_check("attack before the pickup creates no Slash", _count_slashes(world) == 0, "slashes=%d" % _count_slashes(world))
+	player.call("equip_weapon", load(SWORD_SCENE) as PackedScene)
+	await process_frame
+	await process_frame
+	_press("attack")
+	for i in 3:
+		await physics_frame
+	_check("attack after equip_weapon creates a Slash", player.call("has_weapon") and _count_slashes(world) == 1,
+		"has_weapon=%s slashes=%d" % [player.call("has_weapon"), _count_slashes(world)])
+
 	# an enemy touching the hurtbox costs 1 HP and pushes the player away
 	var enemy := StaticBody3D.new()
 	enemy.add_to_group("enemy")
@@ -278,3 +293,20 @@ func _test_profile_migration() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SCRATCH_PROFILE))
 	profile.set("save_path", original_path)
 	profile.call("reload")
+
+func _press(action: String) -> void:
+	var down := InputEventAction.new()
+	down.action = action
+	down.pressed = true
+	Input.parse_input_event(down)
+	var up := InputEventAction.new()
+	up.action = action
+	up.pressed = false
+	Input.parse_input_event(up)
+
+func _count_slashes(parent: Node) -> int:
+	var count: int = 0
+	for child in parent.get_children():
+		if child is Slash:
+			count += 1
+	return count

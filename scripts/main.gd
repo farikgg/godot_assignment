@@ -5,6 +5,8 @@ const WIN_TEXT: String = "Ты выбрался на свет!"
 const GATE_OPEN_TEXT: String = "Решётка поднялась. Путь свободен"
 const GATE_CLOSED_TEXT: String = "Решётка опущена. Продержись, пока не стихнет обвал"
 const GAME_OVER_TEXT: String = "Тьма поглотила тебя…"
+const SWORD_FOUND_TEXT: String = "Меч найден. J или ЛКМ — удар"
+const SWORD_HINT_DURATION: float = 3.0
 const RESTART_DELAY: float = 1.5
 const SURVIVAL_TIME: float = 60.0
 
@@ -34,6 +36,10 @@ func _ready() -> void:
 	for exit_node in get_tree().get_nodes_in_group("exit"):
 		if exit_node.has_signal("reached") and not exit_node.is_connected("reached", _on_exit_reached):
 			exit_node.connect("reached", _on_exit_reached)
+
+	for pickup in get_tree().get_nodes_in_group("weapon_pickup"):
+		if pickup.has_signal("picked_up"):
+			pickup.connect("picked_up", _on_weapon_picked_up)
 
 	for hint in get_tree().get_nodes_in_group("gate_hint"):
 		if hint is Area3D:
@@ -73,6 +79,10 @@ func _on_key_collected() -> void:
 func _on_gate_hint_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player") and not has_key and not _has_won:
 		_show_timed(GATE_CLOSED_TEXT)
+
+func _on_weapon_picked_up() -> void:
+	if not _has_won and not _game_over:
+		hud.show_message(SWORD_FOUND_TEXT, SWORD_HINT_DURATION)
 
 func _find_player_health() -> Health:
 	var player: Node = get_tree().get_first_node_in_group("player")

@@ -11,10 +11,14 @@ const GRIP_Y: float = -0.05
 @export var slash_scene: PackedScene
 ## Hitbox centre in front of the hero, metres.
 @export var slash_distance: float = 0.9
-## Blade length as a fraction of the hero's arm length.
-@export var blade_to_arm_ratio: float = 0.65
-## Where the grip sits along the arm, as a fraction of arm_length from the shoulder.
-@export var grip_along_arm: float = 0.9
+## Blade length in metres (guard to tip); default ≈ 0.9 of the heroes' 0.39 m arm.
+@export var blade_length: float = 0.35
+## Where the fist is along the arm, as a fraction of arm_length from the shoulder.
+@export var grip_along_arm: float = 0.92
+## Blade angle above the forward direction while the arm hangs in idle.
+@export var blade_pitch_degrees: float = 37.0
+## The Kenney idle pose lowers arm-right by 45° around the bone's Z (same on all 12 rigs).
+@export var idle_arm_roll_degrees: float = 45.0
 @export var swing_arc_degrees: float = 75.0
 @export var swing_time: float = 0.12
 
@@ -38,13 +42,26 @@ func _attach_to_hand() -> void:
 	var socket: Node3D = _player.call("get_hand_socket")
 	var data: CharacterData = _player.call("get_character_data")
 	var arm: float = data.arm_length if data != null else 0.28
-	var scale_factor: float = blade_to_arm_ratio * arm / BLADE_LENGTH
 	_pivot.reparent(socket, false)
-	# grip in the hand at the end of the arm (-X of the bone), blade pointing forward (+Z)
 	_pivot.transform = Transform3D(Basis(), Vector3(-arm * grip_along_arm, 0.0, 0.0))
-	var blade_forward := Basis(Vector3.RIGHT, deg_to_rad(90.0))
-	_model.transform = Transform3D(blade_forward.scaled(Vector3.ONE * scale_factor),
-		blade_forward * Vector3(0.0, -GRIP_Y * scale_factor, 0.0))
+	# the socket carries the hero's model scale, so convert metres to socket units
+	var socket_scale: float = socket.global_basis.get_scale().x
+	var scale_factor: float = blade_length / (BLADE_LENGTH * socket_scale)
+	var hold: Basis = _hold_basis()
+	_model.transform = Transform3D(hold.scaled(Vector3.ONE * scale_factor),
+		hold * Vector3(0.0, -GRIP_Y * scale_factor, 0.0))
+
+# Blade (+Y of the sword model) pointing forward and up in model space while the arm is
+# in its idle pose, guard across the body; expressed in the arm bone's local space.
+func _hold_basis() -> Basis:
+	var pitch: float = deg_to_rad(blade_pitch_degrees)
+	var blade_model := Vector3(0.0, sin(pitch), cos(pitch))
+	var arm_idle := Basis(Vector3.BACK, deg_to_rad(idle_arm_roll_degrees))
+	var to_bone: Basis = arm_idle.inverse()
+	var y_axis: Vector3 = (to_bone * blade_model).normalized()
+	var x_axis: Vector3 = (to_bone * Vector3.RIGHT).normalized()
+	var z_axis: Vector3 = x_axis.cross(y_axis).normalized()
+	return Basis(x_axis, y_axis, z_axis)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("attack", false):

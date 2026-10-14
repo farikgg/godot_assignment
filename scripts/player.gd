@@ -23,6 +23,7 @@ var _model: Node3D
 var _anim: AnimationPlayer
 var _skeleton: Skeleton3D
 var _hand_socket: Node3D
+var _weapon: Node3D
 var _is_dead: bool = false
 var _last_hp: int = 0
 var _knockback_left: float = 0.0
@@ -123,6 +124,23 @@ func get_hand_socket() -> Node3D:
 		visual.add_child(marker)
 		_hand_socket = marker
 	return _hand_socket
+
+## Instantiates a weapon scene as a child; the weapon attaches itself to get_hand_socket().
+## Replaces the current weapon, if any. Without a weapon the attack action does nothing.
+func equip_weapon(scene: PackedScene) -> void:
+	if scene == null:
+		push_error("Player: equip_weapon got no scene")
+		return
+	if _weapon != null and is_instance_valid(_weapon):
+		_weapon.queue_free()
+	_weapon = scene.instantiate() as Node3D
+	if _weapon == null:
+		push_error("Player: %s is not a Node3D weapon" % scene.resource_path)
+		return
+	add_child(_weapon)
+
+func has_weapon() -> bool:
+	return _weapon != null and is_instance_valid(_weapon)
 
 ## Plays the hero's attack clip; false if the hero has none (the sword then animates itself).
 func play_attack() -> bool:
