@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CharacterRoster" format=3 uid="uid://bc5eowxkvr8ud"]
+
+[ext_resource type="Script" uid="uid://ej3xvku463kx" path="res://scripts/data/character_roster.gd" id="1_roster"]
+[ext_resource type="Script" uid="uid://bvhkecgi567c" path="res://scripts/data/character_data.gd" id="2_data"]
+[ext_resource type="Resource" uid="uid://dt5k1rrijcnwu" path="res://resources/characters/male_a.tres" id="c_male_a"]
+[ext_resource type="Resource" uid="uid://b8dj5rt6g6wix" path="res://resources/characters/male_b.tres" id="c_male_b"]
+[ext_resource type="Resource" uid="uid://dv4cw83a4hkkw" path="res://resources/characters/male_c.tres" id="c_male_c"]
+[ext_resource type="Resource" uid="uid://dgjudgna8djdb" path="res://resources/characters/male_d.tres" id="c_male_d"]
+[ext_resource type="Resource" uid="uid://otcb2hnv2o4d" path="res://resources/characters/male_e.tres" id="c_male_e"]
+[ext_resource type="Resource" uid="uid://iqyyfnki8c1v" path="res://resources/characters/male_f.tres" id="c_male_f"]
+[ext_resource type="Resource" uid="uid://dc0fm4gs08eib" path="res://resources/characters/female_a.tres" id="c_female_a"]
+[ext_resource type="Resource" uid="uid://brb27apvg1gof" path="res://resources/characters/female_b.tres" id="c_female_b"]
+[ext_resource type="Resource" uid="uid://l8cvbn2clec3" path="res://resources/characters/female_c.tres" id="c_female_c"]
+[ext_resource type="Resource" uid="uid://s0i31r02qdts" path="res://resources/characters/female_d.tres" id="c_female_d"]
+[ext_resource type="Resource" uid="uid://2muytp3bb32g" path="res://resources/characters/female_e.tres" id="c_female_e"]
+[ext_resource type="Resource" uid="uid://bqcv0dung1wfv" path="res://resources/characters/female_f.tres" id="c_female_f"]
+
+[resource]
+script = ExtResource("1_roster")
+characters = Array[ExtResource("2_data")]([ExtResource("c_male_a"), ExtResource("c_male_b"), ExtResource("c_male_c"), ExtResource("c_male_d"), ExtResource("c_male_e"), ExtResource("c_male_f"), ExtResource("c_female_a"), ExtResource("c_female_b"), ExtResource("c_female_c"), ExtResource("c_female_d"), ExtResource("c_female_e"), ExtResource("c_female_f")])

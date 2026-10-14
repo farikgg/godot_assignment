@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="CharacterData" format=3]
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://2muytp3bb32g"]
 
-[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://bvhkecgi567c" path="res://scripts/data/character_data.gd" id="1_data"]
 [ext_resource type="PackedScene" uid="uid://bohaefrvhxy27" path="res://assets/Characters/character-female-e.glb" id="2_model"]
 
 [resource]

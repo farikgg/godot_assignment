@@ -1,7 +1,7 @@
 extends Node
 ## Autoload: the character roster for the menu, the player and the future shop.
 
-const ROSTER_PATH: String = "res://data/character_roster.tres"
+const ROSTER_PATH: String = "res://resources/character_roster.tres"
 
 var roster: CharacterRoster
 
