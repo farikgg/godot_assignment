@@ -26,40 +26,18 @@
 [ext_resource type="PackedScene" path="res://scenes/props/swing_door.tscn" id="g_door"]
 [ext_resource type="PackedScene" path="res://scenes/props/enemy.tscn" id="g_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="g_exit"]
-[ext_resource type="Script" uid="uid://crrm2h0pfyy37" path="res://scripts/camera_rig.gd" id="h_camera_rig"]
-[ext_resource type="Script" uid="uid://dua30ftusyt0g" path="res://scripts/message_panel.gd" id="i_message_panel"]
-[ext_resource type="Texture2D" path="res://assets/ui_gen/heart_full.png" id="o_heart_full"]
-[ext_resource type="Script" path="res://scripts/spawner.gd" id="p_spawner"]
-[ext_resource type="PackedScene" path="res://scenes/hazards/rock.tscn" id="p_rock"]
-[ext_resource type="PackedScene" path="res://scenes/hazards/bomb.tscn" id="p_bomb"]
-[ext_resource type="PackedScene" path="res://scenes/hazards/potion.tscn" id="p_potion"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="r_pause"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap.tscn" id="j_saw"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap_patrol.tscn" id="j_saw_patrol"]
 [ext_resource type="PackedScene" path="res://scenes/props/key_pickup.tscn" id="l_key"]
 [ext_resource type="PackedScene" path="res://scenes/props/tunnel.tscn" id="m_tunnel"]
 [ext_resource type="PackedScene" uid="uid://bkwmqvj85xlsc" path="res://scenes/props/locked_gate.tscn" id="n_locked_gate"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sgp6g"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-
-[sub_resource type="Sky" id="Sky_o5qli"]
-sky_material = SubResource("ProceduralSkyMaterial_sgp6g")
-
-[sub_resource type="Environment" id="Environment_0wfyh"]
-background_mode = 2
-sky = SubResource("Sky_o5qli")
-glow_enabled = true
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_7yv6r"]
-size = Vector3(100, 0.2, 100)
-
-[sub_resource type="BoxMesh" id="BoxMesh_uocsc"]
-size = Vector3(20, 0.2, 20)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_gate_hint"]
-size = Vector3(1.6, 2, 2.6)
+[ext_resource type="PackedScene" path="res://scenes/systems/lighting.tscn" id="s_lighting"]
+[ext_resource type="PackedScene" path="res://scenes/props/floor.tscn" id="s_floor"]
+[ext_resource type="PackedScene" path="res://scenes/props/gate_hint.tscn" id="s_gate_hint"]
+[ext_resource type="PackedScene" path="res://scenes/systems/spawner.tscn" id="s_spawner"]
+[ext_resource type="PackedScene" path="res://scenes/systems/camera_rig.tscn" id="s_camera_rig"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="s_hud"]
 
 [node name="Main" type="Node3D" unique_id=1563209637]
 script = ExtResource("1_0cso3")
@@ -91,21 +69,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.269726, 0.9655471, -6.13332
 [node name="Coin14" parent="." unique_id=516119425 instance=ExtResource("2_2klcf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.616507, 1.2789707, -0.13342762)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1778103733]
-environment = SubResource("Environment_0wfyh")
+[node name="Lighting" parent="." unique_id=1778103733 instance=ExtResource("s_lighting")]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=781231604]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
-shadow_enabled = true
-
-[node name="Floor" type="StaticBody3D" parent="." unique_id=2098183661]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=878119072]
-shape = SubResource("BoxShape3D_7yv6r")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1367348105]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.02219963)
-mesh = SubResource("BoxMesh_uocsc")
+[node name="Floor" parent="." unique_id=2098183661 instance=ExtResource("s_floor")]
 
 [node name="Player" parent="." unique_id=1620244565 instance=ExtResource("3_2lpho")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
@@ -246,11 +212,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -10)
 [node name="LockedGate" parent="." unique_id=1650031178 instance=ExtResource("n_locked_gate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -8.130716)
 
-[node name="GateHint" type="Area3D" parent="." unique_id=1650031181 groups=["gate_hint"]]
+[node name="GateHint" parent="." unique_id=1650031181 instance=ExtResource("s_gate_hint")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.1, -6.7)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="GateHint" unique_id=1650031182]
-shape = SubResource("BoxShape3D_gate_hint")
 
 [node name="Exit" parent="." unique_id=1567730921 instance=ExtResource("g_exit")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -16.5)
@@ -258,104 +221,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -16.5)
 [node name="Door" parent="." unique_id=1920385514 instance=ExtResource("g_door")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.025, 0.1, -5.184883)
 
-[node name="Spawner" type="Node3D" parent="." unique_id=1771300020]
-script = ExtResource("p_spawner")
-hazard_scenes = Array[PackedScene]([ExtResource("p_rock"), ExtResource("p_rock"), ExtResource("p_bomb"), ExtResource("p_potion")])
+[node name="Spawner" parent="." unique_id=1771300020 instance=ExtResource("s_spawner")]
 
-[node name="PickupSfx" type="AudioStreamPlayer" parent="." unique_id=1771300051]
-max_polyphony = 4
+[node name="HUD" parent="." unique_id=1684676044 instance=ExtResource("s_hud")]
 
-[node name="UI" type="CanvasLayer" parent="." unique_id=1684676044]
-
-[node name="HudPanel" type="PanelContainer" parent="UI" unique_id=1846290117]
-offset_left = 20.0
-offset_top = 20.0
-theme_type_variation = &"HudPanel"
-
-[node name="HudBox" type="VBoxContainer" parent="UI/HudPanel" unique_id=1316528094]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="NameRow" type="HBoxContainer" parent="UI/HudPanel/HudBox" unique_id=1172394450]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="NameCaption" type="Label" parent="UI/HudPanel/HudBox/NameRow" unique_id=1453120983]
-layout_mode = 2
-text = "Игрок:"
-
-[node name="NameLabel" type="Label" parent="UI/HudPanel/HudBox/NameRow" unique_id=2009308255]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="HeartsBox" type="HBoxContainer" parent="UI/HudPanel/HudBox" unique_id=1771300010]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="Heart1" type="TextureRect" parent="UI/HudPanel/HudBox/HeartsBox" unique_id=1771300011]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-texture = ExtResource("o_heart_full")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Heart2" type="TextureRect" parent="UI/HudPanel/HudBox/HeartsBox" unique_id=1771300012]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-texture = ExtResource("o_heart_full")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Heart3" type="TextureRect" parent="UI/HudPanel/HudBox/HeartsBox" unique_id=1771300013]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-texture = ExtResource("o_heart_full")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="CoinLabel" type="Label" parent="UI/HudPanel/HudBox" unique_id=504721018]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "Золото: 0 / 0"
-
-[node name="KeyLabel" type="Label" parent="UI/HudPanel/HudBox" unique_id=1650031180]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Ключ: нет"
-
-[node name="SurvivalLabel" type="Label" parent="UI/HudPanel/HudBox" unique_id=1771300050]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Обвал стихнет через 60"
-
-[node name="MessagePanel" type="PanelContainer" parent="UI" unique_id=1922750468 node_paths=PackedStringArray("label")]
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("i_message_panel")
-label = NodePath("MessageLabel")
-
-[node name="MessageLabel" type="Label" parent="UI/MessagePanel" unique_id=1275118306]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 40
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CameraPivot" type="Node3D" parent="." unique_id=1647215093]
+[node name="CameraPivot" parent="." unique_id=1647215093 instance=ExtResource("s_camera_rig")]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
-script = ExtResource("h_camera_rig")
-
-[node name="Camera3D" type="Camera3D" parent="CameraPivot" unique_id=1226447461]
-transform = Transform3D(1, 0, 0, 0, 0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, 0, 17.2, 24.6)
-projection = 1
-size = 15.0
 
 [node name="PauseMenu" parent="." unique_id=1771300060 instance=ExtResource("r_pause")]

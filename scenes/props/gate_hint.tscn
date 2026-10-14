@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gate_hint"]
+size = Vector3(1.6, 2, 2.6)
+
+[node name="GateHint" type="Area3D" groups=["gate_hint"]]
+collision_layer = 0
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_gate_hint")
