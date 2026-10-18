@@ -1,5 +1,5 @@
 extends SceneTree
-## Assignment 7 checks: PlayerInputHandler, on-screen stick, no raw keys in game code.
+## Assignment 7 checks: PlayerInputHandler, on-screen stick, no raw keys in game code, HUD toast.
 ## Run: godot --headless --path . -s tools/test_a7.gd   (exit code 0 = all PASS, 1 = any FAIL)
 
 const SCRIPTS_DIR: String = "res://scripts"
@@ -29,6 +29,7 @@ func _run() -> void:
 	_test_no_raw_keys()
 	await _test_on_screen_stick()
 	await _test_arrows_and_camera_keys()
+	await _test_toast()
 	var code: int = 1 if _failures > 0 else 0
 	print("RESULT: %s, %d failure(s), exit code %d" % ["PASS" if code == 0 else "FAIL", _failures, code])
 	quit(code)
@@ -201,6 +202,53 @@ func _test_arrows_and_camera_keys() -> void:
 	_check("Q turns the camera left, E turns it back",
 		is_equal_approx(fposmod(after_q - yaw_before, 360.0), 270.0) and is_equal_approx(fposmod(after_e, 360.0), fposmod(yaw_before, 360.0)),
 		"yaw %.1f -> Q %.1f -> E %.1f" % [yaw_before, after_q, after_e])
+	current_scene = null
+	map.queue_free()
+	await process_frame
+
+func _test_toast() -> void:
+	var map: Node3D = (load(MAP_SCENE) as PackedScene).instantiate() as Node3D
+	root.add_child(map)
+	current_scene = map
+	map.get_node("Spawner").process_mode = Node.PROCESS_MODE_DISABLED
+	var hud: Hud = map.get_node("HUD") as Hud
+	var toast: Toast = hud.get_node_or_null("%Toast") as Toast
+	if toast == null:
+		_check("HUD has a Toast", false)
+		return
+	var screen_width: float = toast.get_viewport_rect().size.x
+	var long_text: String = "Решётка опущена. Продержись, пока не стихнет обвал. " .repeat(3)
+	hud.show_message(long_text, 2.0)
+	for i in 3:
+		await process_frame
+	var rect: Rect2 = toast.panel_rect()
+	var lines: int = (toast.get_node("Panel/Text") as Label).get_line_count()
+	_check("a long message wraps within 40% of the screen", rect.size.x <= screen_width * Toast.MAX_WIDTH_SHARE + 1.0 and lines > 1,
+		"width %.0f of %.0f, %d lines" % [rect.size.x, screen_width, lines])
+	var hud_rect: Rect2 = (hud.get_node("HudPanel") as Control).get_global_rect()
+	_check("the toast does not cover the hearts / gold panel", not rect.intersects(hud_rect), "toast %s hud %s" % [rect, hud_rect])
+
+	hud.show_message("Первое", 1.0)
+	await create_timer(0.8).timeout
+	hud.show_message("Второе", 1.0)
+	await create_timer(0.6).timeout
+	var plates: int = toast.find_children("*", "PanelContainer", true, false).size()
+	_check("a new toast replaces the text and restarts the timer", toast.current_text() == "Второе" and plates == 1,
+		"text=%s plates=%d" % [toast.current_text(), plates])
+
+	hud.show_message("Игровое", 0.3)
+	paused = true
+	await create_timer(1.2, true).timeout
+	var frozen: bool = toast.is_showing()
+	paused = false
+	await create_timer(0.6).timeout
+	paused = true
+	hud.show_message("Пауза", 0.3)
+	await create_timer(1.2, true).timeout
+	var finished_on_pause: bool = not toast.is_showing()
+	paused = false
+	_check("a game toast freezes on pause, one raised on pause plays out", frozen and finished_on_pause,
+		"game toast kept=%s pause toast finished=%s" % [frozen, finished_on_pause])
 	current_scene = null
 	map.queue_free()
 	await process_frame

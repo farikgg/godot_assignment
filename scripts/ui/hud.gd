@@ -16,17 +16,10 @@ const HEART_EMPTY: Texture2D = preload("res://assets/ui_gen/heart_empty.png")
 @onready var _coin_label: Label = %CoinLabel
 @onready var _key_label: Label = %KeyLabel
 @onready var _survival_label: Label = %SurvivalLabel
-@onready var _message_label: Label = %MessageLabel
-
-var _message_timer: Timer
+@onready var _toast: Toast = %Toast
 
 func _ready() -> void:
 	_name_caption.text = NAME_CAPTION_TEXT
-	_message_timer = Timer.new()
-	_message_timer.one_shot = true
-	_message_timer.timeout.connect(clear_message)
-	add_child(_message_timer)
-	clear_message()
 
 func set_player_name(player_name: String) -> void:
 	_name_label.text = player_name
@@ -49,13 +42,9 @@ func set_key(has_key: bool) -> void:
 func set_survival_time(seconds_left: int) -> void:
 	_survival_label.text = CAVE_IN_TEXT % seconds_left
 
-## duration <= 0 keeps the message until the next one (win, game over).
+## Shown as a toast at the top centre. duration <= 0 keeps it until the next message (win, game over).
 func show_message(text: String, duration: float = 0.0) -> void:
-	_message_label.text = text
-	if duration > 0.0:
-		_message_timer.start(duration)
-	else:
-		_message_timer.stop()
+	_toast.show_toast(text, duration)
 
 func clear_message() -> void:
-	_message_label.text = ""
+	_toast.hide_toast()
