@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dbu6vcpp1315k" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" path="res://scripts/name_tag.gd" id="2_nametag"]
 [ext_resource type="Script" path="res://scripts/health.gd" id="3_health"]
+[ext_resource type="Script" path="res://scripts/input/player_input_handler.gd" id="6_input"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.3
@@ -47,3 +48,6 @@ blink_target = NodePath("../Visual")
 
 [node name="HurtSfx" type="AudioStreamPlayer" parent="." unique_id=1771300040]
 max_polyphony = 4
+
+[node name="InputHandler" type="Node" parent="." unique_id=1771300100]
+script = ExtResource("6_input")

@@ -1,5 +1,6 @@
 extends Node3D
 ## Sword in the hero's right hand: cooldown, attack animation, Slash hitbox.
+## The player calls try_attack() on its input handler's attack_pressed signal.
 
 ## Blade of weapon-sword.glb from the guard to the tip, model units.
 const BLADE_LENGTH: float = 0.348
@@ -62,11 +63,6 @@ func _hold_basis() -> Basis:
 	var x_axis: Vector3 = (to_bone * Vector3.RIGHT).normalized()
 	var z_axis: Vector3 = x_axis.cross(y_axis).normalized()
 	return Basis(x_axis, y_axis, z_axis)
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("attack", false):
-		if try_attack():
-			get_viewport().set_input_as_handled()
 
 func try_attack() -> bool:
 	var health: Health = _player.get_node_or_null("Health") as Health

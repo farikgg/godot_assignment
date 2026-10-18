@@ -17,6 +17,7 @@ extends CharacterBody3D
 @onready var health: Health = $Health
 @onready var hurtbox: Area3D = $Hurtbox
 @onready var hurt_sfx: AudioStreamPlayer = $HurtSfx
+@onready var input_handler: PlayerInputHandler = $InputHandler
 
 var _data: CharacterData
 var _model: Node3D
@@ -33,12 +34,15 @@ var _action_playing: bool = false
 func _ready() -> void:
 	assert(health != null, "Player needs a Health child")
 	assert(visual != null, "Player needs a Visual child")
+	assert(input_handler != null, "Player needs a PlayerInputHandler child")
 	_build_model()
 	hurt_sfx.stream = Sfx.load_stream(hurt_sound_path)
 	health.died.connect(_on_died)
 	health.changed.connect(_on_health_changed)
 	_last_hp = health.current
 	hurtbox.body_entered.connect(_on_hurtbox_body_entered)
+	input_handler.jump_pressed.connect(_on_jump_pressed)
+	input_handler.attack_pressed.connect(_on_attack_pressed)
 
 func _build_model() -> void:
 	_data = Roster.get_by_id(Profile.character_id)
@@ -71,10 +75,8 @@ func _physics_process(delta: float) -> void:
 	_knockback_left = maxf(_knockback_left - delta, 0.0)
 
 	var direction := Vector3.ZERO
-	if not _is_dead and _knockback_left <= 0.0:
-		if is_on_floor() and Input.is_action_just_pressed("jump"):
-			velocity.y = jump_velocity
-		var input_dir: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	if _can_act():
+		var input_dir: Vector2 = input_handler.move
 		direction = Vector3(input_dir.x, 0.0, input_dir.y)
 		var camera: Camera3D = get_viewport().get_camera_3d()
 		if camera != null:
@@ -91,6 +93,17 @@ func _physics_process(delta: float) -> void:
 		visual.rotation.y = lerp_angle(visual.rotation.y, target_yaw, 1.0 - exp(-turn_speed * delta))
 	if not _action_playing and not _is_dead:
 		_play_locomotion()
+
+func _can_act() -> bool:
+	return not _is_dead and _knockback_left <= 0.0
+
+func _on_jump_pressed() -> void:
+	if _can_act() and is_on_floor():
+		velocity.y = jump_velocity
+
+func _on_attack_pressed() -> void:
+	if has_weapon() and _weapon.has_method("try_attack"):
+		_weapon.call("try_attack")
 
 ## Unit vector the character faces on the ground plane.
 func get_facing() -> Vector3:
