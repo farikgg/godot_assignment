@@ -30,6 +30,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/floor.tscn" id="s_floor"]
 [ext_resource type="PackedScene" path="res://scenes/props/gate_hint.tscn" id="s_gate_hint"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="s_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="s_touch"]
 [ext_resource type="PackedScene" path="res://scenes/systems/lighting.tscn" id="s_lighting"]
 [ext_resource type="PackedScene" path="res://scenes/systems/spawner.tscn" id="s_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/sword_pickup.tscn" id="s_sword_pickup"]
@@ -280,6 +281,8 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.02
 spawn_weights = Array[float]([0.6, 0.25, 0.15])
 
 [node name="HUD" parent="." unique_id=1684676044 instance=ExtResource("s_hud")]
+
+[node name="TouchControls" parent="." unique_id=1771300110 instance=ExtResource("s_touch")]
 
 [node name="CameraPivot" parent="." unique_id=1647215093 instance=ExtResource("s_camera_rig")]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)

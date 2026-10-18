@@ -1,0 +1,411 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="1_controls"]
+[ext_resource type="Script" path="res://scripts/ui/virtual_stick.gd" id="2_stick"]
+[ext_resource type="Script" path="res://scripts/ui/touch_action_button.gd" id="3_button"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Style A/Large (2×)/joystick_circle_pad_a.png" id="t_pad"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Highlights B/Large (2×)/joystick_circle_pad_highlight.png" id="t_pad_hl"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Style A/Large (2×)/joystick_circle_nub_b.png" id="t_nub"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Style A/Large (2×)/button_circle.png" id="t_circle"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Highlights B/Large (2×)/button_circle_highlight.png" id="t_circle_hl"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Style A/Large (2×)/dpad_element_north.png" id="t_up"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Highlights B/Large (2×)/dpad_element_north_highlight.png" id="t_up_hl"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Style A/Large (2×)/direction_left.png" id="t_left"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Highlights B/Large (2×)/direction_left_highlight.png" id="t_left_hl"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Style A/Large (2×)/direction_right.png" id="t_right"]
+[ext_resource type="Texture2D" path="res://assets/Mobile/Highlights B/Large (2×)/direction_right_highlight.png" id="t_right_hl"]
+
+[node name="TouchControls" type="CanvasLayer"]
+process_mode = 3
+layer = 5
+script = ExtResource("1_controls")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Stick" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 2
+anchor_left = 0
+anchor_top = 1
+anchor_right = 0
+anchor_bottom = 1
+offset_left = 70
+offset_top = -370
+offset_right = 370
+offset_bottom = -70
+grow_horizontal = 1
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("2_stick")
+max_radius = 110.0
+
+[node name="Pad" type="TextureRect" parent="Root/Stick"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("t_pad")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Highlight" type="TextureRect" parent="Root/Stick"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("t_pad_hl")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Knob" type="TextureRect" parent="Root/Stick"]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 85.0
+offset_right = 215.0
+offset_bottom = 215.0
+mouse_filter = 2
+texture = ExtResource("t_nub")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AttackButton" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1
+anchor_top = 1
+anchor_right = 1
+anchor_bottom = 1
+offset_left = -250
+offset_top = -250
+offset_right = -70
+offset_bottom = -70
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("3_button")
+action = &"attack"
+background = ExtResource("t_circle")
+highlight = ExtResource("t_circle_hl")
+caption = "Удар"
+
+[node name="Background" type="TextureRect" parent="Root/AttackButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Root/AttackButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Caption" type="Label" parent="Root/AttackButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 34
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Highlight" type="TextureRect" parent="Root/AttackButton"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="JumpButton" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1
+anchor_top = 1
+anchor_right = 1
+anchor_bottom = 1
+offset_left = -430
+offset_top = -210
+offset_right = -280
+offset_bottom = -60
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("3_button")
+action = &"jump"
+background = ExtResource("t_up")
+highlight = ExtResource("t_up_hl")
+
+[node name="Background" type="TextureRect" parent="Root/JumpButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Root/JumpButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Caption" type="Label" parent="Root/JumpButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 34
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Highlight" type="TextureRect" parent="Root/JumpButton"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PauseButton" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1
+anchor_top = 0
+anchor_right = 1
+anchor_bottom = 0
+offset_left = -170
+offset_top = 40
+offset_right = -50
+offset_bottom = 160
+grow_horizontal = 0
+grow_vertical = 1
+mouse_filter = 2
+script = ExtResource("3_button")
+action = &"pause"
+background = ExtResource("t_circle")
+highlight = ExtResource("t_circle_hl")
+caption = "II"
+
+[node name="Background" type="TextureRect" parent="Root/PauseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Root/PauseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Caption" type="Label" parent="Root/PauseButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 34
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Highlight" type="TextureRect" parent="Root/PauseButton"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CameraLeftButton" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1
+anchor_top = 0.5
+anchor_right = 1
+anchor_bottom = 0.5
+offset_left = -320
+offset_top = -130
+offset_right = -190
+offset_bottom = 0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_button")
+action = &"camera_left"
+background = ExtResource("t_left")
+highlight = ExtResource("t_left_hl")
+
+[node name="Background" type="TextureRect" parent="Root/CameraLeftButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Root/CameraLeftButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Caption" type="Label" parent="Root/CameraLeftButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 34
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Highlight" type="TextureRect" parent="Root/CameraLeftButton"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CameraRightButton" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1
+anchor_top = 0.5
+anchor_right = 1
+anchor_bottom = 0.5
+offset_left = -170
+offset_top = -130
+offset_right = -40
+offset_bottom = 0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_button")
+action = &"camera_right"
+background = ExtResource("t_right")
+highlight = ExtResource("t_right_hl")
+
+[node name="Background" type="TextureRect" parent="Root/CameraRightButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="Root/CameraRightButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Caption" type="Label" parent="Root/CameraRightButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 34
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Highlight" type="TextureRect" parent="Root/CameraRightButton"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
