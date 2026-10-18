@@ -25,6 +25,8 @@ Profile="*uid://yslerpjvmluu"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=4
 
 [file_customization]
 
@@ -100,6 +102,11 @@ pause={
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":6,"pressure":0.0,"pressed":true,"script":null)
 ]
 }
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+pointing/emulate_mouse_from_touch=true
 
 [physics]
 
