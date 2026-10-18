@@ -5,6 +5,27 @@
 - `scripts/player.gd` и `scenes/player.tscn`: скелет автора (RigidBody3D, экспорты, цвет шара из профиля). Управление, силу с ограничением скорости, прыжок, проверку земли (`_integrate_forces`) и обработку врагов писал ИИ-ассистент Claude в чате; автор перенёс это в проект. Правки Claude Code в этих файлах перечислены в разделах ниже (NameTag, A6).
 - Начиная с раздела «A6 — персонаж и выбор героя» `player.gd` и `player.tscn` целиком переписаны Claude Code под CharacterBody3D; версия с шаром осталась в истории git.
 
+## A7 — ввод и мобильное управление
+
+Ассеты: `assets/Mobile/` — Kenney Mobile Controls (CC0), Style A + Highlights B. Использованы (Large 2×): `joystick_circle_pad_a` + `joystick_circle_pad_highlight` (фон стика), `joystick_circle_nub_b` (ручка), `button_circle` + `button_circle_highlight` (удар, пауза), `dpad_element_north` + `_highlight` (прыжок, стрелка вверх), `direction_left/right` + `_highlight` (поворот камеры). Иконок меча и паузы в наборе нет: на этих кнопках текст «Удар» и «II» шрифтом темы.
+
+Input Map (`project.godot`):
+- `move_*`: WASD + левый стик (оси 0/1, ±), все устройства, deadzone 0.2; стрелки ← → остались только у камеры, иначе они одновременно двигали бы героя и поворачивали камеру.
+- `jump`: Space + кнопка геймпада 0; `attack`: ЛКМ + J + X + кнопка 2; `pause`: Escape + P + кнопка 6 (Start); `camera_left/right`: ← / → + кнопки 9 / 10 (LB / RB).
+
+Созданы:
+- `scripts/input/player_input_handler.gd` (`PlayerInputHandler`, дочерний узел игрока): в `_unhandled_input` хранит силу `move_*` по каждому источнику (тип устройства + id; итог — максимум, чтобы стик в нуле не отменял зажатую клавишу), `move = (right − left, back − forward)` с `limit_length(1)`, сигналы `jump_pressed` / `attack_pressed` без эха и не на паузе; на паузе продолжает отслеживать отпускания, при потере фокуса сбрасывается.
+- `scripts/ui/virtual_stick.gd` (`VirtualStick`), `scripts/ui/touch_action_button.gd` (`TouchActionButton`), `scripts/ui/touch_controls.gd` + `scenes/ui/touch_controls.tscn`: стик эмулирует левый стик геймпада (`InputEventJoypadMotion`, виртуальное устройство 8), кнопки шлют `InputEventAction`; обводка при нажатии, кнопки уменьшаются до 0.92; мультитач по индексу пальца; использованные события помечаются обработанными, поэтому клик по стику не становится ударом. `is_primary_click()` в стике — единственное место с `MOUSE_BUTTON_LEFT`. `show_on_desktop`, слой работает и на паузе.
+- `tools/test_a7.gd`: ось 0 и клавиша D дают `move.x = 1`, вместе — длина ≤ 1; `InputEventAction(jump)` → `jump_pressed`; в `scripts/` нет `KEY_*` / `MOUSE_BUTTON_*` / `Input.is_key_pressed` (кроме `virtual_stick.gd`); экранный стик двигает героя, отпускание шлёт 0; клик по стику не бьёт, клик мимо — бьёт.
+
+Изменены:
+- `scripts/player.gd`: не читает `Input`; движение из `input_handler.move`, прыжок и атака по сигналам обработчика. `scenes/player.tscn`: узел `InputHandler`.
+- `scripts/weapons/sword.gd`: больше не слушает ввод сам, `try_attack()` вызывает игрок.
+- `scripts/ui/hud.gd`: строки про ключ от решётки переименованы в `HAS_KEY_TEXT` / `NO_KEY_TEXT`, чтобы проверка на `KEY_*` не давала ложных срабатываний.
+- `project.godot`: stretch `canvas_items` + aspect `expand`, ориентация `sensor_landscape`, эмуляция тача мышью и мыши тачем.
+- `scenes/map.tscn`: инстанс `TouchControls`.
+- `tools/test_a6.gd`, `tools/test_anim.gd`: восстановлены (удалены в `1cc7562`).
+
 ## A6 — правки
 
 Камера:
