@@ -28,6 +28,7 @@ func _run() -> void:
 	await _test_handler()
 	_test_no_raw_keys()
 	await _test_on_screen_stick()
+	await _test_arrows_and_camera_keys()
 	var code: int = 1 if _failures > 0 else 0
 	print("RESULT: %s, %d failure(s), exit code %d" % ["PASS" if code == 0 else "FAIL", _failures, code])
 	quit(code)
@@ -164,6 +165,42 @@ func _test_on_screen_stick() -> void:
 	Input.parse_input_event(elsewhere)
 	await physics_frame
 	_check("a click away from the controls still attacks", _count_slashes(map) == slashes_before + 1, "slashes=%d" % _count_slashes(map))
+	current_scene = null
+	map.queue_free()
+	await process_frame
+
+func _test_arrows_and_camera_keys() -> void:
+	var map: Node3D = (load(MAP_SCENE) as PackedScene).instantiate() as Node3D
+	root.add_child(map)
+	current_scene = map
+	map.get_node("Spawner").process_mode = Node.PROCESS_MODE_DISABLED
+	var handler: PlayerInputHandler = map.get_node("Player/InputHandler") as PlayerInputHandler
+	var pivot: Node3D = map.get_node("CameraPivot") as Node3D
+	for i in 5:
+		await process_frame
+	var yaw_before: float = pivot.rotation_degrees.y
+
+	_key(KEY_RIGHT, true)
+	await process_frame
+	var move_x: float = handler.move.x
+	await create_timer(0.5).timeout
+	_key(KEY_RIGHT, false)
+	await process_frame
+	_check("Right arrow moves (move.x = 1) and does not turn the camera",
+		is_equal_approx(move_x, 1.0) and is_equal_approx(pivot.rotation_degrees.y, yaw_before),
+		"move.x=%.2f yaw %.1f -> %.1f" % [move_x, yaw_before, pivot.rotation_degrees.y])
+
+	_key(KEY_Q, true)
+	_key(KEY_Q, false)
+	await create_timer(0.5).timeout
+	var after_q: float = pivot.rotation_degrees.y
+	_key(KEY_E, true)
+	_key(KEY_E, false)
+	await create_timer(0.5).timeout
+	var after_e: float = pivot.rotation_degrees.y
+	_check("Q turns the camera left, E turns it back",
+		is_equal_approx(fposmod(after_q - yaw_before, 360.0), 270.0) and is_equal_approx(fposmod(after_e, 360.0), fposmod(yaw_before, 360.0)),
+		"yaw %.1f -> Q %.1f -> E %.1f" % [yaw_before, after_q, after_e])
 	current_scene = null
 	map.queue_free()
 	await process_frame

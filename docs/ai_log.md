@@ -10,8 +10,17 @@
 Ассеты: `assets/Mobile/` — Kenney Mobile Controls (CC0), Style A + Highlights B. Использованы (Large 2×): `joystick_circle_pad_a` + `joystick_circle_pad_highlight` (фон стика), `joystick_circle_nub_b` (ручка), `button_circle` + `button_circle_highlight` (удар, пауза), `dpad_element_north` + `_highlight` (прыжок, стрелка вверх), `direction_left/right` + `_highlight` (поворот камеры). Иконок меча и паузы в наборе нет: на этих кнопках текст «Удар» и «II» шрифтом темы.
 
 Input Map (`project.godot`):
-- `move_*`: WASD + левый стик (оси 0/1, ±), все устройства, deadzone 0.2; стрелки ← → остались только у камеры, иначе они одновременно двигали бы героя и поворачивали камеру.
-- `jump`: Space + кнопка геймпада 0; `attack`: ЛКМ + J + X + кнопка 2; `pause`: Escape + P + кнопка 6 (Start); `camera_left/right`: ← / → + кнопки 9 / 10 (LB / RB).
+
+| Действие | Биндинги |
+|---|---|
+| `move_left` / `move_right` | A / D, ← / →, левый стик ось 0 (−/+) |
+| `move_forward` / `move_back` | W / S, ↑ / ↓, левый стик ось 1 (−/+) |
+| `jump` | Space, кнопка 0 (A / Cross) |
+| `attack` | ЛКМ, J, X, кнопка 2 (X / Square) |
+| `pause` | Escape, P, кнопка 6 (Start) |
+| `camera_left` / `camera_right` | Q / E, кнопки 9 / 10 (LB / RB) |
+
+Все `move_*` — deadzone 0.2, устройство «все». Сначала стрелки были отданы камере; в правках A7 они вернулись в движение (композиты WASD + стрелки), камера переехала на Q / E.
 
 Созданы:
 - `scripts/input/player_input_handler.gd` (`PlayerInputHandler`, дочерний узел игрока): в `_unhandled_input` хранит силу `move_*` по каждому источнику (тип устройства + id; итог — максимум, чтобы стик в нуле не отменял зажатую клавишу), `move = (right − left, back − forward)` с `limit_length(1)`, сигналы `jump_pressed` / `attack_pressed` без эха и не на паузе; на паузе продолжает отслеживать отпускания, при потере фокуса сбрасывается.
