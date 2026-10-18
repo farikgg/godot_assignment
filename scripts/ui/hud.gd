@@ -5,8 +5,8 @@ extends CanvasLayer
 const NAME_CAPTION_TEXT: String = "Игрок:"
 const GOLD_TEXT: String = "Золото: %d / %d"
 const CAVE_IN_TEXT: String = "Обвал стихнет через %d"
-const KEY_YES_TEXT: String = "Ключ: есть"
-const KEY_NO_TEXT: String = "Ключ: нет"
+const HAS_KEY_TEXT: String = "Ключ: есть"
+const NO_KEY_TEXT: String = "Ключ: нет"
 const HEART_FULL: Texture2D = preload("res://assets/ui_gen/heart_full.png")
 const HEART_EMPTY: Texture2D = preload("res://assets/ui_gen/heart_empty.png")
 
@@ -44,7 +44,7 @@ func set_coins(collected: int, total: int) -> void:
 	_coin_label.text = GOLD_TEXT % [collected, total]
 
 func set_key(has_key: bool) -> void:
-	_key_label.text = KEY_YES_TEXT if has_key else KEY_NO_TEXT
+	_key_label.text = HAS_KEY_TEXT if has_key else NO_KEY_TEXT
 
 func set_survival_time(seconds_left: int) -> void:
 	_survival_label.text = CAVE_IN_TEXT % seconds_left
