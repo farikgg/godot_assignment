@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/name_tag.gd" id="2_nametag"]
 [ext_resource type="Script" path="res://scripts/health.gd" id="3_health"]
 [ext_resource type="Script" path="res://scripts/input/player_input_handler.gd" id="6_input"]
+[ext_resource type="Script" path="res://scripts/blob_shadow.gd" id="7_shadow"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.3
@@ -12,6 +13,19 @@ height = 1.1
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hurtbox"]
 radius = 0.36
 height = 1.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shadow"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.03, 0.03, 0.06, 0.5)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_shadow"]
+material = SubResource("StandardMaterial3D_shadow")
+top_radius = 0.38
+bottom_radius = 0.38
+height = 0.01
+radial_segments = 24
+rings = 1
 
 [node name="Player" type="CharacterBody3D" unique_id=473262185 groups=["player"]]
 script = ExtResource("1_3vyb7")
@@ -51,3 +65,10 @@ max_polyphony = 4
 
 [node name="InputHandler" type="Node" parent="." unique_id=1771300100]
 script = ExtResource("6_input")
+
+[node name="JumpSfx" type="AudioStreamPlayer" parent="." unique_id=1771300120]
+max_polyphony = 2
+
+[node name="BlobShadow" type="MeshInstance3D" parent="." unique_id=1771300121]
+mesh = SubResource("CylinderMesh_shadow")
+script = ExtResource("7_shadow")

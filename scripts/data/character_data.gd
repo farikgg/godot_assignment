@@ -21,3 +21,6 @@ extends Resource
 @export var anim_attack: StringName = &"attack-melee-right"
 @export var anim_hit: StringName = &""
 @export var anim_die: StringName = &"die"
+## In the air: rising / falling.
+@export var anim_jump: StringName = &"jump"
+@export var anim_fall: StringName = &"fall"

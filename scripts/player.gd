@@ -12,11 +12,13 @@ extends CharacterBody3D
 ## Horizontal speed above which the run animation plays.
 @export var run_threshold: float = 0.5
 @export_file("*.ogg", "*.wav") var hurt_sound_path: String = ""
+@export_file("*.ogg", "*.wav") var jump_sound_path: String = ""
 
 @onready var visual: Node3D = $Visual
 @onready var health: Health = $Health
 @onready var hurtbox: Area3D = $Hurtbox
 @onready var hurt_sfx: AudioStreamPlayer = $HurtSfx
+@onready var jump_sfx: AudioStreamPlayer = $JumpSfx
 @onready var input_handler: PlayerInputHandler = $InputHandler
 
 var _data: CharacterData
@@ -37,6 +39,7 @@ func _ready() -> void:
 	assert(input_handler != null, "Player needs a PlayerInputHandler child")
 	_build_model()
 	hurt_sfx.stream = Sfx.load_stream(hurt_sound_path)
+	jump_sfx.stream = Sfx.load_stream(jump_sound_path)
 	health.died.connect(_on_died)
 	health.changed.connect(_on_health_changed)
 	_last_hp = health.current
@@ -63,7 +66,7 @@ func _build_model() -> void:
 	else:
 		_anim.animation_finished.connect(_on_animation_finished)
 		# glTF clips import without a loop flag
-		for loop_name in [_data.anim_idle, _data.anim_run]:
+		for loop_name in [_data.anim_idle, _data.anim_run, _data.anim_fall]:
 			if _has_anim(loop_name):
 				_anim.get_animation(loop_name).loop_mode = Animation.LOOP_LINEAR
 	_play_locomotion()
@@ -100,6 +103,7 @@ func _can_act() -> bool:
 func _on_jump_pressed() -> void:
 	if _can_act() and is_on_floor():
 		velocity.y = jump_velocity
+		jump_sfx.play()
 
 func _on_attack_pressed() -> void:
 	if has_weapon() and _weapon.has_method("try_attack"):
@@ -164,8 +168,13 @@ func play_attack() -> bool:
 func _play_locomotion() -> void:
 	if _anim == null or _data == null:
 		return
-	var speed: float = Vector2(velocity.x, velocity.z).length()
-	var clip: StringName = _data.anim_run if speed > run_threshold else _data.anim_idle
+	var clip: StringName
+	if not is_on_floor():
+		# rising or falling; a missing clip falls back to the ground pose below
+		clip = _data.anim_jump if velocity.y > 0.0 else _data.anim_fall
+	if not _has_anim(clip):
+		var speed: float = Vector2(velocity.x, velocity.z).length()
+		clip = _data.anim_run if speed > run_threshold else _data.anim_idle
 	if _has_anim(clip) and _anim.current_animation != clip:
 		_anim.play(clip, 0.15)
 
