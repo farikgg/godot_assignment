@@ -1,14 +1,22 @@
+class_name Level
 extends Node3D
+## Shared logic of every level: gold, key and gate, HUD, exit to the next level, death and restart.
 
 const MESSAGE_DURATION: float = 2.0
+const TITLE_DURATION: float = 2.5
+const LEVEL_DONE_TEXT: String = "Уровень пройден!"
 const WIN_TEXT: String = "Ты выбрался на свет!"
 const GATE_OPEN_TEXT: String = "Решётка поднялась. Путь свободен"
-const GATE_CLOSED_TEXT: String = "Решётка опущена. Продержись, пока не стихнет обвал"
+const GATE_CLOSED_TEXT: String = "Решётка опущена. Найди ключ"
 const GAME_OVER_TEXT: String = "Тьма поглотила тебя…"
 const SWORD_FOUND_TEXT: String = "Меч найден. J, X или ЛКМ — удар"
 const SWORD_HINT_DURATION: float = 3.0
 const RESTART_DELAY: float = 1.5
-const SURVIVAL_TIME: float = 60.0
+## Pause between reaching the exit and loading the next level, so the toast can be read.
+const EXIT_DELAY: float = 1.5
+
+## Shown as a toast when the level starts, e.g. «Уровень 1 — Верхние залы».
+@export var level_title: String = ""
 
 @onready var hud: Hud = $HUD
 
@@ -17,10 +25,10 @@ var coins_total: int = 0
 var has_key: bool = false
 var _has_won: bool = false
 var _game_over: bool = false
-var _survival_timer: Timer
 
 func _ready() -> void:
-	assert(hud != null, "Main needs a HUD instance (scenes/ui/hud.tscn)")
+	assert(hud != null, "Level needs a HUD instance (scenes/ui/hud.tscn)")
+	GameFlow.register_level(scene_file_path)
 	hud.set_player_name(Profile.player_name)
 
 	var coins: Array[Node] = get_tree().get_nodes_in_group("coins")
@@ -51,20 +59,10 @@ func _ready() -> void:
 		health.died.connect(_on_player_died)
 		hud.set_hearts(health.current, health.max_hp)
 
-	# one-shot Timer: stops counting while the tree is paused
-	_survival_timer = Timer.new()
-	_survival_timer.one_shot = true
-	_survival_timer.wait_time = SURVIVAL_TIME
-	_survival_timer.timeout.connect(_on_survived)
-	add_child(_survival_timer)
-	_survival_timer.start()
-
 	hud.set_coins(coins_collected, coins_total)
 	hud.set_key(has_key)
-	_update_survival_time()
-
-func _process(_delta: float) -> void:
-	_update_survival_time()
+	if not level_title.is_empty():
+		hud.show_message(level_title, TITLE_DURATION)
 
 func _on_coin_collected() -> void:
 	coins_collected += 1
@@ -87,43 +85,33 @@ func _on_weapon_picked_up() -> void:
 func _find_player_health() -> Health:
 	var player: Node = get_tree().get_first_node_in_group("player")
 	if player == null:
-		push_error("Main: no node in group \"player\"")
+		push_error("Level: no node in group \"player\"")
 		return null
 	var health: Health = player.get_node_or_null("Health") as Health
 	if health == null:
-		push_error("Main: player has no Health child")
+		push_error("Level: player has no Health child")
 	return health
 
 func _on_player_died() -> void:
 	if _game_over or _has_won:
 		return
 	_game_over = true
-	_survival_timer.paused = true
 	hud.show_message(GAME_OVER_TEXT)
 	# process_always = false: the countdown waits while the game is paused
 	await get_tree().create_timer(RESTART_DELAY, false).timeout
-	get_tree().paused = false
-	get_tree().reload_current_scene()
-
-func _on_survived() -> void:
-	if _game_over or _has_won:
-		return
-	get_tree().call_group("locked_gate", "open")
-	_show_timed(GATE_OPEN_TEXT)
-
-func _update_survival_time() -> void:
-	hud.set_survival_time(ceili(_survival_timer.time_left) if not _survival_timer.is_stopped() else 0)
+	GameFlow.restart_level()
 
 func _on_exit_reached() -> void:
-	# after a win the exit is inert, so re-entering can't print or reset the message
+	# after the exit is reached it is inert, so re-entering can't trigger the move twice
 	if _has_won or _game_over:
 		return
 	_has_won = true
-	_survival_timer.paused = true
-	print("You win!")
-	hud.show_message(WIN_TEXT)
+	var last: bool = GameFlow.current_index >= GameFlow.LEVELS.size() - 1
+	hud.show_message(WIN_TEXT if last else LEVEL_DONE_TEXT)
+	await get_tree().create_timer(EXIT_DELAY, false).timeout
+	GameFlow.next_level(coins_collected)
 
-# short-lived hint; never covers the win / game-over text
+# short-lived hint; never covers the exit / game-over text
 func _show_timed(text: String) -> void:
 	if not _has_won and not _game_over:
 		hud.show_message(text, MESSAGE_DURATION)

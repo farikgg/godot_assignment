@@ -40,6 +40,15 @@ func take_damage(amount: int) -> void:
 		return
 	_invincibility()
 
+## Instant death (a fall into a pit): ignores invincibility, emits died once.
+func kill() -> void:
+	if _dead:
+		return
+	current = 0
+	_dead = true
+	changed.emit(current, max_hp)
+	died.emit()
+
 func heal(amount: int) -> void:
 	if amount <= 0 or _dead:
 		return

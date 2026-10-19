@@ -1,10 +1,9 @@
 class_name Hud
 extends CanvasLayer
-## Heads-up display. main.gd talks to it only through these methods.
+## Heads-up display. level.gd talks to it only through these methods.
 
 const NAME_CAPTION_TEXT: String = "Игрок:"
 const GOLD_TEXT: String = "Золото: %d / %d"
-const CAVE_IN_TEXT: String = "Обвал стихнет через %d"
 const HAS_KEY_TEXT: String = "Ключ: есть"
 const NO_KEY_TEXT: String = "Ключ: нет"
 const HEART_FULL: Texture2D = preload("res://assets/ui_gen/heart_full.png")
@@ -15,7 +14,6 @@ const HEART_EMPTY: Texture2D = preload("res://assets/ui_gen/heart_empty.png")
 @onready var _hearts_box: HBoxContainer = %HeartsBox
 @onready var _coin_label: Label = %CoinLabel
 @onready var _key_label: Label = %KeyLabel
-@onready var _survival_label: Label = %SurvivalLabel
 @onready var _toast: Toast = %Toast
 
 func _ready() -> void:
@@ -38,9 +36,6 @@ func set_coins(collected: int, total: int) -> void:
 
 func set_key(has_key: bool) -> void:
 	_key_label.text = HAS_KEY_TEXT if has_key else NO_KEY_TEXT
-
-func set_survival_time(seconds_left: int) -> void:
-	_survival_label.text = CAVE_IN_TEXT % seconds_left
 
 ## Shown as a toast at the top centre. duration <= 0 keeps it until the next message (win, game over).
 func show_message(text: String, duration: float = 0.0) -> void:

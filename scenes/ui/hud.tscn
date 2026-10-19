@@ -66,10 +66,5 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Ключ: нет"
 
-[node name="SurvivalLabel" type="Label" parent="HudPanel/HudBox"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Обвал стихнет через 60"
-
 [node name="Toast" parent="." instance=ExtResource("4_toast")]
 unique_name_in_owner = true
