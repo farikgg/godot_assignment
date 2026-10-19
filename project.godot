@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Roster="*res://scripts/roster.gd"
 Profile="*uid://yslerpjvmluu"
+GameFlow="*res://scripts/game_flow.gd"
 
 [display]
 

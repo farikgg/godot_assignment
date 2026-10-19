@@ -95,7 +95,7 @@ text = "Настройки"
 [node name="ButtonQuit" type="Button" parent="MainPanel/Buttons" unique_id=540039282]
 custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
-text = "Выход"
+text = "Выйти"
 
 [node name="SettingsPanel" type="PanelContainer" parent="." unique_id=1845780512]
 visible = false

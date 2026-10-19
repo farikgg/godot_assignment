@@ -5,7 +5,7 @@ extends SceneTree
 const SCRIPTS_DIR: String = "res://scripts"
 ## The single place allowed to name a raw mouse button (VirtualStick.is_primary_click).
 const RAW_INPUT_EXCEPTION: String = "res://scripts/ui/virtual_stick.gd"
-const MAP_SCENE: String = "res://scenes/map.tscn"
+const MAP_SCENE: String = "res://scenes/levels/level_1.tscn"
 const SWORD_SCENE: String = "res://scenes/weapons/sword.tscn"
 const WATCHDOG_SECONDS: float = 30.0
 

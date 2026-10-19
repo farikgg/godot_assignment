@@ -1,8 +1,8 @@
 extends SceneTree
-## Animation smoke test for map.tscn.
+## Animation smoke test for the levels.
 ## Run: godot --headless --path . -s tools/test_anim.gd   (exit code 0 = all PASS, 1 = any FAIL)
 
-const MAP_SCENE: String = "res://scenes/map.tscn"
+const MAP_SCENE: String = "res://scenes/levels/level_1.tscn"
 const LOOP_CLIPS: Array[StringName] = [&"spin_bob", &"spin", &"patrol", &"pulse"]
 # locked gate open height: iron fence 0.879 m x2 + 0.3 clearance
 const GATE_OPEN_Y: float = 2.058

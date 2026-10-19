@@ -3,7 +3,7 @@ extends Control
 const START_TEXT: String = "Спуститься"
 const HEROES_TEXT: String = "Герои"
 const SETTINGS_TEXT: String = "Настройки"
-const QUIT_TEXT: String = "Выход"
+const QUIT_TEXT: String = "Выйти"
 const NAME_PLACEHOLDER: String = "Имя героя"
 
 @onready var settings_panel: Control = $SettingsPanel
@@ -22,7 +22,7 @@ func _ready() -> void:
 	character_select.connect("closed", _on_character_select_closed)
 
 func _on_button_start_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/map.tscn")
+	GameFlow.start_game()
 
 func _on_button_quit_pressed() -> void:
 	get_tree().quit()

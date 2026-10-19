@@ -1,6 +1,5 @@
 extends CanvasLayer
 
-const MAIN_MENU_SCENE: String = "res://scenes/main_menu.tscn"
 const TITLE_TEXT: String = "Привал"
 const RESUME_TEXT: String = "Продолжить путь"
 const RESTART_TEXT: String = "Начать заново"
@@ -34,11 +33,9 @@ func set_paused(value: bool) -> void:
 	if value:
 		_resume_button.grab_focus()
 
+# GameFlow unpauses before every scene change
 func _on_restart_pressed() -> void:
-	# a reloaded scene would start frozen otherwise
-	get_tree().paused = false
-	get_tree().reload_current_scene()
+	GameFlow.restart_level()
 
 func _on_menu_pressed() -> void:
-	get_tree().paused = false
-	get_tree().change_scene_to_file(MAIN_MENU_SCENE)
+	GameFlow.go_to_menu()
