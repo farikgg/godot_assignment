@@ -5,6 +5,31 @@
 - `scripts/player.gd` и `scenes/player.tscn`: скелет автора (RigidBody3D, экспорты, цвет шара из профиля). Управление, силу с ограничением скорости, прыжок, проверку земли (`_integrate_forces`) и обработку врагов писал ИИ-ассистент Claude в чате; автор перенёс это в проект. Правки Claude Code в этих файлах перечислены в разделах ниже (NameTag, A6).
 - Начиная с раздела «A6 — персонаж и выбор героя» `player.gd` и `player.tscn` целиком переписаны Claude Code под CharacterBody3D; версия с шаром осталась в истории git.
 
+## Мидтерм — этап 1
+
+Структура игры: главное меню → уровень 1 → уровень 2 → уровень 3 (арена) → экран победы.
+
+Созданы:
+- `scripts/game_flow.gd` (автозагрузка `GameFlow`): `LEVELS`, `current_index`, `total_coins`; `start_game` / `next_level(coins)` / `restart_level` / `go_to_win` / `go_to_menu`. Перед любой сменой сцены снимает паузу; `change_scene_to_file` с проверкой ошибки (`push_error`). `register_level` выставляет индекс, если уровень запущен напрямую (F6).
+- `scripts/kill_zone.gd` + `scenes/props/kill_zone.tscn`: `Area3D` 400×2×400 и тёмная плоскость «бездны»; игрока убивает через `Health.kill()`, мимо неуязвимости. Стоит на y = −6 в каждом уровне.
+- `scripts/props/floor_slab.gd` (`FloorSlab`, `@tool`) + `scenes/props/floor_slab.tscn`, `scenes/props/platform_block.tscn`: плиты пола и уступы с экспортами `size` / `thickness`; верх плиты в начале координат узла.
+- `scenes/pickups/potion_pickup.tscn` (наследник `potion.tscn`, лежит «вечно»), `scenes/systems/spawner_cave_in.tscn` (наследник `spawner.tscn`: бочки и камни).
+- `scenes/levels/level_2.tscn`, `scenes/levels/level_3_boss.tscn`: только инстансы, группирующие `Node3D` и `Marker3D BossSpawn`.
+- `scripts/win_screen.gd` + `scenes/win_screen.tscn`: фон меню, «Ты выбрался на свет!», «Золота собрано: N» из `GameFlow.total_coins`, кнопка «В главное меню».
+- `scripts/blob_shadow.gd`: круглая тень (полупрозрачный диск) под героем; луч вниз каждый физический кадр, уменьшается с высотой, над пропастью скрыта.
+- `tools/test_flow.gd`: `start_game` → level_1; `next_level` 1 → 2 → 3 → победа и сумма монет; `go_to_menu`; `restart_level` перезагружает уровень новым экземпляром; пауза снята в момент смены сцены; KillZone убивает неуязвимого героя.
+
+Изменены:
+- `scripts/main.gd` → `scripts/level.gd` (`class_name Level`, `git mv`): экспорт `level_title` (тост на старте); выход → тост и `GameFlow.next_level` через 1.5 с; смерть → перезапуск через 1.5 с; таймер выживания A6 убран.
+- `scenes/map.tscn` → `scenes/levels/level_1.tscn` (`git mv`): острова с пропастями 1.8–2 м, три уступа с монетами, лежащее зелье, KillZone; убраны сплошной пол, спавнер, патрульная пила и калитка.
+- `scenes/props/moving_platform.tscn`: восстановлена из истории git, верх вровень с корнем, ширина 2.6 м; стоит в level_2.
+- `scripts/health.gd`: `kill()`. `scripts/ui/hud.gd`, `scenes/ui/hud.tscn`: убрана строка таймера выживания.
+- `scripts/main_menu.gd`, `scenes/main_menu.tscn`, `scripts/pause_menu.gd`: кнопки идут через `GameFlow`, «Выйти».
+- `scripts/data/character_data.gd`: `anim_jump` / `anim_fall`. `scripts/player.gd`: в воздухе клип `jump` (вверх) или `fall` (вниз, зациклен), атака и смерть в приоритете; `jump_velocity` 5.0 → 5.5; экспорт `jump_sound_path` (пусто — тишина). `scenes/player.tscn`: `JumpSfx`, `BlobShadow`.
+- `tools/test_anim.gd`: проверяет все три уровня (патрульная пила и движущаяся платформа — в level_2). `tools/test_a7.gd`: путь к level_1, спавнер необязателен.
+
+Прыжок: v = 5.5 м/с, g = 9.8 → высота v²/2g ≈ 1.54 м (замер 1.59 м), время в воздухе ≈ 1.12 с, дальность по ровному при `move_speed` 5 ≈ 5.6 м. Самый высокий шаг (+1.4 м) берётся на спуске при t ≈ 0.73 с, до 3.66 м по горизонтали. Решётки (1.76 м) стоят под аркой туннеля, перепрыгнуть их нельзя.
+
 ## A7 — ввод и мобильное управление
 
 Ассеты: `assets/Mobile/` — Kenney Mobile Controls (CC0), Style A + Highlights B. Использованы (Large 2×): `joystick_circle_pad_a` + `joystick_circle_pad_highlight` (фон стика), `joystick_circle_nub_b` (ручка), `button_circle` + `button_circle_highlight` (удар, пауза), `dpad_element_north` + `_highlight` (прыжок, стрелка вверх), `direction_left/right` + `_highlight` (поворот камеры). Иконок меча и паузы в наборе нет: на этих кнопках текст «Удар» и «II» шрифтом темы.

@@ -113,7 +113,9 @@ func _test_on_screen_stick() -> void:
 	var map: Node3D = (load(MAP_SCENE) as PackedScene).instantiate() as Node3D
 	root.add_child(map)
 	current_scene = map
-	map.get_node("Spawner").process_mode = Node.PROCESS_MODE_DISABLED
+	var spawner: Node = map.get_node_or_null("Spawner")
+	if spawner != null:
+		spawner.process_mode = Node.PROCESS_MODE_DISABLED
 	var handler: PlayerInputHandler = map.get_node("Player/InputHandler") as PlayerInputHandler
 	var stick: VirtualStick = map.get_node_or_null("TouchControls/Root/Stick") as VirtualStick
 	if handler == null or stick == null:
@@ -174,7 +176,9 @@ func _test_arrows_and_camera_keys() -> void:
 	var map: Node3D = (load(MAP_SCENE) as PackedScene).instantiate() as Node3D
 	root.add_child(map)
 	current_scene = map
-	map.get_node("Spawner").process_mode = Node.PROCESS_MODE_DISABLED
+	var spawner: Node = map.get_node_or_null("Spawner")
+	if spawner != null:
+		spawner.process_mode = Node.PROCESS_MODE_DISABLED
 	var handler: PlayerInputHandler = map.get_node("Player/InputHandler") as PlayerInputHandler
 	var pivot: Node3D = map.get_node("CameraPivot") as Node3D
 	for i in 5:
@@ -210,7 +214,9 @@ func _test_toast() -> void:
 	var map: Node3D = (load(MAP_SCENE) as PackedScene).instantiate() as Node3D
 	root.add_child(map)
 	current_scene = map
-	map.get_node("Spawner").process_mode = Node.PROCESS_MODE_DISABLED
+	var spawner: Node = map.get_node_or_null("Spawner")
+	if spawner != null:
+		spawner.process_mode = Node.PROCESS_MODE_DISABLED
 	var hud: Hud = map.get_node("HUD") as Hud
 	var toast: Toast = hud.get_node_or_null("%Toast") as Toast
 	if toast == null:

@@ -1,9 +1,15 @@
 extends SceneTree
-## Animation smoke test for the levels.
+## Animation smoke test for all three levels.
 ## Run: godot --headless --path . -s tools/test_anim.gd   (exit code 0 = all PASS, 1 = any FAIL)
 
-const MAP_SCENE: String = "res://scenes/levels/level_1.tscn"
-const LOOP_CLIPS: Array[StringName] = [&"spin_bob", &"spin", &"patrol", &"pulse"]
+# per level: does it have a key gate, and which samples (see _sample) must change over time
+const LEVEL_CHECKS: Dictionary = {
+	"res://scenes/levels/level_1.tscn": {"gate": true, "motion": ["coin", "key", "saw spin", "pulse"]},
+	"res://scenes/levels/level_2.tscn": {"gate": true,
+		"motion": ["coin", "key", "patrol saw spin", "patrol saw move", "moving platform", "pulse"]},
+	"res://scenes/levels/level_3_boss.tscn": {"gate": false, "motion": ["coin", "pulse"]},
+}
+const LOOP_CLIPS: Array[StringName] = [&"spin_bob", &"spin", &"patrol", &"pulse", &"move"]
 # locked gate open height: iron fence 0.879 m x2 + 0.3 clearance
 const GATE_OPEN_Y: float = 2.058
 const SAMPLE_GAP: float = 0.5
@@ -24,13 +30,22 @@ func _physics_frames(count: int) -> void:
 		await physics_frame
 
 func _run() -> void:
-	var map: Node3D = (load(MAP_SCENE) as PackedScene).instantiate() as Node3D
-	root.add_child(map)
-
-	await _test_gate(map)
-	await _test_motion(map)
-	_test_loops(map)
-	_test_callback_modes(map)
+	var found_clips: Dictionary = {}
+	for path: String in LEVEL_CHECKS:
+		var checks: Dictionary = LEVEL_CHECKS[path]
+		print("-- %s" % path.get_file())
+		var map: Node3D = (load(path) as PackedScene).instantiate() as Node3D
+		root.add_child(map)
+		if checks["gate"]:
+			await _test_gate(map)
+		await _test_motion(map, checks["motion"])
+		_test_loops(map, found_clips)
+		_test_callback_modes(map)
+		map.queue_free()
+		await process_frame
+	for clip in LOOP_CLIPS:
+		if not found_clips.has(clip):
+			_check("%s present" % clip, false, "clip not found in any level")
 
 	var code: int = 1 if _failures > 0 else 0
 	print("RESULT: %s, %d failure(s), exit code %d" % ["PASS" if code == 0 else "FAIL", _failures, code])
@@ -61,6 +76,7 @@ func _sample(map: Node3D) -> Dictionary:
 	var patrol_body: Node3D = map.get_node_or_null("Enemies/SawPatrol/Body") as Node3D
 	var patrol_blade: Node3D = map.get_node_or_null("Enemies/SawPatrol/Body/Blade") as Node3D
 	var pulse: Node3D = map.get_node_or_null("Exit/PulseZone/Disc") as Node3D
+	var platform: Node3D = map.get_node_or_null("Ground/MovingPlatform/Body") as Node3D
 	return {
 		"coin": Vector2(coin_model.rotation_degrees.y, coin_model.position.y) if coin_model != null else null,
 		"key": Vector2(key_model.rotation_degrees.y, key_model.position.y) if key_model != null else null,
@@ -68,13 +84,14 @@ func _sample(map: Node3D) -> Dictionary:
 		"patrol saw spin": patrol_blade.rotation_degrees.z if patrol_blade != null else null,
 		"patrol saw move": patrol_body.position.x if patrol_body != null else null,
 		"pulse": pulse.scale.x if pulse != null else null,
+		"moving platform": platform.position.x if platform != null else null,
 	}
 
-func _test_motion(map: Node3D) -> void:
+func _test_motion(map: Node3D, keys: Array) -> void:
 	var first: Dictionary = _sample(map)
 	await create_timer(SAMPLE_GAP).timeout
 	var second: Dictionary = _sample(map)
-	for key: String in first:
+	for key: String in keys:
 		var a: Variant = first[key]
 		var b: Variant = second[key]
 		if a == null or b == null:
@@ -88,8 +105,7 @@ func _all_mixers(map: Node) -> Array[AnimationMixer]:
 		out.append(node as AnimationMixer)
 	return out
 
-func _test_loops(map: Node3D) -> void:
-	var found: Dictionary = {}
+func _test_loops(map: Node3D, found: Dictionary) -> void:
 	for mixer in _all_mixers(map):
 		var player: AnimationPlayer = mixer as AnimationPlayer
 		if player == null:
@@ -100,9 +116,6 @@ func _test_loops(map: Node3D) -> void:
 				var anim: Animation = player.get_animation(clip)
 				_check("%s loop_mode = Linear" % clip, anim.loop_mode == Animation.LOOP_LINEAR, "loop_mode=%d" % anim.loop_mode)
 				_check("%s autoplay" % clip, player.autoplay == clip, "autoplay=%s" % player.autoplay)
-	for clip in LOOP_CLIPS:
-		if not found.has(clip):
-			_check("%s present" % clip, false, "clip not found in map")
 
 func _animation_source(mixer: AnimationMixer) -> AnimationPlayer:
 	if mixer is AnimationPlayer:
