@@ -50,17 +50,19 @@ func heal(amount: int) -> void:
 	changed.emit(current, max_hp)
 
 # Coroutine: blinks blink_target until invincible_time runs out.
-# The timers don't run while the tree is paused, so the blink freezes with the game.
 func _invincibility() -> void:
 	_invincible = true
 	var elapsed: float = 0.0
 	while elapsed < invincible_time:
+	# Когда игра на паузе, перс не мигает
 		await get_tree().create_timer(blink_interval, false).timeout
 		if not is_inside_tree():
 			return
 		elapsed += blink_interval
 		if _blink_node != null:
 			_blink_node.visible = not _blink_node.visible
+# 0.1 x 20 ~ 1.999, может дать лишний цикл, из-за чего перс мог стань невидимым.
+# Убираю эту возможность
 	if _blink_node != null:
 		_blink_node.visible = true
 	_invincible = false

@@ -8,6 +8,8 @@ var _landed: bool = false
 
 func _ready() -> void:
 	add_to_group("hazard")
+	# для сигналов урона и приземления
+	# так как в RigidBody3D body_entered не работает
 	contact_monitor = true
 	max_contacts_reported = maxi(max_contacts_reported, 4)
 	# falls from ~12 m: without CCD it can tunnel through the 0.2 m floor
@@ -31,14 +33,14 @@ func _on_body_entered(body: Node) -> void:
 		_landed = true
 		_on_landed()
 
-## Called on every contact with the player.
+## вызывается при контакте с игроком
 func _on_hit_player(_health: Health) -> void:
 	pass
 
-## Called once, on the first contact with anything that isn't the player.
+## все что угодно кроме игрока
 func _on_landed() -> void:
 	pass
 
-## Called by weapon hitboxes (Slash). Orcs and other targets share the signature.
+## вызывается при ударе мечом(игроком)
 func hit_by_weapon(_damage: int = 1) -> void:
 	queue_free()
