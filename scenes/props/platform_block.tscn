@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/props/floor_slab.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ledge"]
+albedo_color = Color(0.556863, 0.576471, 0.811765, 1)
+roughness = 0.85
+
+[node name="PlatformBlock" type="StaticBody3D"]
+script = ExtResource("1_script")
+size = Vector2(2, 2)
+thickness = 6.0
+material = SubResource("StandardMaterial3D_ledge")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]

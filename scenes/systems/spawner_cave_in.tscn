@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/systems/spawner.tscn" id="1_spawner"]
+[ext_resource type="PackedScene" path="res://scenes/hazards/bomb.tscn" id="2_bomb"]
+[ext_resource type="PackedScene" path="res://scenes/hazards/rock.tscn" id="3_rock"]
+
+[node name="Spawner" instance=ExtResource("1_spawner")]
+hazard_scenes = Array[PackedScene]([ExtResource("2_bomb"), ExtResource("3_rock")])
+spawn_weights = Array[float]([1.0, 1.0])
+interval = 2.0
+max_alive = 8
+area_size = Vector2(9, 15)

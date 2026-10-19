@@ -1,0 +1,194 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level.gd" id="level"]
+[ext_resource type="PackedScene" path="res://scenes/props/floor_slab.tscn" id="slab"]
+[ext_resource type="PackedScene" path="res://scenes/props/moving_platform.tscn" id="moving_platform"]
+[ext_resource type="PackedScene" path="res://scenes/props/platform_block.tscn" id="block"]
+[ext_resource type="PackedScene" path="res://scenes/props/column.tscn" id="column"]
+[ext_resource type="PackedScene" path="res://scenes/props/barrel.tscn" id="barrel"]
+[ext_resource type="PackedScene" path="res://scenes/props/floor-detail.tscn" id="floor_detail"]
+[ext_resource type="PackedScene" path="res://scenes/props/stones.tscn" id="stones"]
+[ext_resource type="PackedScene" path="res://scenes/props/rocks.tscn" id="rocks"]
+[ext_resource type="PackedScene" path="res://scenes/props/wood-structure.tscn" id="wood_structure"]
+[ext_resource type="PackedScene" path="res://scenes/props/pot.tscn" id="pot"]
+[ext_resource type="PackedScene" path="res://scenes/props/chest.tscn" id="chest"]
+[ext_resource type="PackedScene" path="res://scenes/props/saw_trap_patrol.tscn" id="saw_patrol"]
+[ext_resource type="PackedScene" path="res://scenes/systems/spawner_cave_in.tscn" id="spawner_cave_in"]
+[ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="coin"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/sword_pickup.tscn" id="sword"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/potion_pickup.tscn" id="potion"]
+[ext_resource type="PackedScene" path="res://scenes/props/key_pickup.tscn" id="key"]
+[ext_resource type="PackedScene" path="res://scenes/props/tunnel.tscn" id="tunnel"]
+[ext_resource type="PackedScene" path="res://scenes/props/locked_gate.tscn" id="gate"]
+[ext_resource type="PackedScene" path="res://scenes/props/gate_hint.tscn" id="gate_hint"]
+[ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="exit"]
+[ext_resource type="PackedScene" path="res://scenes/systems/lighting.tscn" id="lighting"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="player"]
+[ext_resource type="PackedScene" path="res://scenes/props/kill_zone.tscn" id="kill"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="touch"]
+[ext_resource type="PackedScene" path="res://scenes/systems/camera_rig.tscn" id="camera"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="pause"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("level")
+level_title = "Уровень 2 — Обвальные шахты"
+
+[node name="Ground" type="Node3D" parent="."]
+
+[node name="IslandStart" parent="Ground" instance=ExtResource("slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.1, 0)
+size = Vector2(8, 8)
+
+[node name="IslandSaw" parent="Ground" instance=ExtResource("slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 10.2, 0.1, 0)
+size = Vector2(8, 8)
+
+[node name="MovingPlatform" parent="Ground" instance=ExtResource("moving_platform")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 17.2, 0.1, 0)
+
+[node name="IslandCaveIn" parent="Ground" instance=ExtResource("slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 25.2, 0.1, 4)
+size = Vector2(10, 16)
+
+[node name="IslandGate" parent="Ground" instance=ExtResource("slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 37.7, 0.1, 0)
+size = Vector2(10, 8)
+
+[node name="TunnelFloor" parent="Ground" instance=ExtResource("slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 37.7, 0.1, -9)
+size = Vector2(6, 10)
+
+[node name="LedgeLow" parent="Ground" instance=ExtResource("block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 23, 0.9, 8)
+
+[node name="LedgeHigh" parent="Ground" instance=ExtResource("block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 26, 1.5, 10)
+
+[node name="LedgeStart" parent="Ground" instance=ExtResource("block")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2.5, 1, -2.5)
+
+[node name="Decor" type="Node3D" parent="."]
+
+[node name="ColumnStart" parent="Decor" instance=ExtResource("column")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, -3, 0.1, -3)
+
+[node name="BarrelStart" parent="Decor" instance=ExtResource("barrel")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, -3, 0.1, 3)
+
+[node name="FloorDetailStart" parent="Decor" instance=ExtResource("floor_detail")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 1, 0.1, 1.5)
+
+[node name="BarrelSaw" parent="Decor" instance=ExtResource("barrel")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 13.2, 0.1, 3.2)
+
+[node name="StonesSaw" parent="Decor" instance=ExtResource("stones")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 7.2, 0.1, 3)
+
+[node name="ColumnCaveIn" parent="Decor" instance=ExtResource("column")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 21.2, 0.1, -3)
+
+[node name="RocksCaveIn" parent="Decor" instance=ExtResource("rocks")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 29.2, 0.1, -3)
+
+[node name="WoodCaveIn" parent="Decor" instance=ExtResource("wood_structure")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 29, 0.1, 3)
+
+[node name="PotCaveIn" parent="Decor" instance=ExtResource("pot")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 21.4, 0.1, 11.2)
+
+[node name="FloorDetailCaveIn" parent="Decor" instance=ExtResource("floor_detail")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 25, 0.1, 2)
+
+[node name="ChestGate" parent="Decor" instance=ExtResource("chest")]
+transform = Transform3D(0, 0, -2, 0, 2, 0, 2, 0, 0, 41.7, 0.1, 3)
+
+[node name="BarrelGate" parent="Decor" instance=ExtResource("barrel")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 33.7, 0.1, 3.2)
+
+[node name="Enemies" type="Node3D" parent="."]
+
+[node name="SawPatrol" parent="Enemies" instance=ExtResource("saw_patrol")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 7.4, 0.1, 0.5)
+
+[node name="Spawner" parent="." instance=ExtResource("spawner_cave_in")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 25.2, 0, 4)
+
+[node name="Coins" type="Node3D" parent="."]
+
+[node name="Coin1" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2.5, 1.8, -2.5)
+
+[node name="Coin2" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2, 1.2, 1)
+
+[node name="Coin3" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 8, 1.2, 3)
+
+[node name="Coin4" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 12.5, 1.2, -3)
+
+[node name="Coin5" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 10.2, 1.2, -2.5)
+
+[node name="Coin6" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 22, 1.2, 0)
+
+[node name="Coin7" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 24.5, 1.2, -2.5)
+
+[node name="Coin8" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 23, 1.7, 8)
+
+[node name="Coin9" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 26, 2.3, 10)
+
+[node name="Coin10" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 28, 1.2, 6.5)
+
+[node name="Coin11" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 21.5, 1.2, 9)
+
+[node name="Coin12" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 35, 1.2, 2)
+
+[node name="Coin13" parent="Coins" instance=ExtResource("coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 40.5, 1.2, 1.5)
+
+[node name="SwordPickup" parent="." instance=ExtResource("sword")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2, 0.8, -2)
+
+[node name="PotionPickup" parent="." instance=ExtResource("potion")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 27, 0.45, 0)
+
+[node name="KeyPickup" parent="." instance=ExtResource("key")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 29, 0.9, 11)
+
+[node name="Tunnel" parent="." instance=ExtResource("tunnel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 37.7, 0.1, -4)
+
+[node name="LockedGate" parent="." instance=ExtResource("gate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.7, 0.1, -5)
+
+[node name="GateHint" parent="." instance=ExtResource("gate_hint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.7, 1.1, -2.6)
+
+[node name="Exit" parent="." instance=ExtResource("exit")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 37.7, 0.1, -10.5)
+
+[node name="Lighting" parent="." instance=ExtResource("lighting")]
+
+[node name="Player" parent="." instance=ExtResource("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.1, 2)
+
+[node name="KillZone" parent="." instance=ExtResource("kill")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -6, 0)
+
+[node name="HUD" parent="." instance=ExtResource("hud")]
+
+[node name="TouchControls" parent="." instance=ExtResource("touch")]
+
+[node name="CameraPivot" parent="." instance=ExtResource("camera")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
+
+[node name="PauseMenu" parent="." instance=ExtResource("pause")]

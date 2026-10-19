@@ -5,6 +5,14 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_kill"]
 size = Vector3(400, 2, 400)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_abyss"]
+shading_mode = 0
+albedo_color = Color(0.039, 0.039, 0.07, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_abyss"]
+material = SubResource("StandardMaterial3D_abyss")
+size = Vector2(400, 400)
+
 [node name="KillZone" type="Area3D"]
 collision_layer = 0
 monitorable = false
@@ -12,3 +20,8 @@ script = ExtResource("1_script")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_kill")
+
+[node name="Abyss" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_abyss")

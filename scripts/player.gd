@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 @export var move_speed: float = 5.0
 @export var acceleration: float = 30.0
-@export var jump_velocity: float = 5.0
+@export var jump_velocity: float = 5.5
 ## How fast Visual turns towards the movement direction (higher = snappier).
 @export var turn_speed: float = 12.0
 @export var knockback_speed: float = 7.0

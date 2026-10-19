@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/hazards/potion.tscn" id="1_potion"]
+
+[node name="PotionPickup" instance=ExtResource("1_potion")]
+lifetime = 100000.0
