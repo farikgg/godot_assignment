@@ -5,3 +5,4 @@
 .DS_Store
 export_presets.cfg
 *.translation
+.idea/
