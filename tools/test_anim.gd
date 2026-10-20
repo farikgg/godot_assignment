@@ -7,7 +7,7 @@ const LEVEL_CHECKS: Dictionary = {
 	"res://scenes/levels/level_1.tscn": {"gate": true, "motion": ["coin", "key", "saw spin", "pulse"]},
 	"res://scenes/levels/level_2.tscn": {"gate": true,
 		"motion": ["coin", "key", "patrol saw spin", "patrol saw move", "moving platform", "pulse"]},
-	"res://scenes/levels/level_3_boss.tscn": {"gate": false, "motion": ["coin", "pulse"]},
+	"res://scenes/levels/level_3_boss.tscn": {"gate": false, "motion": ["coin"]},
 }
 const LOOP_CLIPS: Array[StringName] = [&"spin_bob", &"spin", &"patrol", &"pulse", &"move"]
 # locked gate open height: iron fence 0.879 m x2 + 0.3 clearance

@@ -4,6 +4,25 @@
 [ext_resource type="Texture2D" path="res://assets/ui_gen/heart_full.png" id="3_heart_full"]
 [ext_resource type="PackedScene" path="res://scenes/ui/toast.tscn" id="4_toast"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_boss_track"]
+bg_color = Color(0.145098, 0.14902, 0.227451, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.07, 0.07, 0.12, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_boss_fill"]
+bg_color = Color(0.78, 0.16, 0.12, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_script")
 
@@ -65,6 +84,42 @@ text = "Золото: 0 / 0"
 unique_name_in_owner = true
 layout_mode = 2
 text = "Ключ: нет"
+
+[node name="BossBar" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -340.0
+offset_top = 16.0
+offset_right = 340.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
+
+[node name="BossBox" type="VBoxContainer" parent="BossBar"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="BossName" type="Label" parent="BossBar/BossBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Страж подземелья"
+horizontal_alignment = 1
+
+[node name="BossHp" type="ProgressBar" parent="BossBar/BossBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_boss_track")
+theme_override_styles/fill = SubResource("StyleBoxFlat_boss_fill")
+max_value = 8.0
+value = 8.0
+show_percentage = false
 
 [node name="Toast" parent="." instance=ExtResource("4_toast")]
 unique_name_in_owner = true

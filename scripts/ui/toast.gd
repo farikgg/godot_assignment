@@ -9,6 +9,9 @@ const FADE_OUT_TIME: float = 0.3
 ## The panel never gets wider than this share of the visible screen; longer text wraps.
 const MAX_WIDTH_SHARE: float = 0.4
 
+## Distance from the top of the screen; the HUD moves it down while the boss bar is shown.
+var top_margin: float = TOP_MARGIN
+
 @onready var _panel: PanelContainer = $Panel
 @onready var _label: Label = $Panel/Text
 
@@ -35,19 +38,22 @@ func show_toast(text: String, duration: float = 2.5) -> void:
 	if replacing:
 		# swap the text in place and restart the wait; no second fade-in, no overlap
 		_panel.modulate.a = 1.0
-		_panel.position.y = TOP_MARGIN
+		_panel.position.y = top_margin
 	else:
 		_panel.modulate.a = 0.0
-		_panel.position.y = TOP_MARGIN - SLIDE_DISTANCE
+		_panel.position.y = top_margin - SLIDE_DISTANCE
 		_tween.set_parallel(true)
 		_tween.tween_property(_panel, "modulate:a", 1.0, FADE_IN_TIME)
-		_tween.tween_property(_panel, "position:y", TOP_MARGIN, FADE_IN_TIME) \
+		_tween.tween_property(_panel, "position:y", top_margin, FADE_IN_TIME) \
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		_tween.set_parallel(false)
 	if duration > 0.0:
 		_tween.tween_interval(duration)
 		_tween.tween_property(_panel, "modulate:a", 0.0, FADE_OUT_TIME)
 		_tween.tween_callback(_hide_now)
+	elif replacing:
+		# a persistent text swapped in place: nothing to animate
+		_kill_tween()
 
 func hide_toast() -> void:
 	if not is_showing():

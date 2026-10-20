@@ -5,6 +5,30 @@
 - `scripts/player.gd` и `scenes/player.tscn`: скелет автора (RigidBody3D, экспорты, цвет шара из профиля). Управление, силу с ограничением скорости, прыжок, проверку земли (`_integrate_forces`) и обработку врагов писал ИИ-ассистент Claude в чате; автор перенёс это в проект. Правки Claude Code в этих файлах перечислены в разделах ниже (NameTag, A6).
 - Начиная с раздела «A6 — персонаж и выбор героя» `player.gd` и `player.tscn` целиком переписаны Claude Code под CharacterBody3D; версия с шаром осталась в истории git.
 
+## Мидтерм — этап 2A
+
+Враги и босс. Модели врагов — `assets/Map/character-{orc,skeleton,vampire,zombie}.glb`. Набор клипов у всех четырёх одинаковый: `idle`, `walk`, `sprint`, `attack-melee-right`, `die`, `crouch` и др. Скелет `Skeleton3D` (кости root, leg-left/right, torso, arm-left/right, head) есть только у орка; у остальных трёх модели из жёстких частей, клипы анимируют узлы.
+
+Созданы:
+- `scripts/enemies/enemy.gd` (`Enemy`, база): группа `enemy` (касание ранит героя через его Hurtbox), дочерний `Health`, `hit_by_weapon` → урон + отброс от героя, гравитация, поворот модели к движению (`lerp_angle`), клипы — только если они есть в модели; виртуальные `_think`, `_on_damaged`, `_on_died`. Смерть: клип `die`, слой коллизий 0 (тело лежит на полу, герой и меч его не задевают), удаление через `free_delay`.
+- `scripts/enemies/boss.gd` + `scenes/enemies/boss.tscn` (`Boss`): орк ×2.2 (масштаб 3.08), тёмно-красные копии материалов, красная аура (кольцо + `OmniLight3D`). 8 HP, неуязвимость 0.4 с. Состояния `IDLE / TELEGRAPH / ATTACK / REST / DEAD` только через `_change_state()`, все задержки на `StateTimer`. Атаки чередуются: «Веер» (2 залпа огненных шаров) и «Огненный дождь». Фаза 2 при HP ≤ 50 %. Сигналы `awakened`, `enraged`, `defeated`.
+- `scripts/projectiles/projectile.gd` (`Projectile`), `fireball.gd` (`Fireball`), `fire_rain_drop.gd` (`FireRainDrop`) + сцены в `scenes/projectiles/`. Урон через `Health`, удаление о стены, враги игнорируются, время жизни — `Timer`.
+- `scripts/fx/telegraph_marker.gd` + `scenes/fx/telegraph_marker.tscn` (`TelegraphMarker`): круг-предупреждение (вынесен из `spawner.gd`), по желанию со знаком «!». Пользуются спавнер обвала и огненный дождь.
+- `scripts/data/enemy_data.gd` (`EnemyData`), `resources/enemies/skeleton.tres`, `zombie.tres`, `vampire.tres`.
+- `scripts/enemies/minion.gd` + `scenes/enemies/minion.tscn` (`Minion`): `PATROL / CHASE / ATTACK / DEAD`, луч видимости, проба пола впереди (у пропасти стоит), разворот патруля, если упёрся.
+- `shaders/slash_arc.gdshader`, `scripts/fx/slash_arc.gd` + `scenes/fx/slash_arc.tscn` (`SlashArc`): полукольцо-след удара, 0.15 с. `scenes/fx/hit_sparks.tscn`: искры при попадании.
+- `tools/test_enemies.gd`.
+
+Изменены:
+- `scripts/spawner.gd`: тень обвала — `TelegraphMarker`.
+- `scripts/ui/hud.gd`, `scenes/ui/hud.tscn`: полоска HP босса (`show_boss_bar` / `set_boss_hp` с плавным убыванием / `hide_boss_bar`); тост сдвигается под неё. `scripts/ui/toast.gd`: `top_margin`; пустой твин при замене постоянного тоста больше не создаётся.
+- `scripts/level.gd`: подключение босса (полоска, тосты «Страж подземелья пробудился», «Страж в ярости!», «Страж повержен!», победа). `scripts/game_flow.gd`: `go_to_win(coins)` добавляет золото арены.
+- `scenes/levels/level_3_boss.tscn`: выход убран, `Boss` на `BossSpawn`. `level_1.tscn`: скелет у ключа. `level_2.tscn`: скелет, зомби, вампир.
+- `scenes/weapons/slash.tscn`: видимый квадрат хитбокса удалён (коллизия осталась); `slash.gd`: искры. `sword.gd`, `sword.tscn`: след `SlashArc`.
+- `tools/test_anim.gd`: на арене больше нет выхода.
+
+Звуков `orc_alert` и замаха босса в `assets/Audio` нет: экспорты `alert_sound_path` и `telegraph_sound_path` пустые (тишина).
+
 ## Мидтерм — этап 1
 
 Структура игры: главное меню → уровень 1 → уровень 2 → уровень 3 (арена) → экран победы.

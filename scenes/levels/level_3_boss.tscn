@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/wood-structure.tscn" id="wood_structure"]
 [ext_resource type="PackedScene" path="res://scenes/props/floor-detail.tscn" id="floor_detail"]
 [ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="coin"]
-[ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="exit"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/boss.tscn" id="boss"]
 [ext_resource type="PackedScene" path="res://scenes/systems/lighting.tscn" id="lighting"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="player"]
 [ext_resource type="PackedScene" path="res://scenes/props/kill_zone.tscn" id="kill"]
@@ -75,6 +75,8 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 2.5, 0.1, 5)
 [node name="BossSpawn" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.1, 0)
 
+[node name="Boss" parent="BossSpawn" instance=ExtResource("boss")]
+
 [node name="Coins" type="Node3D" parent="."]
 
 [node name="Coin1" parent="Coins" instance=ExtResource("coin")]
@@ -88,9 +90,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2, 1.2, -6.5)
 
 [node name="Coin4" parent="Coins" instance=ExtResource("coin")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2, 1.2, 6.5)
-
-[node name="Exit" parent="." instance=ExtResource("exit")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.1, -6.6)
 
 [node name="Lighting" parent="." instance=ExtResource("lighting")]
 

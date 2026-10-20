@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/Map/character-vampire.glb" id="2_model"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Вампир"
+model = ExtResource("2_model")
+model_scale = 1.4
+max_hp = 1
+walk_speed = 2.2
+run_speed = 4.2
+sight_radius = 9.0
+lose_radius = 12.0
+attack_range = 1.0
+attack_damage = 1
+attack_windup = 0.35
+attack_cooldown = 0.9
