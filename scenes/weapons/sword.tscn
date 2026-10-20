@@ -3,10 +3,12 @@
 [ext_resource type="Script" path="res://scripts/weapons/sword.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://10vjxdluiayx" path="res://assets/Map/weapon-sword.glb" id="2_model"]
 [ext_resource type="PackedScene" path="res://scenes/weapons/slash.tscn" id="3_slash"]
+[ext_resource type="PackedScene" path="res://scenes/fx/slash_arc.tscn" id="4_arc"]
 
 [node name="Sword" type="Node3D"]
 script = ExtResource("1_script")
 slash_scene = ExtResource("3_slash")
+arc_scene = ExtResource("4_arc")
 
 [node name="Pivot" type="Node3D" parent="."]
 

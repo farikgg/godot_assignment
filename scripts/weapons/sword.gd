@@ -10,6 +10,10 @@ const GRIP_Y: float = -0.05
 @export var cooldown: float = 0.5
 @export_file("*.ogg", "*.wav") var swing_sound_path: String = ""
 @export var slash_scene: PackedScene
+## Visible trail of the swing (the Slash hitbox itself is invisible).
+@export var arc_scene: PackedScene
+## Trail height above the hero's feet, metres.
+@export var arc_height: float = 0.6
 ## Hitbox centre in front of the hero, metres.
 @export var slash_distance: float = 0.9
 ## Blade length in metres (guard to tip); default ≈ 0.9 of the heroes' 0.39 m arm.
@@ -100,3 +104,9 @@ func _spawn_slash() -> void:
 	parent.add_child(slash)
 	slash.global_transform = Transform3D(Basis.looking_at(facing, Vector3.UP),
 		_player.global_position + Vector3(0.0, 0.5, 0.0) + facing * slash_distance)
+	if arc_scene != null:
+		var arc: Node3D = arc_scene.instantiate() as Node3D
+		parent.add_child(arc)
+		# the arc opens along its -Z, centred on the hero
+		arc.global_transform = Transform3D(Basis.looking_at(facing, Vector3.UP),
+			_player.global_position + Vector3.UP * arc_height)
