@@ -29,6 +29,10 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="touch"]
 [ext_resource type="PackedScene" path="res://scenes/systems/camera_rig.tscn" id="camera"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="pause"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/minion.tscn" id="minion"]
+[ext_resource type="Resource" path="res://resources/enemies/skeleton.tres" id="data_skeleton"]
+[ext_resource type="Resource" path="res://resources/enemies/vampire.tres" id="data_vampire"]
+[ext_resource type="Resource" path="res://resources/enemies/zombie.tres" id="data_zombie"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("level")
@@ -110,6 +114,21 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, -0, 0, 2, 33.7, 0.1, 3.2)
 
 [node name="SawPatrol" parent="Enemies" instance=ExtResource("saw_patrol")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 7.4, 0.1, 0.5)
+[node name="Skeleton" parent="Enemies" instance=ExtResource("minion")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 0.1, -1.5)
+data = ExtResource("data_skeleton")
+patrol_offset = Vector3(0, 0, 3.0)
+
+[node name="Zombie" parent="Enemies" instance=ExtResource("minion")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0.1, 1.5)
+data = ExtResource("data_zombie")
+patrol_offset = Vector3(5.0, 0, 0)
+
+[node name="Vampire" parent="Enemies" instance=ExtResource("minion")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.5, 0.1, 1.0)
+data = ExtResource("data_vampire")
+patrol_offset = Vector3(-4.0, 0, 0)
+
 
 [node name="Spawner" parent="." instance=ExtResource("spawner_cave_in")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 25.2, 0, 4)

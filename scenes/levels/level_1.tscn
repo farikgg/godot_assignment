@@ -34,6 +34,8 @@
 [ext_resource type="PackedScene" path="res://scenes/props/platform_block.tscn" id="t_block"]
 [ext_resource type="PackedScene" path="res://scenes/props/kill_zone.tscn" id="t_kill"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/potion_pickup.tscn" id="t_potion"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/minion.tscn" id="minion"]
+[ext_resource type="Resource" path="res://resources/enemies/skeleton.tres" id="data_skeleton"]
 
 [node name="Main" type="Node3D" unique_id=1563209637]
 script = ExtResource("1_0cso3")
@@ -290,6 +292,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 6.4, 0.1, 3)
 
 [node name="Saw" parent="Enemies" unique_id=1584203317 instance=ExtResource("j_saw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.66895, 0.1, 1.33)
+[node name="Skeleton" parent="Enemies" instance=ExtResource("minion")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0.1, -3.6)
+data = ExtResource("data_skeleton")
+patrol_offset = Vector3(0, 0, -3.0)
+
 
 [node name="SwordPickup" parent="." unique_id=1771300090 instance=ExtResource("s_sword_pickup")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45283628, 0.8, 5.7723536)
