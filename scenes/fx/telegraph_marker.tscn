@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/fx/telegraph_marker.gd" id="1_script"]
+
+[node name="TelegraphMarker" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Circle" type="MeshInstance3D" parent="."]
+
+[node name="Mark" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+visible = false
+cast_shadow = 0
+pixel_size = 0.01
+billboard = 1
+no_depth_test = true
+modulate = Color(1, 0.25, 0.15, 1)
+outline_modulate = Color(0.12, 0.02, 0.02, 1)
+text = "!"
+font_size = 96
+outline_size = 18

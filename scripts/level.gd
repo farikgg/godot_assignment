@@ -14,6 +14,9 @@ const SWORD_HINT_DURATION: float = 3.0
 const RESTART_DELAY: float = 1.5
 ## Pause between reaching the exit and loading the next level, so the toast can be read.
 const EXIT_DELAY: float = 1.5
+const BOSS_AWAKE_TEXT: String = "Страж подземелья пробудился"
+const BOSS_ENRAGED_TEXT: String = "Страж в ярости!"
+const BOSS_DEFEATED_TEXT: String = "Страж повержен!"
 
 ## Shown as a toast when the level starts, e.g. «Уровень 1 — Верхние залы».
 @export var level_title: String = ""
@@ -59,6 +62,9 @@ func _ready() -> void:
 		health.died.connect(_on_player_died)
 		hud.set_hearts(health.current, health.max_hp)
 
+	for boss in get_tree().get_nodes_in_group("boss"):
+		_connect_boss(boss as Boss)
+
 	hud.set_coins(coins_collected, coins_total)
 	hud.set_key(has_key)
 	if not level_title.is_empty():
@@ -91,6 +97,29 @@ func _find_player_health() -> Health:
 	if health == null:
 		push_error("Level: player has no Health child")
 	return health
+
+# the arena: HP bar on the HUD, toasts for the phases, the win screen after the defeat
+func _connect_boss(boss: Boss) -> void:
+	if boss == null:
+		return
+	hud.show_boss_bar(Boss.DISPLAY_NAME, boss.health.current, boss.health.max_hp)
+	boss.health.changed.connect(hud.set_boss_hp)
+	boss.awakened.connect(_show_timed.bind(BOSS_AWAKE_TEXT))
+	boss.enraged.connect(_show_timed.bind(BOSS_ENRAGED_TEXT))
+	boss.died.connect(_on_boss_died)
+	boss.defeated.connect(_on_boss_defeated)
+
+func _on_boss_died() -> void:
+	if _game_over:
+		return
+	# the hero can no longer lose: nothing restarts the level from here
+	_has_won = true
+	hud.show_message(BOSS_DEFEATED_TEXT)
+
+func _on_boss_defeated() -> void:
+	if _game_over:
+		return
+	GameFlow.go_to_win(coins_collected)
 
 func _on_player_died() -> void:
 	if _game_over or _has_won:

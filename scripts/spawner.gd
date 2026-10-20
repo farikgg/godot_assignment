@@ -17,11 +17,12 @@ extends Node3D
 @export var shadow_color: Color = Color(0.05, 0.05, 0.09, 0.55)
 ## Optional rumble played when a drop is telegraphed.
 @export_file("*.ogg", "*.wav") var rumble_sound_path: String = ""
+## Warning circle scene (shared with the boss's fire rain).
+@export var marker_scene: PackedScene = preload("res://scenes/fx/telegraph_marker.tscn")
 
 var _rng := RandomNumberGenerator.new()
 var _timer: Timer
 var _pending: int = 0
-var _shadow_mesh: CylinderMesh
 var _rumble: AudioStream
 var _weights := PackedFloat32Array()
 var _valid: bool = false
@@ -29,7 +30,6 @@ var _valid: bool = false
 func _ready() -> void:
 	_rng.randomize()
 	_valid = _validate_weights()
-	_shadow_mesh = _make_shadow_mesh()
 	_rumble = Sfx.load_stream(rumble_sound_path)
 	# InvokeRepeating: a looping Timer that stops while the tree is paused
 	_timer = Timer.new()
@@ -60,13 +60,12 @@ func spawn_one() -> bool:
 	var ground_y: float = _ground_height(x, z, drop_y)
 	_pending += 1
 	Sfx.play(_rumble, self)
-	var shadow: MeshInstance3D = _spawn_shadow(Vector3(x, ground_y + 0.03, z))
-	var tween: Tween = shadow.create_tween()
-	tween.tween_property(shadow, "scale", Vector3(1.0, 1.0, 1.0), telegraph_time).from(Vector3(0.15, 1.0, 0.15))
-	tween.finished.connect(_drop.bind(scene, Vector3(x, drop_y, z), shadow))
+	var shadow: TelegraphMarker = _spawn_shadow(Vector3(x, ground_y + 0.03, z))
+	shadow.finished.connect(_drop.bind(scene, Vector3(x, drop_y, z), shadow))
+	shadow.grow(telegraph_time)
 	return true
 
-func _drop(scene: PackedScene, at: Vector3, shadow: MeshInstance3D) -> Hazard:
+func _drop(scene: PackedScene, at: Vector3, shadow: TelegraphMarker) -> Hazard:
 	_pending -= 1
 	if is_instance_valid(shadow):
 		shadow.queue_free()
@@ -87,26 +86,13 @@ func _ground_height(x: float, z: float, from_y: float) -> float:
 	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(query)
 	return (hit["position"] as Vector3).y if not hit.is_empty() else global_position.y
 
-func _spawn_shadow(at: Vector3) -> MeshInstance3D:
-	var shadow := MeshInstance3D.new()
-	shadow.mesh = _shadow_mesh
-	shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+func _spawn_shadow(at: Vector3) -> TelegraphMarker:
+	var shadow: TelegraphMarker = marker_scene.instantiate() as TelegraphMarker
+	shadow.radius = shadow_radius
+	shadow.color = shadow_color
 	get_parent().add_child(shadow)
 	shadow.global_position = at
 	return shadow
-
-func _make_shadow_mesh() -> CylinderMesh:
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.albedo_color = shadow_color
-	var mesh := CylinderMesh.new()
-	mesh.top_radius = shadow_radius
-	mesh.bottom_radius = shadow_radius
-	mesh.height = 0.02
-	mesh.radial_segments = 32
-	mesh.material = material
-	return mesh
 
 func _validate_weights() -> bool:
 	if hazard_scenes.is_empty():

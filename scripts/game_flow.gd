@@ -33,7 +33,9 @@ func restart_level() -> Error:
 		return ERR_DOES_NOT_EXIST
 	return _change_scene(LEVELS[current_index])
 
-func go_to_win() -> Error:
+## Opens the win screen; `coins` are the gold of the level just finished (the boss arena).
+func go_to_win(coins: int = 0) -> Error:
+	total_coins += maxi(coins, 0)
 	current_index = -1
 	return _change_scene(WIN_SCENE)
 
