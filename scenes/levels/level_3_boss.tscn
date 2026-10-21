@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://dq6rrwx86wqig"]
 
 [ext_resource type="PackedScene" path="res://scenes/pickups/sword_pickup.tscn" id="18_lj5j3"]
+[ext_resource type="PackedScene" path="res://scenes/props/abyss_column.tscn" id="abyss_column"]
+[ext_resource type="PackedScene" path="res://scenes/props/abyss_rock.tscn" id="abyss_rock"]
+[ext_resource type="PackedScene" path="res://scenes/fx/ambient_dust.tscn" id="ambient_dust"]
 [ext_resource type="PackedScene" path="res://scenes/props/barrel.tscn" id="barrel"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/boss.tscn" id="boss"]
 [ext_resource type="PackedScene" path="res://scenes/systems/camera_rig.tscn" id="camera"]
 [ext_resource type="PackedScene" uid="uid://com1yoydlpm6f" path="res://scenes/coin.tscn" id="coin"]
 [ext_resource type="PackedScene" path="res://scenes/props/column.tscn" id="column"]
-[ext_resource type="PackedScene" path="res://scenes/props/floor-detail.tscn" id="floor_detail"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="hud"]
 [ext_resource type="PackedScene" path="res://scenes/props/kill_zone.tscn" id="kill"]
 [ext_resource type="Script" uid="uid://o800sigabfwg" path="res://scripts/level.gd" id="level"]
@@ -18,9 +20,6 @@
 [ext_resource type="PackedScene" uid="uid://bgkuco0tckl8e" path="res://scenes/props/stones.tscn" id="stones"]
 [ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="touch"]
 [ext_resource type="PackedScene" uid="uid://e3vwwi846ly2" path="res://scenes/props/wood-structure.tscn" id="wood_structure"]
-[ext_resource type="PackedScene" path="res://scenes/props/abyss_column.tscn" id="abyss_column"]
-[ext_resource type="PackedScene" path="res://scenes/props/abyss_rock.tscn" id="abyss_rock"]
-[ext_resource type="PackedScene" path="res://scenes/fx/ambient_dust.tscn" id="ambient_dust"]
 
 [node name="Main" type="Node3D" unique_id=326689077]
 script = ExtResource("level")
@@ -64,17 +63,31 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -6.4, 0.1, 0)
 [node name="WoodEast" parent="Decor" unique_id=1120531903 instance=ExtResource("wood_structure")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 6.4, 0.1, 0)
 
-[node name="FloorDetail1" parent="Decor" unique_id=44719029 instance=ExtResource("floor_detail")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2, 0.1, 2)
+[node name="Abyss" type="Node3D" parent="Decor" unique_id=2081467584]
 
-[node name="FloorDetail2" parent="Decor" unique_id=589524343 instance=ExtResource("floor_detail")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2, 0.1, -2)
+[node name="Column1" parent="Decor/Abyss" unique_id=1751734666 instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.35, -0.6, -8.35)
 
-[node name="FloorDetail3" parent="Decor" unique_id=1524454430 instance=ExtResource("floor_detail")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2.5, 0.1, -5)
+[node name="Column2" parent="Decor/Abyss" unique_id=810793575 instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.35, -0.6, -8.35)
 
-[node name="FloorDetail4" parent="Decor" unique_id=540102170 instance=ExtResource("floor_detail")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 2.5, 0.1, 5)
+[node name="Column3" parent="Decor/Abyss" unique_id=251641896 instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.35, -0.6, 8.35)
+
+[node name="Rock4" parent="Decor/Abyss" unique_id=1788956748 instance=ExtResource("abyss_rock")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.35, -0.6, 8.35)
+
+[node name="Rock5" parent="Decor/Abyss" unique_id=1746731745 instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.7071, 0, -0.7071, 0, 1, 0, 0.7071, 0, 0.7071, 0, -0.6, -8.6)
+
+[node name="Rock6" parent="Decor/Abyss" unique_id=1606606693 instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.9848, 0, -0.1736, 0, 1, 0, 0.1736, 0, 0.9848, 8.6, -0.6, 0)
+
+[node name="Rock7" parent="Decor/Abyss" unique_id=368049363 instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.342, 0, -0.9397, 0, 1, 0, 0.9397, 0, 0.342, -8.6, -0.6, 1.5)
+
+[node name="Rock8" parent="Decor/Abyss" unique_id=1210990571 instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.9063, 0, -0.4226, 0, 1, 0, 0.4226, 0, 0.9063, 1, -0.6, 8.6)
 
 [node name="BossSpawn" type="Marker3D" parent="." unique_id=2051348179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
@@ -95,33 +108,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1.2, -6.5)
 [node name="Coin4" parent="Coins" unique_id=2067476470 instance=ExtResource("coin")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.2, 6.5)
 
-[node name="Abyss" type="Node3D" parent="Decor"]
-
-[node name="Column1" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.35, -0.6, -8.35)
-
-[node name="Column2" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.35, -0.6, -8.35)
-
-[node name="Column3" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.35, -0.6, 8.35)
-
-[node name="Rock4" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.35, -0.6, 8.35)
-
-[node name="Rock5" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
-transform = Transform3D(0.7071, 0, -0.7071, 0, 1, 0, 0.7071, 0, 0.7071, 0, -0.6, -8.6)
-
-[node name="Rock6" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
-transform = Transform3D(0.9848, 0, -0.1736, 0, 1, 0, 0.1736, 0, 0.9848, 8.6, -0.6, 0)
-
-[node name="Rock7" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
-transform = Transform3D(0.342, 0, -0.9397, 0, 1, 0, 0.9397, 0, 0.342, -8.6, -0.6, 1.5)
-
-[node name="Rock8" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
-transform = Transform3D(0.9063, 0, -0.4226, 0, 1, 0, 0.4226, 0, 0.9063, 1, -0.6, 8.6)
-
-[node name="AmbientDust" parent="." instance=ExtResource("ambient_dust")]
+[node name="AmbientDust" parent="." unique_id=624754376 instance=ExtResource("ambient_dust")]
 
 [node name="Lighting" parent="." unique_id=448117336 instance=ExtResource("lighting")]
 

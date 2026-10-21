@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://o800sigabfwg" path="res://scripts/level.gd" id="1_0cso3"]
 [ext_resource type="PackedScene" uid="uid://com1yoydlpm6f" path="res://scenes/coin.tscn" id="2_2klcf"]
 [ext_resource type="PackedScene" uid="uid://b3b70jygclukh" path="res://scenes/player.tscn" id="3_2lpho"]
+[ext_resource type="PackedScene" path="res://scenes/props/rocks.tscn" id="38_ytidy"]
+[ext_resource type="PackedScene" path="res://scenes/props/abyss_column.tscn" id="abyss_column"]
+[ext_resource type="PackedScene" path="res://scenes/props/abyss_rock.tscn" id="abyss_rock"]
+[ext_resource type="PackedScene" path="res://scenes/fx/ambient_dust.tscn" id="ambient_dust"]
 [ext_resource type="PackedScene" path="res://scenes/props/banner.tscn" id="d_banner"]
 [ext_resource type="PackedScene" path="res://scenes/props/barrel.tscn" id="d_barrel"]
 [ext_resource type="PackedScene" path="res://scenes/props/chair.tscn" id="d_chair"]
@@ -21,43 +25,38 @@
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="g_exit"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap.tscn" id="j_saw"]
 [ext_resource type="PackedScene" path="res://scenes/props/key_pickup.tscn" id="l_key"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/minion.tscn" id="minion"]
 [ext_resource type="PackedScene" path="res://scenes/props/tunnel.tscn" id="m_tunnel"]
 [ext_resource type="PackedScene" uid="uid://bkwmqvj85xlsc" path="res://scenes/props/locked_gate.tscn" id="n_locked_gate"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="r_pause"]
 [ext_resource type="PackedScene" path="res://scenes/systems/camera_rig.tscn" id="s_camera_rig"]
 [ext_resource type="PackedScene" path="res://scenes/props/gate_hint.tscn" id="s_gate_hint"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="s_hud"]
-[ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="s_touch"]
 [ext_resource type="PackedScene" path="res://scenes/systems/lighting.tscn" id="s_lighting"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/sword_pickup.tscn" id="s_sword_pickup"]
-[ext_resource type="PackedScene" path="res://scenes/props/floor_slab.tscn" id="t_slab"]
-[ext_resource type="PackedScene" path="res://scenes/props/platform_block.tscn" id="t_block"]
+[ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="s_touch"]
 [ext_resource type="PackedScene" path="res://scenes/props/kill_zone.tscn" id="t_kill"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/potion_pickup.tscn" id="t_potion"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/minion.tscn" id="minion"]
-[ext_resource type="Resource" path="res://resources/enemies/skeleton.tres" id="data_skeleton"]
-[ext_resource type="PackedScene" path="res://scenes/props/abyss_column.tscn" id="abyss_column"]
-[ext_resource type="PackedScene" path="res://scenes/props/abyss_rock.tscn" id="abyss_rock"]
-[ext_resource type="PackedScene" path="res://scenes/fx/ambient_dust.tscn" id="ambient_dust"]
+[ext_resource type="PackedScene" path="res://scenes/props/floor_slab.tscn" id="t_slab"]
 
 [node name="Main" type="Node3D" unique_id=1563209637]
 script = ExtResource("1_0cso3")
 level_title = "Уровень 1 — Верхние залы"
 
 [node name="Coin6" parent="." unique_id=1355599650 instance=ExtResource("2_2klcf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6, 1.5, 2.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.5, 2.7)
 
 [node name="Coin7" parent="." unique_id=627944915 instance=ExtResource("2_2klcf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0744715, 1.2789707, 4.6362658)
 
 [node name="Coin8" parent="." unique_id=1336429440 instance=ExtResource("2_2klcf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 6.8, 1.9, -0.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 1.9, -0.9)
 
 [node name="Coin9" parent="." unique_id=1112838911 instance=ExtResource("2_2klcf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9648187, 0.95799303, -6.935638)
 
 [node name="Coin10" parent="." unique_id=7637384 instance=ExtResource("2_2klcf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6, 2.1, -5.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.1, -5.6)
 
 [node name="Coin11" parent="." unique_id=1710208152 instance=ExtResource("2_2klcf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4686923, 1.2789707, 6.9019136)
@@ -71,74 +70,65 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5124674, 0.9655471, -6.1333
 [node name="Coin14" parent="." unique_id=516119425 instance=ExtResource("2_2klcf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.616507, 1.2789707, -0.13342762)
 
-[node name="Abyss" type="Node3D" parent="Decor"]
+[node name="Decor#Abyss" type="Node3D" parent="." unique_id=1237191076]
 
-[node name="Column1" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+[node name="Decor_Abyss#Column1" parent="." unique_id=906779171 instance=ExtResource("abyss_column")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.35, -0.6, 6.2)
 
-[node name="Rock2" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+[node name="Decor_Abyss#Rock2" parent="." unique_id=324935170 instance=ExtResource("abyss_rock")]
 transform = Transform3D(0.866, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866, 3.7, -0.6, -5.6)
 
-[node name="Column3" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+[node name="Decor_Abyss#Column3" parent="." unique_id=1502394134 instance=ExtResource("abyss_column")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.65, -0.6, 1.8)
 
-[node name="Rock4" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+[node name="Decor_Abyss#Rock4" parent="." unique_id=1220254794 instance=ExtResource("abyss_rock")]
 transform = Transform3D(0.342, 0, -0.9397, 0, 1, 0, 0.9397, 0, 0.342, -6.2, -0.6, -1.7)
 
-[node name="Column5" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+[node name="Decor_Abyss#Column5" parent="." unique_id=1266239493 instance=ExtResource("abyss_column")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, -0.6, -2.25)
 
-[node name="Rock6" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+[node name="Decor_Abyss#Rock6" parent="." unique_id=1239779026 instance=ExtResource("abyss_rock")]
 transform = Transform3D(0.9659, 0, -0.2588, 0, 1, 0, 0.2588, 0, 0.9659, 2.6, -0.6, -1.5)
 
-[node name="AmbientDust" parent="." instance=ExtResource("ambient_dust")]
+[node name="AmbientDust" parent="." unique_id=395714870 instance=ExtResource("ambient_dust")]
 
 [node name="Lighting" parent="." unique_id=1778103733 instance=ExtResource("s_lighting")]
 
-[node name="Ground" type="Node3D" parent="."]
+[node name="Ground" type="Node3D" parent="." unique_id=742293490]
 
-[node name="FoundationNorth" parent="Ground" instance=ExtResource("t_slab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.1, -9)
+[node name="FoundationNorth" parent="Ground" unique_id=1383751649 instance=ExtResource("t_slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -9)
 size = Vector2(20, 2)
 
-[node name="FoundationSouth" parent="Ground" instance=ExtResource("t_slab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.1, 9)
+[node name="FoundationSouth" parent="Ground" unique_id=1774229827 instance=ExtResource("t_slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 9)
 size = Vector2(20, 2)
 
-[node name="FoundationWest" parent="Ground" instance=ExtResource("t_slab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -9, 0.1, 0)
+[node name="FoundationWest" parent="Ground" unique_id=877694900 instance=ExtResource("t_slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0.1, 0)
 size = Vector2(2, 16)
 
-[node name="IslandStart" parent="Ground" instance=ExtResource("t_slab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3, 0.1, 3.6)
+[node name="IslandStart" parent="Ground" unique_id=23467884 instance=ExtResource("t_slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, 3.6)
 size = Vector2(10, 8.8)
 
-[node name="IslandGate" parent="Ground" instance=ExtResource("t_slab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3, 0.1, -5.3)
+[node name="IslandGate" parent="Ground" unique_id=727151389 instance=ExtResource("t_slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -5.3)
 size = Vector2(10, 5.4)
 
-[node name="IslandEast" parent="Ground" instance=ExtResource("t_slab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 7, 0.1, 0)
+[node name="IslandEast" parent="Ground" unique_id=499566915 instance=ExtResource("t_slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0.1, 0)
 size = Vector2(6, 16)
 
-[node name="TunnelFloor" parent="Ground" instance=ExtResource("t_slab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3, 0.1, -15)
+[node name="TunnelFloor" parent="Ground" unique_id=210485833 instance=ExtResource("t_slab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -15)
 size = Vector2(6, 10)
 
-[node name="LedgeLow" parent="Ground" instance=ExtResource("t_block")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6, 0.7, 2.7)
+[node name="KillZone" parent="." unique_id=46457706 instance=ExtResource("t_kill")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0)
 
-[node name="LedgeMid" parent="Ground" instance=ExtResource("t_block")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 6.8, 1.1, -0.9)
-
-[node name="LedgeHigh" parent="Ground" instance=ExtResource("t_block")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6, 1.3, -5.6)
-
-[node name="KillZone" parent="." instance=ExtResource("t_kill")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -6, 0)
-
-[node name="PotionPickup" parent="." instance=ExtResource("t_potion")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4.2, 0.45, -3.8)
+[node name="PotionPickup" parent="." unique_id=1306783086 instance=ExtResource("t_potion")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2, 0.45, -3.8)
 
 [node name="Player" parent="." unique_id=1620244565 instance=ExtResource("3_2lpho")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
@@ -313,15 +303,14 @@ transform = Transform3D(-1.532089, 0, 1.2855752, 0, 2, 0, -1.2855752, 0, -1.5320
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2, 0.1, -6.9)
 
 [node name="Enemy2" parent="Enemies" unique_id=1188465023 instance=ExtResource("g_enemy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 6.4, 0.1, 3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.4, 0.1, 3)
 
 [node name="Saw" parent="Enemies" unique_id=1584203317 instance=ExtResource("j_saw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.66895, 0.1, 1.33)
-[node name="Skeleton" parent="Enemies" instance=ExtResource("minion")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0.1, -3.6)
-data = ExtResource("data_skeleton")
-patrol_offset = Vector3(0, 0, -3.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.029084, 0.1, 0.044257283)
 
+[node name="Skeleton" parent="Enemies" unique_id=746132482 instance=ExtResource("minion")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 0.1, -3.6)
+patrol_offset = Vector3(0, 0, -3)
 
 [node name="SwordPickup" parent="." unique_id=1771300090 instance=ExtResource("s_sword_pickup")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45283628, 0.8, 5.7723536)
@@ -349,3 +338,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, -16.5)
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
 
 [node name="PauseMenu" parent="." unique_id=1771300060 instance=ExtResource("r_pause")]
+
+[node name="RocksNW" parent="." unique_id=1676701989 instance=ExtResource("38_ytidy")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -6.001779, -0.097274564, 2.5807374)
+
+[node name="RocksNW2" parent="." unique_id=994586480 instance=ExtResource("38_ytidy")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -6.0206704, -0.00030686706, -5.6880975)

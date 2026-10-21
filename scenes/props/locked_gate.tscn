@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://xwto77xt4g3u" path="res://scripts/locked_gate.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://b47h3fyv6rmx" path="res://assets/Map/iron-fence.glb" id="2_model"]
-[ext_resource type="AudioStream" path="res://assets/Audio/gate_open.wav" id="snd_open_sound"]
+[ext_resource type="AudioStream" uid="uid://ceqchcit55647" path="res://assets/Audio/gate_open.wav" id="snd_open_sound"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]
 size = Vector3(2, 1.758, 0.22)
@@ -99,7 +99,7 @@ shape = SubResource("BoxShape3D_body")
 [node name="Model" parent="Body" unique_id=738561711 instance=ExtResource("2_model")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0.65)
 
-[node name="iron-fence" parent="Body/Model" index="0"]
+[node name="iron-fence" parent="Body/Model" index="0" unique_id=505222210]
 material_override = SubResource("StandardMaterial3D_iron")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=870760451]
@@ -110,5 +110,6 @@ libraries/ = SubResource("AnimationLibrary_vinnd")
 callback_mode_process = 0
 tree_root = SubResource("AnimationNodeStateMachine_g4v7s")
 anim_player = NodePath("../AnimationPlayer")
+parameters/conditions/open = false
 
 [editable path="Body/Model"]
