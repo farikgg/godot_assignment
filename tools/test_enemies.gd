@@ -51,6 +51,9 @@ func _run() -> void:
 	await _test_boss_fight()
 	var code: int = 1 if _failures > 0 else 0
 	print("RESULT: %s, %d failure(s), exit code %d" % ["PASS" if code == 0 else "FAIL", _failures, code])
+	# like GameFlow.quit_game: stop the music and let the audio thread release it, or it leaks at exit
+	root.get_node("MusicPlayer").call("stop_all")
+	await create_timer(0.15, true, false, true).timeout
 	quit(code)
 
 func _test_classes() -> void:
