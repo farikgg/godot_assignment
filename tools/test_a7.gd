@@ -29,6 +29,7 @@ func _run() -> void:
 	_test_no_raw_keys()
 	await _test_on_screen_stick()
 	await _test_arrows_and_camera_keys()
+	await _test_camera_spam()
 	await _test_toast()
 	var code: int = 1 if _failures > 0 else 0
 	print("RESULT: %s, %d failure(s), exit code %d" % ["PASS" if code == 0 else "FAIL", _failures, code])
@@ -206,6 +207,69 @@ func _test_arrows_and_camera_keys() -> void:
 	_check("Q turns the camera left, E turns it back",
 		is_equal_approx(fposmod(after_q - yaw_before, 360.0), 270.0) and is_equal_approx(fposmod(after_e, 360.0), fposmod(yaw_before, 360.0)),
 		"yaw %.1f -> Q %.1f -> E %.1f" % [yaw_before, after_q, after_e])
+	current_scene = null
+	map.queue_free()
+	await process_frame
+
+func _camera_action(pressed: bool) -> void:
+	var event := InputEventAction.new()
+	event.action = &"camera_right"
+	event.pressed = pressed
+	event.strength = 1.0 if pressed else 0.0
+	Input.parse_input_event(event)
+
+# yaw change folded into (-180, 180]
+func _yaw_delta(before: float, after: float) -> float:
+	return wrapf(after - before, -180.0, 180.0)
+
+## Repeated camera presses (one frame, faster than a turn, a finger's repeated touch) turn exactly 90°.
+func _test_camera_spam() -> void:
+	var map: Node3D = (load(MAP_SCENE) as PackedScene).instantiate() as Node3D
+	root.add_child(map)
+	current_scene = map
+	var pivot: Node3D = map.get_node("CameraPivot") as Node3D
+	var turn_time: float = pivot.get("turn_duration")
+	for i in 5:
+		await process_frame
+
+	var yaw: float = pivot.rotation_degrees.y
+	for i in 5:
+		_camera_action(true)
+		_camera_action(false)
+	await create_timer(turn_time + 0.25).timeout
+	_check("5 camera_right in one frame turn exactly 90°", is_equal_approx(_yaw_delta(yaw, pivot.rotation_degrees.y), 90.0),
+		"%.1f -> %.1f" % [yaw, pivot.rotation_degrees.y])
+
+	yaw = pivot.rotation_degrees.y
+	for i in 5:
+		_camera_action(true)
+		_camera_action(false)
+		await create_timer(turn_time / 6.0).timeout
+	await create_timer(turn_time + 0.25).timeout
+	_check("5 camera_right faster than a turn give exactly 90°", is_equal_approx(_yaw_delta(yaw, pivot.rotation_degrees.y), 90.0),
+		"%.1f -> %.1f" % [yaw, pivot.rotation_degrees.y])
+
+	# the on-screen button: a finger's pressed event arriving again must not press twice
+	var button: Control = map.get_node("TouchControls/Root/CameraRightButton") as Control
+	var at: Vector2 = root.get_final_transform() * button.get_global_rect().get_center()
+	yaw = pivot.rotation_degrees.y
+	for i in 3:
+		var touch := InputEventScreenTouch.new()
+		touch.index = 0
+		touch.position = at
+		touch.pressed = true
+		Input.parse_input_event(touch)
+	await process_frame
+	var held: bool = (button as TouchActionButton).is_pressed()
+	var lift := InputEventScreenTouch.new()
+	lift.index = 0
+	lift.position = at
+	lift.pressed = false
+	Input.parse_input_event(lift)
+	await create_timer(turn_time + 0.25).timeout
+	_check("repeated touches of one finger on the camera button turn exactly 90°",
+		held and not (button as TouchActionButton).is_pressed() and is_equal_approx(_yaw_delta(yaw, pivot.rotation_degrees.y), 90.0),
+		"held=%s yaw %.1f -> %.1f" % [held, yaw, pivot.rotation_degrees.y])
 	current_scene = null
 	map.queue_free()
 	await process_frame

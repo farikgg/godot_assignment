@@ -11,6 +11,9 @@ const STEP_DEGREES: float = 90.0
 # folded back into 0–360 once the turn is over
 var _target_yaw: float = 0.0
 var _tween: Tween
+# set the moment a turn command is accepted and cleared only when its tween finishes,
+# so any number of presses arriving in one frame or during the turn count as one
+var _turning: bool = false
 var _target: Node3D
 
 func _ready() -> void:
@@ -38,16 +41,28 @@ func _ground_point() -> Vector3:
 	return Vector3(_target.global_position.x, global_position.y, _target.global_position.z)
 
 func _unhandled_input(event: InputEvent) -> void:
-	# one turn at a time: presses during a turn are dropped
-	if _tween != null and _tween.is_running():
-		return
 	# allow_echo = false: holding the key must not repeat the turn
+	var direction: float = 0.0
 	if event.is_action_pressed("camera_left", false):
-		_turn_by(-STEP_DEGREES)
-		get_viewport().set_input_as_handled()
+		direction = -1.0
 	elif event.is_action_pressed("camera_right", false):
-		_turn_by(STEP_DEGREES)
-		get_viewport().set_input_as_handled()
+		direction = 1.0
+	else:
+		return
+	# swallow the press either way, so nothing else reacts to it
+	get_viewport().set_input_as_handled()
+	turn(direction)
+
+## Starts a 90° turn (direction −1 / +1); ignored while a turn is in progress. True if it started.
+func turn(direction: float) -> bool:
+	if _turning or is_zero_approx(direction):
+		return false
+	_turning = true
+	_turn_by(STEP_DEGREES * signf(direction))
+	return true
+
+func is_turning() -> bool:
+	return _turning
 
 func _turn_by(delta_degrees: float) -> void:
 	_target_yaw += delta_degrees
@@ -61,3 +76,4 @@ func _turn_by(delta_degrees: float) -> void:
 func _on_turn_finished() -> void:
 	_target_yaw = fposmod(_target_yaw, 360.0)
 	rotation_degrees.y = _target_yaw
+	_turning = false

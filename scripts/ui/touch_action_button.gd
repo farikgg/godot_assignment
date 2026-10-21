@@ -42,10 +42,15 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		var touch: InputEventScreenTouch = event
-		if touch.pressed and _pointer == NO_POINTER and _hit(touch.position):
-			_press(touch.index)
-		elif not touch.pressed and touch.index == _pointer:
+		if touch.index == _pointer:
+			# the finger that holds the button: only its lift (or a cancelled touch) counts;
+			# a repeated pressed event for the same finger must not press again
+			if touch.pressed and not touch.canceled:
+				get_viewport().set_input_as_handled()
+				return
 			_release()
+		elif touch.pressed and not touch.canceled and _pointer == NO_POINTER and _hit(touch.position):
+			_press(touch.index)
 		else:
 			return
 	elif event is InputEventMouseButton:
@@ -73,12 +78,16 @@ func _hit(point: Vector2) -> bool:
 	return is_visible_in_tree() and get_global_rect().has_point(point)
 
 func _press(pointer: int) -> void:
+	if _pointer != NO_POINTER:
+		return
 	_pointer = pointer
 	_highlight.visible = true
 	scale = Vector2.ONE * PRESSED_SCALE
 	_send(true)
 
 func _release() -> void:
+	if _pointer == NO_POINTER:
+		return
 	_pointer = NO_POINTER
 	_highlight.visible = false
 	scale = Vector2.ONE
