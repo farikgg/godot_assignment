@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/hazards/bomb_hazard.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://7qdwxgq7undh" path="res://assets/Map/barrel.glb" id="3_keg"]
 [ext_resource type="PackedScene" path="res://scenes/fx/explosion_burst.tscn" id="4_burst"]
+[ext_resource type="AudioStream" path="res://assets/Audio/explosion.wav" id="snd_explosion_sound"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_keg"]
 height = 0.58
@@ -30,6 +31,7 @@ height = 0.1
 
 [node name="Bomb" type="RigidBody3D"]
 script = ExtResource("1_script")
+explosion_sound = ExtResource("snd_explosion_sound")
 explosion_fx = ExtResource("4_burst")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

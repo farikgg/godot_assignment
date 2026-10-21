@@ -9,7 +9,7 @@ enum State { PATROL, CHASE, ATTACK, DEAD }
 @export var data: EnemyData
 ## Second patrol point relative to the start position (the first one is the start).
 @export var patrol_offset: Vector3 = Vector3(4.0, 0.0, 0.0)
-@export_file("*.ogg", "*.wav") var alert_sound_path: String = "res://assets/Audio/sfx/orc_alert.wav"
+@export var alert_sound: AudioStream
 ## How far ahead the ledge probe looks, and how deep a step down still counts as floor.
 @export var ledge_probe_distance: float = 0.5
 @export var max_step_down: float = 0.6
@@ -22,7 +22,6 @@ var _patrol_index: int = 1
 var _timer: Timer
 var _struck: bool = false
 var _stuck_left: float = 0.0
-var _alert: AudioStream
 
 func _ready() -> void:
 	if data == null:
@@ -33,7 +32,6 @@ func _ready() -> void:
 	health.current = data.max_hp
 	super._ready()
 	_home = global_position
-	_alert = Sfx.load_stream(alert_sound_path)
 	_timer = Timer.new()
 	_timer.one_shot = true
 	_timer.timeout.connect(_on_timer)
@@ -92,7 +90,7 @@ func _change_state(next: State) -> void:
 	_stuck_left = stuck_time
 	match next:
 		State.CHASE:
-			Sfx.play(_alert, self)
+			Sfx.play(alert_sound, self)
 		State.ATTACK:
 			_struck = false
 			# slow or speed the clip so its swing lands at the end of the wind-up

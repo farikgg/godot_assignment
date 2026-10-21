@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://xwto77xt4g3u" path="res://scripts/locked_gate.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://b47h3fyv6rmx" path="res://assets/Map/iron-fence.glb" id="2_model"]
+[ext_resource type="AudioStream" path="res://assets/Audio/gate_open.wav" id="snd_open_sound"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]
 size = Vector3(2, 1.758, 0.22)
@@ -87,6 +88,7 @@ transitions = ["Start", "closed", SubResource("AnimationNodeStateMachineTransiti
 
 [node name="LockedGate" type="Node3D" unique_id=968738810]
 script = ExtResource("1_script")
+open_sound = ExtResource("snd_open_sound")
 
 [node name="Body" type="AnimatableBody3D" parent="." unique_id=353133351]
 

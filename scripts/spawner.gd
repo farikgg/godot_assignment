@@ -16,21 +16,19 @@ extends Node3D
 @export var shadow_radius: float = 0.7
 @export var shadow_color: Color = Color(0.05, 0.05, 0.09, 0.55)
 ## Optional rumble played when a drop is telegraphed.
-@export_file("*.ogg", "*.wav") var rumble_sound_path: String = "res://assets/Audio/sfx/rumble.wav"
+@export var rumble_sound: AudioStream
 ## Warning circle scene (shared with the boss's fire rain).
 @export var marker_scene: PackedScene = preload("res://scenes/fx/telegraph_marker.tscn")
 
 var _rng := RandomNumberGenerator.new()
 var _timer: Timer
 var _pending: int = 0
-var _rumble: AudioStream
 var _weights := PackedFloat32Array()
 var _valid: bool = false
 
 func _ready() -> void:
 	_rng.randomize()
 	_valid = _validate_weights()
-	_rumble = Sfx.load_stream(rumble_sound_path)
 	# InvokeRepeating: a looping Timer that stops while the tree is paused
 	_timer = Timer.new()
 	_timer.wait_time = interval
@@ -59,7 +57,7 @@ func spawn_one() -> bool:
 	var drop_y: float = global_position.y + spawn_height
 	var ground_y: float = _ground_height(x, z, drop_y)
 	_pending += 1
-	Sfx.play(_rumble, self)
+	Sfx.play(rumble_sound, self)
 	var shadow: TelegraphMarker = _spawn_shadow(Vector3(x, ground_y + 0.03, z))
 	shadow.finished.connect(_drop.bind(scene, Vector3(x, drop_y, z), shadow))
 	shadow.grow(telegraph_time)

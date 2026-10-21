@@ -52,16 +52,20 @@ func go_to_menu() -> Error:
 	return _change_scene(MENU_SCENE)
 
 ## A level opened straight from the editor (F6) registers itself, so restart / next still work.
-## Quits the game cleanly: the music is stopped and the audio thread gets a few frames to
-## release it, otherwise 8-bit_sound.ogg leaks at exit. Also used for closing the window.
-func quit_game() -> void:
+## Quits the game cleanly: music and every sound still playing are stopped and the audio thread
+## gets QUIT_DELAY to release them, otherwise their playbacks leak at exit. Also used for closing
+## the window, and by the headless tests (with their exit code).
+func quit_game(exit_code: int = 0) -> void:
 	if _quitting:
 		return
 	_quitting = true
-	get_tree().paused = false
+	# frozen while the audio thread catches up, so the game can't start new sounds meanwhile
+	get_tree().paused = true
 	MusicPlayer.stop_all()
+	for node in get_tree().root.find_children("*", "AudioStreamPlayer", true, false):
+		(node as AudioStreamPlayer).stop()
 	await get_tree().create_timer(QUIT_DELAY, true, false, true).timeout
-	get_tree().quit()
+	get_tree().quit(exit_code)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:

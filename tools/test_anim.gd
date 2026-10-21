@@ -49,7 +49,8 @@ func _run() -> void:
 
 	var code: int = 1 if _failures > 0 else 0
 	print("RESULT: %s, %d failure(s), exit code %d" % ["PASS" if code == 0 else "FAIL", _failures, code])
-	quit(code)
+	# stops the music and sounds first, so nothing leaks at exit
+	root.get_node("GameFlow").call("quit_game", code)
 
 func _test_gate(map: Node3D) -> void:
 	var gate: Node = map.get_node_or_null("LockedGate")

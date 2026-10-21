@@ -8,7 +8,7 @@ const BLADE_LENGTH: float = 0.348
 const GRIP_Y: float = -0.05
 
 @export var cooldown: float = 0.5
-@export_file("*.ogg", "*.wav") var swing_sound_path: String = "res://assets/Audio/sfx/swing.wav"
+@export var swing_sound: AudioStream
 @export var slash_scene: PackedScene
 ## Visible trail of the swing (the Slash hitbox itself is invisible).
 @export var arc_scene: PackedScene
@@ -39,7 +39,8 @@ func _ready() -> void:
 	assert(_player != null, "Sword must be a child of the player CharacterBody3D")
 	if slash_scene == null:
 		push_error("Sword: slash_scene is not set")
-	_swing_sfx.stream = Sfx.load_stream(swing_sound_path)
+	_swing_sfx.stream = swing_sound
+	_swing_sfx.volume_db = Sfx.volume_db_for(swing_sound)
 	# the player builds its model in its own _ready, which runs after ours
 	_attach_to_hand.call_deferred()
 

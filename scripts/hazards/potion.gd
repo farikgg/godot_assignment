@@ -8,16 +8,14 @@ extends Hazard
 const FULL_HEALTH_TEXT: String = "Здоровье полное"
 
 @export var heal_amount: int = 1
-@export_file("*.ogg", "*.wav") var heal_sound_path: String = "res://assets/Audio/sfx/heal.wav"
+@export var heal_sound: AudioStream
 
 @onready var _pickup_zone: Area3D = $PickupZone
 
-var _heal_sound: AudioStream
 var _taken: bool = false
 
 func _ready() -> void:
 	super._ready()
-	_heal_sound = Sfx.load_stream(heal_sound_path)
 	_pickup_zone.body_entered.connect(_on_pickup_zone_body_entered)
 
 # touching the rigid body itself does nothing; the zone does the work
@@ -45,5 +43,5 @@ func _on_pickup_zone_body_entered(body: Node3D) -> void:
 		return
 	_taken = true
 	health.heal(heal_amount)
-	Sfx.play(_heal_sound, self)
+	Sfx.play(heal_sound, self)
 	queue_free()

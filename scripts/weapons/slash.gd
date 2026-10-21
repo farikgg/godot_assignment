@@ -5,16 +5,13 @@ extends Area3D
 @export var damage: int = 1
 ## Sparks spawned on every body the slash hits (enemy, boss, keg).
 @export var hit_fx: PackedScene
-@export_file("*.ogg", "*.wav") var hit_sound_path: String = "res://assets/Audio/sfx/hit.wav"
-
-var _hit_sound: AudioStream
+@export var hit_sound: AudioStream
 
 # instance ids already hit: every body is hit exactly once
 var _hit: Dictionary = {}
 
 func _ready() -> void:
 	body_entered.connect(_try_hit)
-	_hit_sound = Sfx.load_stream(hit_sound_path)
 	get_tree().create_timer(lifetime, false).timeout.connect(queue_free)
 
 func _physics_process(_delta: float) -> void:
@@ -30,7 +27,7 @@ func _try_hit(body: Node3D) -> void:
 	_hit[body.get_instance_id()] = true
 	# sparks first: a keg or a dying enemy may free itself inside hit_by_weapon
 	_spawn_sparks(body)
-	Sfx.play(_hit_sound, self)
+	Sfx.play(hit_sound, self)
 	body.call("hit_by_weapon", damage)
 
 func _spawn_sparks(body: Node3D) -> void:

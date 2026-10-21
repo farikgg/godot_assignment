@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/weapons/slash.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/fx/hit_sparks.tscn" id="2_sparks"]
+[ext_resource type="AudioStreamRandomizer" path="res://assets/Audio/randomizers/sword_hit.tres" id="snd_hit_sound"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_slash"]
 size = Vector3(1.2, 1.0, 1.2)
@@ -9,6 +10,7 @@ size = Vector3(1.2, 1.0, 1.2)
 [node name="Slash" type="Area3D"]
 monitorable = false
 script = ExtResource("1_script")
+hit_sound = ExtResource("snd_hit_sound")
 hit_fx = ExtResource("2_sparks")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

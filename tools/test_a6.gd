@@ -46,7 +46,8 @@ func _run() -> void:
 	_test_profile_migration()
 	var code: int = 1 if _failures > 0 else 0
 	print("RESULT: %s, %d failure(s), exit code %d" % ["PASS" if code == 0 else "FAIL", _failures, code])
-	quit(code)
+	# stops the music and sounds first, so nothing leaks at exit
+	root.get_node("GameFlow").call("quit_game", code)
 
 func _test_health() -> void:
 	var holder := Node3D.new()
@@ -113,7 +114,7 @@ func _test_spawner() -> void:
 	spawner.set("max_alive", 3)
 	spawner.set("interval", 100.0)
 	spawner.set("telegraph_time", 0.2)
-	spawner.set("rumble_sound_path", "")
+	spawner.set("rumble_sound", null)
 	world.add_child(spawner)
 	await process_frame
 	var started: int = 0
@@ -137,7 +138,7 @@ func _make_spawner(world: Node3D, scenes: Array[PackedScene], weights: Array[flo
 	spawner.set("max_alive", 50)
 	spawner.set("interval", 100.0)
 	spawner.set("telegraph_time", 0.05)
-	spawner.set("rumble_sound_path", "")
+	spawner.set("rumble_sound", null)
 	world.add_child(spawner)
 	return spawner
 

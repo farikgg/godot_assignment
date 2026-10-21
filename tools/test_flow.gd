@@ -38,10 +38,8 @@ func _run() -> void:
 	await _test_kill_zone()
 	var code: int = 1 if _failures > 0 else 0
 	print("RESULT: %s, %d failure(s), exit code %d" % ["PASS" if code == 0 else "FAIL", _failures, code])
-	# like GameFlow.quit_game: stop the music and let the audio thread release it, or it leaks at exit
-	root.get_node("MusicPlayer").call("stop_all")
-	await create_timer(0.15, true, false, true).timeout
-	quit(code)
+	# stops the music and sounds first, so nothing leaks at exit
+	root.get_node("GameFlow").call("quit_game", code)
 
 func _test_order() -> void:
 	var flow: Node = _flow()

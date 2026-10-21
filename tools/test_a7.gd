@@ -33,7 +33,8 @@ func _run() -> void:
 	await _test_toast()
 	var code: int = 1 if _failures > 0 else 0
 	print("RESULT: %s, %d failure(s), exit code %d" % ["PASS" if code == 0 else "FAIL", _failures, code])
-	quit(code)
+	# stops the music and sounds first, so nothing leaks at exit
+	root.get_node("GameFlow").call("quit_game", code)
 
 func _axis(axis: JoyAxis, value: float, device: int = 0) -> void:
 	var motion := InputEventJoypadMotion.new()

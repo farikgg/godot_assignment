@@ -1,13 +1,20 @@
 extends Node
 ## Autoload MusicPlayer: background music for every screen on the Music bus.
-## Menu and win screen — the menu track (A3); levels — music_level; the arena — music_boss
-## (falls back to music_level when the file is missing). Changes crossfade over fade_time;
+## Menu and win screen — the menu track (A3); levels — levels_music; the arena — final_round_music
+## (falls back to levels_music when the file is missing). Changes crossfade over fade_time;
 ## asking for the track that is already playing changes nothing, so moving between levels
 ## does not restart it. Plays during the pause too.
 
 const MENU_TRACK: String = "res://assets/Audio/8-bit_sound.ogg"
-const LEVEL_TRACK: String = "res://assets/Audio/music/music_level.ogg"
-const BOSS_TRACK: String = "res://assets/Audio/music/music_boss.ogg"
+const LEVEL_TRACK: String = "res://assets/Audio/levels_music.wav"
+const BOSS_TRACK: String = "res://assets/Audio/final_round_music.wav"
+## Per-track level so the three recordings sound equally loud (loudest 400 ms: menu −18.3,
+## levels −9.0, arena −15.7 dBFS); the Music bus (−10 dB) keeps all of them under the effects.
+const TRACK_GAIN_DB: Dictionary = {
+	MENU_TRACK: 0.0,
+	LEVEL_TRACK: -9.0,
+	BOSS_TRACK: -2.5,
+}
 const BUS: StringName = &"Music"
 const SILENT_DB: float = -80.0
 ## A track starts this many frames after it is asked for (see play_track).
@@ -85,7 +92,9 @@ func get_volume_linear() -> float:
 	return _volume_linear
 
 func _target_db() -> float:
-	return linear_to_db(_volume_linear) if _volume_linear > 0.0 else SILENT_DB
+	if _volume_linear <= 0.0:
+		return SILENT_DB
+	return linear_to_db(_volume_linear) + TRACK_GAIN_DB.get(_current_path, 0.0)
 
 func _set_loop(stream: AudioStream) -> void:
 	if stream is AudioStreamOggVorbis:
@@ -93,7 +102,12 @@ func _set_loop(stream: AudioStream) -> void:
 	elif stream is AudioStreamMP3:
 		(stream as AudioStreamMP3).loop = true
 	elif stream is AudioStreamWAV:
-		(stream as AudioStreamWAV).loop_mode = AudioStreamWAV.LOOP_FORWARD
+		# the music WAVs are imported with a forward loop; this only covers one that is not
+		var wav: AudioStreamWAV = stream as AudioStreamWAV
+		if wav.loop_mode == AudioStreamWAV.LOOP_DISABLED:
+			wav.loop_begin = 0
+			wav.loop_end = int(wav.get_length() * wav.mix_rate)
+			wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
 
 func _release(player: AudioStreamPlayer) -> void:
 	player.stop()

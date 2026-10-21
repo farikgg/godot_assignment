@@ -51,9 +51,11 @@ const DISPLAY_NAME: String = "Страж подземелья"
 @export var aura_color: Color = Color(1.0, 0.2, 0.08, 1.0)
 @export var anim_telegraph: StringName = &"crouch"
 ## Roar on waking up and on every wind-up.
-@export_file("*.ogg", "*.wav") var roar_sound_path: String = "res://assets/Audio/sfx/boss_roar.wav"
+@export var roar_sound: AudioStream
 ## One whoosh per fan volley and per rain call.
-@export_file("*.ogg", "*.wav") var fireball_sound_path: String = "res://assets/Audio/sfx/fireball.wav"
+@export var fireball_sound: AudioStream
+## Phase 2 starts (played with the «Страж в ярости!» toast).
+@export var enraged_sound: AudioStream
 
 @onready var _state_timer: Timer = $StateTimer
 @onready var _muzzle: Marker3D = $Visual/Muzzle
@@ -70,7 +72,6 @@ var _hero_start: Vector3 = Vector3.ZERO
 var _ring_material: StandardMaterial3D
 var _aura_tween: Tween
 var _rng := RandomNumberGenerator.new()
-var _fireball_sound: AudioStream
 
 func _ready() -> void:
 	super._ready()
@@ -81,8 +82,8 @@ func _ready() -> void:
 	_tint_model()
 	_ring_material = (_aura_ring.mesh.surface_get_material(0) as StandardMaterial3D).duplicate() as StandardMaterial3D
 	_aura_ring.material_override = _ring_material
-	_telegraph_sfx.stream = Sfx.load_stream(roar_sound_path)
-	_fireball_sound = Sfx.load_stream(fireball_sound_path)
+	_telegraph_sfx.stream = roar_sound
+	_telegraph_sfx.volume_db = Sfx.volume_db_for(roar_sound)
 	_state_timer.one_shot = true
 	_state_timer.timeout.connect(_on_state_timeout)
 	var hero: Node3D = get_hero()
@@ -203,7 +204,7 @@ func fire_fan() -> void:
 	var aim: Vector3 = (hero.global_position - global_position) if hero != null else get_facing()
 	aim.y = 0.0
 	aim = aim.normalized() if aim.length_squared() > 0.0001 else get_facing()
-	Sfx.play(_fireball_sound, self)
+	Sfx.play(fireball_sound, self)
 	var count: int = current_fan_count()
 	var spread: float = enraged_fan_spread_degrees if _enraged else fan_spread_degrees
 	for i in count:
@@ -221,7 +222,7 @@ func _call_rain() -> void:
 	var hero: Node3D = get_live_hero()
 	if hero == null or rain_drop_scene == null:
 		return
-	Sfx.play(_fireball_sound, self)
+	Sfx.play(fireball_sound, self)
 	var count: int = current_rain_count()
 	var base_angle: float = _rng.randf() * TAU
 	for i in count:
@@ -250,6 +251,7 @@ func _projectile_parent() -> Node:
 func _on_damaged() -> void:
 	if not _enraged and health.current * 2 <= health.max_hp:
 		_enraged = true
+		Sfx.play(enraged_sound, self)
 		enraged.emit()
 
 func _on_died() -> void:

@@ -5,6 +5,9 @@
 [ext_resource type="Script" path="res://scripts/health.gd" id="3_health"]
 [ext_resource type="Script" path="res://scripts/input/player_input_handler.gd" id="6_input"]
 [ext_resource type="Script" path="res://scripts/blob_shadow.gd" id="7_shadow"]
+[ext_resource type="AudioStream" path="res://assets/Audio/hurt.wav" id="snd_hurt_sound"]
+[ext_resource type="AudioStream" path="res://assets/Audio/jump.wav" id="snd_jump_sound"]
+[ext_resource type="AudioStream" path="res://assets/Audio/death.wav" id="snd_death_sound"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.3
@@ -29,6 +32,9 @@ rings = 1
 
 [node name="Player" type="CharacterBody3D" unique_id=473262185 groups=["player"]]
 script = ExtResource("1_3vyb7")
+hurt_sound = ExtResource("snd_hurt_sound")
+jump_sound = ExtResource("snd_jump_sound")
+death_sound = ExtResource("snd_death_sound")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1893843639]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)

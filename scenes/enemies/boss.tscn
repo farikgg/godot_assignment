@@ -5,6 +5,8 @@
 [ext_resource type="Script" path="res://scripts/health.gd" id="3_health"]
 [ext_resource type="PackedScene" path="res://scenes/projectiles/fireball.tscn" id="4_fireball"]
 [ext_resource type="PackedScene" path="res://scenes/projectiles/fire_rain_drop.tscn" id="5_rain"]
+[ext_resource type="AudioStreamRandomizer" path="res://assets/Audio/randomizers/boss_roar.tres" id="snd_roar_sound"]
+[ext_resource type="AudioStream" path="res://assets/Audio/boss_sound/angry.wav" id="snd_enraged_sound"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.75
@@ -25,6 +27,8 @@ ring_segments = 8
 
 [node name="Boss" type="CharacterBody3D"]
 script = ExtResource("1_script")
+roar_sound = ExtResource("snd_roar_sound")
+enraged_sound = ExtResource("snd_enraged_sound")
 knockback_speed = 0.0
 free_delay = 0.0
 fireball_scene = ExtResource("4_fireball")
