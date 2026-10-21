@@ -8,7 +8,7 @@ const BLADE_LENGTH: float = 0.348
 const GRIP_Y: float = -0.05
 
 @export var cooldown: float = 0.5
-@export_file("*.ogg", "*.wav") var swing_sound_path: String = ""
+@export_file("*.ogg", "*.wav") var swing_sound_path: String = "res://assets/Audio/sfx/swing.wav"
 @export var slash_scene: PackedScene
 ## Visible trail of the swing (the Slash hitbox itself is invisible).
 @export var arc_scene: PackedScene

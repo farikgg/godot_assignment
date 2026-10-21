@@ -9,7 +9,7 @@ enum State { PATROL, CHASE, ATTACK, DEAD }
 @export var data: EnemyData
 ## Second patrol point relative to the start position (the first one is the start).
 @export var patrol_offset: Vector3 = Vector3(4.0, 0.0, 0.0)
-@export_file("*.ogg", "*.wav") var alert_sound_path: String = ""
+@export_file("*.ogg", "*.wav") var alert_sound_path: String = "res://assets/Audio/sfx/orc_alert.wav"
 ## How far ahead the ledge probe looks, and how deep a step down still counts as floor.
 @export var ledge_probe_distance: float = 0.5
 @export var max_step_down: float = 0.6

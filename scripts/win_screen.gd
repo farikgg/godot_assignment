@@ -10,6 +10,7 @@ const MENU_TEXT: String = "В главное меню"
 @onready var _menu_button: Button = %MenuButton
 
 func _ready() -> void:
+	MusicPlayer.play_menu()
 	_title.text = TITLE_TEXT
 	_gold.text = GOLD_TEXT % GameFlow.total_coins
 	_menu_button.text = MENU_TEXT

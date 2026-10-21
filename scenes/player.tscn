@@ -61,12 +61,14 @@ script = ExtResource("3_health")
 blink_target = NodePath("../Visual")
 
 [node name="HurtSfx" type="AudioStreamPlayer" parent="." unique_id=1771300040]
+bus = &"SFX"
 max_polyphony = 4
 
 [node name="InputHandler" type="Node" parent="." unique_id=1771300100]
 script = ExtResource("6_input")
 
 [node name="JumpSfx" type="AudioStreamPlayer" parent="." unique_id=1771300120]
+bus = &"SFX"
 max_polyphony = 2
 
 [node name="BlobShadow" type="MeshInstance3D" parent="." unique_id=1771300121]

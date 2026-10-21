@@ -3,7 +3,7 @@ extends Area3D
 # spin and bob live in the spin_bob clip of the AnimationPlayer
 signal collected
 
-@export_file("*.ogg", "*.wav") var pickup_sound_path: String = ""
+@export_file("*.ogg", "*.wav") var pickup_sound_path: String = "res://assets/Audio/sfx/coin.wav"
 
 var _pickup_sound: AudioStream
 

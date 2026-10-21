@@ -20,6 +20,8 @@ const BOSS_DEFEATED_TEXT: String = "Страж повержен!"
 
 ## Shown as a toast when the level starts, e.g. «Уровень 1 — Верхние залы».
 @export var level_title: String = ""
+## Played when the exit is reached and when the boss falls.
+@export_file("*.ogg", "*.wav") var win_sound_path: String = "res://assets/Audio/sfx/win.wav"
 
 @onready var hud: Hud = $HUD
 
@@ -28,10 +30,13 @@ var coins_total: int = 0
 var has_key: bool = false
 var _has_won: bool = false
 var _game_over: bool = false
+var _win_sound: AudioStream
 
 func _ready() -> void:
 	assert(hud != null, "Level needs a HUD instance (scenes/ui/hud.tscn)")
 	GameFlow.register_level(scene_file_path)
+	MusicPlayer.play_level(not get_tree().get_nodes_in_group("boss").is_empty())
+	_win_sound = Sfx.load_stream(win_sound_path)
 	hud.set_player_name(Profile.player_name)
 
 	var coins: Array[Node] = get_tree().get_nodes_in_group("coins")
@@ -114,6 +119,7 @@ func _on_boss_died() -> void:
 		return
 	# the hero can no longer lose: nothing restarts the level from here
 	_has_won = true
+	Sfx.play(_win_sound, self)
 	hud.show_message(BOSS_DEFEATED_TEXT)
 
 func _on_boss_defeated() -> void:
@@ -135,6 +141,7 @@ func _on_exit_reached() -> void:
 	if _has_won or _game_over:
 		return
 	_has_won = true
+	Sfx.play(_win_sound, self)
 	var last: bool = GameFlow.current_index >= GameFlow.LEVELS.size() - 1
 	hud.show_message(WIN_TEXT if last else LEVEL_DONE_TEXT)
 	await get_tree().create_timer(EXIT_DELAY, false).timeout

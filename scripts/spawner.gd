@@ -16,7 +16,7 @@ extends Node3D
 @export var shadow_radius: float = 0.7
 @export var shadow_color: Color = Color(0.05, 0.05, 0.09, 0.55)
 ## Optional rumble played when a drop is telegraphed.
-@export_file("*.ogg", "*.wav") var rumble_sound_path: String = ""
+@export_file("*.ogg", "*.wav") var rumble_sound_path: String = "res://assets/Audio/sfx/rumble.wav"
 ## Warning circle scene (shared with the boss's fire rain).
 @export var marker_scene: PackedScene = preload("res://scenes/fx/telegraph_marker.tscn")
 

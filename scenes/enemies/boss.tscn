@@ -64,3 +64,4 @@ light_energy = 1.5
 omni_range = 5.0
 
 [node name="TelegraphSfx" type="AudioStreamPlayer" parent="."]
+bus = &"SFX"

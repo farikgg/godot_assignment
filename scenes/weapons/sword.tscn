@@ -15,4 +15,5 @@ arc_scene = ExtResource("4_arc")
 [node name="Model" parent="Pivot" instance=ExtResource("2_model")]
 
 [node name="SwingSfx" type="AudioStreamPlayer" parent="."]
+bus = &"SFX"
 max_polyphony = 4

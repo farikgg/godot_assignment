@@ -11,8 +11,9 @@ extends CharacterBody3D
 @export var knockback_time: float = 0.25
 ## Horizontal speed above which the run animation plays.
 @export var run_threshold: float = 0.5
-@export_file("*.ogg", "*.wav") var hurt_sound_path: String = ""
-@export_file("*.ogg", "*.wav") var jump_sound_path: String = ""
+@export_file("*.ogg", "*.wav") var hurt_sound_path: String = "res://assets/Audio/sfx/hurt.wav"
+@export_file("*.ogg", "*.wav") var jump_sound_path: String = "res://assets/Audio/sfx/jump.wav"
+@export_file("*.ogg", "*.wav") var death_sound_path: String = "res://assets/Audio/sfx/death.wav"
 
 @onready var visual: Node3D = $Visual
 @onready var health: Health = $Health
@@ -22,6 +23,7 @@ extends CharacterBody3D
 @onready var input_handler: PlayerInputHandler = $InputHandler
 
 var _data: CharacterData
+var _death_sound: AudioStream
 var _model: Node3D
 var _anim: AnimationPlayer
 var _skeleton: Skeleton3D
@@ -40,6 +42,7 @@ func _ready() -> void:
 	_build_model()
 	hurt_sfx.stream = Sfx.load_stream(hurt_sound_path)
 	jump_sfx.stream = Sfx.load_stream(jump_sound_path)
+	_death_sound = Sfx.load_stream(death_sound_path)
 	health.died.connect(_on_died)
 	health.changed.connect(_on_health_changed)
 	_last_hp = health.current
@@ -216,5 +219,6 @@ func _on_health_changed(current: int, _max_hp: int) -> void:
 
 func _on_died() -> void:
 	_is_dead = true
+	Sfx.play(_death_sound, self)
 	if _data != null and not _play_action(_data.anim_die):
 		_action_playing = true

@@ -5,7 +5,6 @@
 [ext_resource type="Script" path="res://scripts/title_label.gd" id="6_title"]
 [ext_resource type="PackedScene" path="res://scenes/ui/character_select.tscn" id="7_select"]
 [ext_resource type="Script" uid="uid://cs0w83a1volfc" path="res://scripts/main_menu.gd" id="2_ekxnf"]
-[ext_resource type="AudioStream" uid="uid://8v83gducqjtt" path="res://assets/Audio/8-bit_sound.ogg" id="3_bqqt6"]
 
 [node name="MainMenu" type="Control" unique_id=846265366]
 layout_mode = 3
@@ -139,10 +138,6 @@ text = "Назад"
 
 [node name="CharacterSelect" parent="." unique_id=1771300081 instance=ExtResource("7_select")]
 layout_mode = 1
-
-[node name="Music" type="AudioStreamPlayer" parent="." unique_id=1334639074]
-stream = ExtResource("3_bqqt6")
-autoplay = true
 
 [connection signal="text_changed" from="MainPanel/Buttons/NameField" to="." method="_on_name_field_text_changed"]
 [connection signal="pressed" from="MainPanel/Buttons/ButtonStart" to="." method="_on_button_start_pressed"]
