@@ -33,6 +33,9 @@
 [ext_resource type="Resource" path="res://resources/enemies/skeleton.tres" id="data_skeleton"]
 [ext_resource type="Resource" path="res://resources/enemies/vampire.tres" id="data_vampire"]
 [ext_resource type="Resource" path="res://resources/enemies/zombie.tres" id="data_zombie"]
+[ext_resource type="PackedScene" path="res://scenes/props/abyss_column.tscn" id="abyss_column"]
+[ext_resource type="PackedScene" path="res://scenes/props/abyss_rock.tscn" id="abyss_rock"]
+[ext_resource type="PackedScene" path="res://scenes/fx/ambient_dust.tscn" id="ambient_dust"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("level")
@@ -194,6 +197,34 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.7, 1.1, -2.6)
 
 [node name="Exit" parent="." instance=ExtResource("exit")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 37.7, 0.1, -10.5)
+
+[node name="Abyss" type="Node3D" parent="Decor"]
+
+[node name="Column1" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.35, -0.6, -3)
+
+[node name="Rock2" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.766, 0, -0.6428, 0, 1, 0, 0.6428, 0, 0.766, 5.9, -0.6, 3.2)
+
+[node name="Column3" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.55, -0.6, -3.3)
+
+[node name="Rock4" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.9848, 0, -0.1736, 0, 1, 0, 0.1736, 0, 0.9848, 19.8, -0.6, 2.6)
+
+[node name="Column5" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.85, -0.6, 10.5)
+
+[node name="Rock6" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.5, 0, -0.866, 0, 1, 0, 0.866, 0, 0.5, 30.6, -0.6, -3.1)
+
+[node name="Column7" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.35, -0.6, 3.4)
+
+[node name="Rock8" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.9397, 0, -0.342, 0, 1, 0, 0.342, 0, 0.9397, 4.3, -0.6, 1.5)
+
+[node name="AmbientDust" parent="." instance=ExtResource("ambient_dust")]
 
 [node name="Lighting" parent="." instance=ExtResource("lighting")]
 

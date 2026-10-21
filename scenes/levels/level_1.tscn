@@ -36,6 +36,9 @@
 [ext_resource type="PackedScene" path="res://scenes/pickups/potion_pickup.tscn" id="t_potion"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/minion.tscn" id="minion"]
 [ext_resource type="Resource" path="res://resources/enemies/skeleton.tres" id="data_skeleton"]
+[ext_resource type="PackedScene" path="res://scenes/props/abyss_column.tscn" id="abyss_column"]
+[ext_resource type="PackedScene" path="res://scenes/props/abyss_rock.tscn" id="abyss_rock"]
+[ext_resource type="PackedScene" path="res://scenes/fx/ambient_dust.tscn" id="ambient_dust"]
 
 [node name="Main" type="Node3D" unique_id=1563209637]
 script = ExtResource("1_0cso3")
@@ -67,6 +70,28 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5124674, 0.9655471, -6.1333
 
 [node name="Coin14" parent="." unique_id=516119425 instance=ExtResource("2_2klcf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.616507, 1.2789707, -0.13342762)
+
+[node name="Abyss" type="Node3D" parent="Decor"]
+
+[node name="Column1" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.35, -0.6, 6.2)
+
+[node name="Rock2" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.866, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866, 3.7, -0.6, -5.6)
+
+[node name="Column3" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.65, -0.6, 1.8)
+
+[node name="Rock4" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.342, 0, -0.9397, 0, 1, 0, 0.9397, 0, 0.342, -6.2, -0.6, -1.7)
+
+[node name="Column5" parent="Decor/Abyss" instance=ExtResource("abyss_column")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, -0.6, -2.25)
+
+[node name="Rock6" parent="Decor/Abyss" instance=ExtResource("abyss_rock")]
+transform = Transform3D(0.9659, 0, -0.2588, 0, 1, 0, 0.2588, 0, 0.9659, 2.6, -0.6, -1.5)
+
+[node name="AmbientDust" parent="." instance=ExtResource("ambient_dust")]
 
 [node name="Lighting" parent="." unique_id=1778103733 instance=ExtResource("s_lighting")]
 
