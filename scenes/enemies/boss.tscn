@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/enemies/boss.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://assets/Map/character-orc.glb" id="2_model"]
+[ext_resource type="PackedScene" path="res://assets/Enemies/character-orc.glb" id="2_model"]
 [ext_resource type="Script" path="res://scripts/health.gd" id="3_health"]
 [ext_resource type="PackedScene" path="res://scenes/projectiles/fireball.tscn" id="4_fireball"]
 [ext_resource type="PackedScene" path="res://scenes/projectiles/fire_rain_drop.tscn" id="5_rain"]
