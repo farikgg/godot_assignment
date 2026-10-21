@@ -41,6 +41,7 @@ func _run() -> void:
 	await _test_spawner()
 	await _test_slash()
 	await _test_player()
+	await _test_potion_pickup()
 	_test_roster_fallback()
 	_test_profile_migration()
 	var code: int = 1 if _failures > 0 else 0
@@ -257,6 +258,51 @@ func _test_player() -> void:
 	_check("a rock hits the CharacterBody3D player", health.current == health.max_hp - 2, "hp=%d" % health.current)
 	current_scene = null
 	world.queue_free()
+	await process_frame
+
+# hero at full HP walks into the potion: it stays; hero at 2 HP: healed to 3, potion gone
+func _check_potion(label: String, potion: Node3D, hero: CharacterBody3D, health: Health) -> void:
+	var spot: Vector3 = potion.global_position
+	hero.global_position = spot + Vector3(3.0, 0.0, 0.0)
+	await _physics_frames(5)
+	hero.global_position = Vector3(spot.x, hero.global_position.y, spot.z)
+	await _physics_frames(5)
+	_check("%s: full HP leaves the potion lying" % label, is_instance_valid(potion) and health.current == health.max_hp,
+		"hp %d, potion %s" % [health.current, is_instance_valid(potion)])
+	hero.global_position = spot + Vector3(3.0, 0.0, 0.0)
+	await _physics_frames(5)
+	health.take_damage(1)
+	# the hero's first visit may have nudged the rigid body; walk into where it lies now
+	spot = potion.global_position
+	hero.global_position = Vector3(spot.x, hero.global_position.y, spot.z)
+	await _physics_frames(5)
+	_check("%s: 2 HP -> 3 HP, potion removed" % label, health.current == health.max_hp and not is_instance_valid(potion),
+		"hp %d, potion %s" % [health.current, is_instance_valid(potion)])
+
+func _physics_frames(count: int) -> void:
+	for i in count:
+		await physics_frame
+
+func _test_potion_pickup() -> void:
+	var map: Node3D = (load("res://scenes/levels/level_1.tscn") as PackedScene).instantiate() as Node3D
+	root.add_child(map)
+	current_scene = map
+	var hero: CharacterBody3D = map.get_node("Player") as CharacterBody3D
+	var health: Health = hero.get_node("Health") as Health
+	await _physics_frames(5)
+	await _check_potion("lying potion", map.get_node("PotionPickup") as Node3D, hero, health)
+	# a cave-in potion: dropped on the floor, freezes on landing
+	var dropped: Potion = (load(HAZARD_SCENES["Potion"]) as PackedScene).instantiate() as Potion
+	map.add_child(dropped)
+	dropped.global_position = Vector3(-6.0, 1.5, 6.0)
+	await create_timer(1.5, false).timeout
+	await create_timer(health.invincible_time, false).timeout
+	_check("dropped potion lies frozen on the floor", is_instance_valid(dropped) and dropped.freeze,
+		"freeze %s" % (dropped.freeze if is_instance_valid(dropped) else "freed"))
+	if is_instance_valid(dropped):
+		await _check_potion("dropped potion", dropped, hero, health)
+	current_scene = null
+	map.queue_free()
 	await process_frame
 
 func _test_roster_fallback() -> void:

@@ -140,6 +140,10 @@ func _on_exit_reached() -> void:
 	await get_tree().create_timer(EXIT_DELAY, false).timeout
 	GameFlow.next_level(coins_collected)
 
+## Short hint toast for props (e.g. «Здоровье полное» from a potion).
+func show_hint(text: String) -> void:
+	_show_timed(text)
+
 # short-lived hint; never covers the exit / game-over text
 func _show_timed(text: String) -> void:
 	if not _has_won and not _game_over:

@@ -4,3 +4,4 @@
 
 [node name="PotionPickup" instance=ExtResource("1_potion")]
 lifetime = 100000.0
+freeze = true
