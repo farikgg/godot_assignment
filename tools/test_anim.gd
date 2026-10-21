@@ -10,8 +10,12 @@ const LEVEL_CHECKS: Dictionary = {
 	"res://scenes/levels/level_3_boss.tscn": {"gate": false, "motion": ["coin"]},
 }
 const LOOP_CLIPS: Array[StringName] = [&"spin_bob", &"spin", &"patrol", &"pulse", &"move"]
-# locked gate open height: iron fence 0.879 m x2 + 0.3 clearance
-const GATE_OPEN_Y: float = 2.058
+# the locked gate slides along its local X by its width (the 2 m collision box) minus the 0.2 m the
+# arch pillar already covers: the passage is fully clear and the bars stay hidden inside the 2 m side
+# wall (sliding the full width or more pokes their end out of that wall); Y and Z stay 0
+const GATE_MARGIN: float = -0.2
+## Points across the opening (gate-local X) that must be passable once the gate is open.
+const GATE_PROBES: Array[float] = [-0.7, 0.0, 0.7]
 const SAMPLE_GAP: float = 0.5
 const POSITION_TOLERANCE: float = 0.01
 
@@ -53,18 +57,44 @@ func _run() -> void:
 	root.get_node("GameFlow").call("quit_game", code)
 
 func _test_gate(map: Node3D) -> void:
-	var gate: Node = map.get_node_or_null("LockedGate")
+	var gate: Node3D = map.get_node_or_null("LockedGate") as Node3D
 	var body: Node3D = map.get_node_or_null("LockedGate/Body") as Node3D
-	if gate == null or body == null:
-		_check("locked gate: LockedGate/Body found", false)
+	var shape: CollisionShape3D = map.get_node_or_null("LockedGate/Body/CollisionShape3D") as CollisionShape3D
+	if gate == null or body == null or shape == null:
+		_check("locked gate: LockedGate/Body/CollisionShape3D found", false)
 		return
+	var width: float = (shape.shape as BoxShape3D).size.x
 	await _physics_frames(30)
-	var closed_y: float = body.position.y
-	_check("locked gate closed after 30 physics frames", absf(closed_y) < POSITION_TOLERANCE, "y=%.3f" % closed_y)
+	_check("locked gate closed: Body at (0, 0, 0)", body.position.is_equal_approx(Vector3.ZERO), "pos=%s" % body.position)
+	_check("locked gate blocks the passage while closed", _gate_hit(gate, body))
 	gate.call("open")
 	await _physics_frames(60)
-	var open_y: float = body.position.y
-	_check("locked gate raised 60 frames after open()", absf(open_y - GATE_OPEN_Y) < POSITION_TOLERANCE, "y=%.3f" % open_y)
+	var opened: Vector3 = body.position
+	_check("locked gate slid along local X by its width after open()",
+		absf(opened.x - (width + GATE_MARGIN)) < POSITION_TOLERANCE and absf(opened.y) < POSITION_TOLERANCE
+			and absf(opened.z) < POSITION_TOLERANCE,
+		"pos=%s, width %.2f" % [opened, width])
+	var blocked: Array[float] = []
+	for x in GATE_PROBES:
+		if _gate_hit(gate, body, x):
+			blocked.append(x)
+	_check("the passage is free after open (collision moved with the bars)", blocked.is_empty(), "blocked at x=%s" % [blocked])
+	# the closed clip puts it back
+	var tree: AnimationTree = gate.get_node("AnimationTree") as AnimationTree
+	var player: AnimationPlayer = gate.get_node("AnimationPlayer") as AnimationPlayer
+	tree.active = false
+	player.play(&"closed")
+	await _physics_frames(3)
+	_check("closed clip returns Body to (0, 0, 0)", body.position.is_equal_approx(Vector3.ZERO), "pos=%s" % body.position)
+
+# a ray across the opening at gate-local `x`, chest height: does it hit the gate body?
+func _gate_hit(gate: Node3D, body: Node3D, x: float = 0.0) -> bool:
+	var centre: Vector3 = gate.global_transform * Vector3(x, 0.9, 0.0)
+	var across: Vector3 = gate.global_basis.z.normalized()
+	var query := PhysicsRayQueryParameters3D.create(centre + across, centre - across)
+	query.hit_from_inside = true
+	var hit: Dictionary = gate.get_world_3d().direct_space_state.intersect_ray(query)
+	return not hit.is_empty() and hit["collider"] == body
 
 func _sample(map: Node3D) -> Dictionary:
 	var coin: Node3D = null
