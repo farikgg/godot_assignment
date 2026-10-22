@@ -1,26 +1,24 @@
 class_name VirtualStick
 extends Control
-## On-screen stick that emulates the gamepad's left stick (Unity On-Screen Stick):
-## it sends InputEventJoypadMotion on axes 0 / 1, so the game sees it as one more device.
 
-## Device id of the emulated pad; real pads start at 0, so the virtual one never clashes.
+## номер геймпада, чтобы не смешивать input
 const VIRTUAL_DEVICE: int = 8
 const MOUSE_POINTER: int = -1
 const NO_POINTER: int = -2
 
-## How far the knob may travel from the centre, in pixels; full tilt = 1.0 on the axis.
+## насколько далеко кнопку стика можно отодвинуть от центра
 @export var max_radius: float = 110.0
 
 @onready var _pad: TextureRect = $Pad
-@onready var _highlight: TextureRect = $Highlight
+@onready var _highlight: TextureRect = $Highlight ## обводка
 @onready var _knob: TextureRect = $Knob
 
 var _pointer: int = NO_POINTER
 var _value: Vector2 = Vector2.ZERO
-# with mouse->touch emulation on, the mouse already arrives as touch index 0
 var _read_mouse: bool = false
 
 func _ready() -> void:
+	# в проекте включено эмуляция мыши, без проверки действия мышью бы двоились
 	_read_mouse = not ProjectSettings.get_setting("input_devices/pointing/emulate_touch_from_mouse", false)
 	_highlight.visible = false
 	_center_knob()
@@ -28,8 +26,10 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		var touch: InputEventScreenTouch = event
+		# палец коснулся стика, а стик свободен → захватить
 		if touch.pressed and _pointer == NO_POINTER and _hit(touch.position):
 			_grab(touch.index, touch.position)
+		# отпустили ИМЕННО тот палец, что держал → отпустить
 		elif not touch.pressed and touch.index == _pointer:
 			_release()
 		else:
@@ -42,6 +42,7 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton:
 		var button: InputEventMouseButton = event
 		if not is_primary_click(button):
+		# не левая кнопка
 			return
 		if not _read_mouse:
 			# the emulated touch handles it; just keep the click from becoming an attack
@@ -60,15 +61,12 @@ func _input(event: InputEvent) -> void:
 		_follow((event as InputEventMouseMotion).position)
 	else:
 		return
-	# same as accept_event() for a Control: the touch must not reach the game as an attack
+	# дошли сюда = событие наше → дальше никому не передавать
 	get_viewport().set_input_as_handled()
 
-## Primary (left) mouse button event; the one place that names a mouse button, shared with
-## TouchActionButton so game code never refers to raw buttons.
 static func is_primary_click(event: InputEvent) -> bool:
 	return event is InputEventMouseButton and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT
 
-## Current stick value, -1..1 on both axes (y down = back).
 func value() -> Vector2:
 	return _value
 

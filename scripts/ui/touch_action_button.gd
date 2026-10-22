@@ -1,20 +1,17 @@
 class_name TouchActionButton
 extends Control
-## On-screen button that presses an input action (Unity On-Screen Button):
-## it sends InputEventAction pressed / released, so the game treats it like a key.
 
 const NO_POINTER: int = -2
 const MOUSE_POINTER: int = -1
 const PRESSED_SCALE: float = 0.92
 
 @export var action: StringName
-## Button shape (Kenney Mobile Controls).
+## какое действие жать
 @export var background: Texture2D
-## Purple outline shown while pressed (Kenney Mobile Controls / Highlights).
+## форма кнопки
 @export var highlight: Texture2D
-## Optional glyph drawn on top of the shape.
+## фиолетовая обводка при нажатии
 @export var icon: Texture2D
-## Text on the button when the sprite pack has no icon for this role.
 @export var caption: String = ""
 
 @onready var _background: TextureRect = $Background
@@ -42,17 +39,20 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		var touch: InputEventScreenTouch = event
+		# событие от пальца, который УЖЕ держит кнопку
 		if touch.index == _pointer:
-			# the finger that holds the button: only its lift (or a cancelled touch) counts;
-			# a repeated pressed event for the same finger must not press again
+			# повторное «нажато» тем же пальцем → игнорировать. Баг с камерой
 			if touch.pressed and not touch.canceled:
 				get_viewport().set_input_as_handled()
 				return
+			# палец поднят ИЛИ касание отменено → отпустить
 			_release()
 		elif touch.pressed and not touch.canceled and _pointer == NO_POINTER and _hit(touch.position):
+			# новый палец коснулся свободной кнопки → нажать
 			_press(touch.index)
 		else:
 			return
+	# та же логика что и для "касаний"
 	elif event is InputEventMouseButton:
 		var button: InputEventMouseButton = event
 		if not VirtualStick.is_primary_click(button):
