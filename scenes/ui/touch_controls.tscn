@@ -14,13 +14,23 @@
 [ext_resource type="Texture2D" path="res://assets/Mobile/Highlights B/Large (2×)/direction_left_highlight.png" id="t_left_hl"]
 [ext_resource type="Texture2D" path="res://assets/Mobile/Style A/Large (2×)/direction_right.png" id="t_right"]
 [ext_resource type="Texture2D" path="res://assets/Mobile/Highlights B/Large (2×)/direction_right_highlight.png" id="t_right_hl"]
+[ext_resource type="Script" path="res://scripts/ui/safe_area.gd" id="safe_area"]
 
 [node name="TouchControls" type="CanvasLayer"]
 process_mode = 3
 layer = 5
 script = ExtResource("1_controls")
 
-[node name="Root" type="Control" parent="."]
+[node name="SafeArea" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("safe_area")
+
+[node name="Root" type="Control" parent="SafeArea"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,7 +39,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Stick" type="Control" parent="Root"]
+[node name="Stick" type="Control" parent="SafeArea/Root"]
 layout_mode = 1
 anchors_preset = 2
 anchor_left = 0
@@ -46,7 +56,7 @@ mouse_filter = 2
 script = ExtResource("2_stick")
 max_radius = 110.0
 
-[node name="Pad" type="TextureRect" parent="Root/Stick"]
+[node name="Pad" type="TextureRect" parent="SafeArea/Root/Stick"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -58,7 +68,7 @@ texture = ExtResource("t_pad")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Highlight" type="TextureRect" parent="Root/Stick"]
+[node name="Highlight" type="TextureRect" parent="SafeArea/Root/Stick"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -71,7 +81,7 @@ texture = ExtResource("t_pad_hl")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Knob" type="TextureRect" parent="Root/Stick"]
+[node name="Knob" type="TextureRect" parent="SafeArea/Root/Stick"]
 layout_mode = 0
 offset_left = 85.0
 offset_top = 85.0
@@ -82,7 +92,7 @@ texture = ExtResource("t_nub")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="AttackButton" type="Control" parent="Root"]
+[node name="AttackButton" type="Control" parent="SafeArea/Root"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1
@@ -102,7 +112,7 @@ background = ExtResource("t_circle")
 highlight = ExtResource("t_circle_hl")
 caption = "Удар"
 
-[node name="Background" type="TextureRect" parent="Root/AttackButton"]
+[node name="Background" type="TextureRect" parent="SafeArea/Root/AttackButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -113,7 +123,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Icon" type="TextureRect" parent="Root/AttackButton"]
+[node name="Icon" type="TextureRect" parent="SafeArea/Root/AttackButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -124,7 +134,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Caption" type="Label" parent="Root/AttackButton"]
+[node name="Caption" type="Label" parent="SafeArea/Root/AttackButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -136,7 +146,7 @@ theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Highlight" type="TextureRect" parent="Root/AttackButton"]
+[node name="Highlight" type="TextureRect" parent="SafeArea/Root/AttackButton"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -148,7 +158,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="JumpButton" type="Control" parent="Root"]
+[node name="JumpButton" type="Control" parent="SafeArea/Root"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1
@@ -167,7 +177,7 @@ action = &"jump"
 background = ExtResource("t_up")
 highlight = ExtResource("t_up_hl")
 
-[node name="Background" type="TextureRect" parent="Root/JumpButton"]
+[node name="Background" type="TextureRect" parent="SafeArea/Root/JumpButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -178,7 +188,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Icon" type="TextureRect" parent="Root/JumpButton"]
+[node name="Icon" type="TextureRect" parent="SafeArea/Root/JumpButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -189,7 +199,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Caption" type="Label" parent="Root/JumpButton"]
+[node name="Caption" type="Label" parent="SafeArea/Root/JumpButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -201,7 +211,7 @@ theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Highlight" type="TextureRect" parent="Root/JumpButton"]
+[node name="Highlight" type="TextureRect" parent="SafeArea/Root/JumpButton"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -213,7 +223,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PauseButton" type="Control" parent="Root"]
+[node name="PauseButton" type="Control" parent="SafeArea/Root"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1
@@ -233,7 +243,7 @@ background = ExtResource("t_circle")
 highlight = ExtResource("t_circle_hl")
 caption = "II"
 
-[node name="Background" type="TextureRect" parent="Root/PauseButton"]
+[node name="Background" type="TextureRect" parent="SafeArea/Root/PauseButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -244,7 +254,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Icon" type="TextureRect" parent="Root/PauseButton"]
+[node name="Icon" type="TextureRect" parent="SafeArea/Root/PauseButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -255,7 +265,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Caption" type="Label" parent="Root/PauseButton"]
+[node name="Caption" type="Label" parent="SafeArea/Root/PauseButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -267,7 +277,7 @@ theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Highlight" type="TextureRect" parent="Root/PauseButton"]
+[node name="Highlight" type="TextureRect" parent="SafeArea/Root/PauseButton"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -279,7 +289,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CameraLeftButton" type="Control" parent="Root"]
+[node name="CameraLeftButton" type="Control" parent="SafeArea/Root"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1
@@ -298,7 +308,7 @@ action = &"camera_left"
 background = ExtResource("t_left")
 highlight = ExtResource("t_left_hl")
 
-[node name="Background" type="TextureRect" parent="Root/CameraLeftButton"]
+[node name="Background" type="TextureRect" parent="SafeArea/Root/CameraLeftButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -309,7 +319,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Icon" type="TextureRect" parent="Root/CameraLeftButton"]
+[node name="Icon" type="TextureRect" parent="SafeArea/Root/CameraLeftButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -320,7 +330,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Caption" type="Label" parent="Root/CameraLeftButton"]
+[node name="Caption" type="Label" parent="SafeArea/Root/CameraLeftButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -332,7 +342,7 @@ theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Highlight" type="TextureRect" parent="Root/CameraLeftButton"]
+[node name="Highlight" type="TextureRect" parent="SafeArea/Root/CameraLeftButton"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -344,7 +354,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CameraRightButton" type="Control" parent="Root"]
+[node name="CameraRightButton" type="Control" parent="SafeArea/Root"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1
@@ -363,7 +373,7 @@ action = &"camera_right"
 background = ExtResource("t_right")
 highlight = ExtResource("t_right_hl")
 
-[node name="Background" type="TextureRect" parent="Root/CameraRightButton"]
+[node name="Background" type="TextureRect" parent="SafeArea/Root/CameraRightButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -374,7 +384,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Icon" type="TextureRect" parent="Root/CameraRightButton"]
+[node name="Icon" type="TextureRect" parent="SafeArea/Root/CameraRightButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -385,7 +395,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Caption" type="Label" parent="Root/CameraRightButton"]
+[node name="Caption" type="Label" parent="SafeArea/Root/CameraRightButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -397,7 +407,7 @@ theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Highlight" type="TextureRect" parent="Root/CameraRightButton"]
+[node name="Highlight" type="TextureRect" parent="SafeArea/Root/CameraRightButton"]
 visible = false
 layout_mode = 1
 anchors_preset = 15

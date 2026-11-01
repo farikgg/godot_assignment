@@ -76,7 +76,8 @@ func panel_rect() -> Rect2:
 
 # width follows the text up to MAX_WIDTH_SHARE of the screen, then the label wraps
 func _layout() -> void:
-	var screen_width: float = get_viewport_rect().size.x
+	# the toast fills the HUD's safe-area content, so its own width is the usable screen width
+	var screen_width: float = size.x
 	var style: StyleBox = _panel.get_theme_stylebox(&"panel")
 	var frame: float = style.get_margin(SIDE_LEFT) + style.get_margin(SIDE_RIGHT) if style != null else 0.0
 	var font: Font = _label.get_theme_font(&"font")
@@ -91,7 +92,7 @@ func _layout() -> void:
 func _fit_panel() -> void:
 	_panel.size = Vector2.ZERO
 	_panel.reset_size()
-	_panel.position.x = (get_viewport_rect().size.x - _panel.size.x) * 0.5
+	_panel.position.x = (size.x - _panel.size.x) * 0.5
 
 func _hide_now() -> void:
 	_panel.visible = false

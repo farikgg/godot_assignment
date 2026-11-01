@@ -1,11 +1,12 @@
 extends CanvasLayer
-## On-screen stick and buttons above the HUD. Positions are set here from edge_margin,
+## On-screen stick and buttons above the HUD, inside a SafeArea. Positions are set here from edge_margin,
 ## so the controls can be moved towards the centre in the inspector without touching every node.
 
 ## Show on desktop too (needed for the A7 video); on touch devices they are always shown.
 @export var show_on_desktop: bool = true
-## Distance of the stick and the action buttons from the side edges (x) and the bottom (y),
-## in base-resolution pixels (1920 × 1080). Larger = closer to the thumbs.
+## Distance of the stick and the action buttons from the side edges (x) and the bottom (y) of the
+## safe area (SafeArea already keeps them off a notch), in base-resolution pixels (1920 × 1080).
+## Larger = closer to the thumbs.
 @export var edge_margin: Vector2 = Vector2(140.0, 90.0):
 	set(value):
 		edge_margin = value
@@ -16,12 +17,12 @@ extends CanvasLayer
 ## Gap between neighbouring buttons.
 @export var button_gap: float = 30.0
 
-@onready var _stick: Control = $Root/Stick
-@onready var _attack: Control = $Root/AttackButton
-@onready var _jump: Control = $Root/JumpButton
-@onready var _pause: Control = $Root/PauseButton
-@onready var _camera_left: Control = $Root/CameraLeftButton
-@onready var _camera_right: Control = $Root/CameraRightButton
+@onready var _stick: Control = $SafeArea/Root/Stick
+@onready var _attack: Control = $SafeArea/Root/AttackButton
+@onready var _jump: Control = $SafeArea/Root/JumpButton
+@onready var _pause: Control = $SafeArea/Root/PauseButton
+@onready var _camera_left: Control = $SafeArea/Root/CameraLeftButton
+@onready var _camera_right: Control = $SafeArea/Root/CameraRightButton
 
 func _ready() -> void:
 	# a finger lifted during the pause must still release the stick / button

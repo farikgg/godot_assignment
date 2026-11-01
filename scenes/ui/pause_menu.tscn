@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/pause_menu.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/ui/safe_area.gd" id="safe_area"]
 
 [node name="PauseMenu" type="CanvasLayer"]
 process_mode = 3
@@ -15,7 +16,20 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0784314, 0.0823529, 0.137255, 0.65)
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="SafeArea" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("safe_area")
+
+[node name="Content" type="Control" parent="SafeArea"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="SafeArea/Content"]
 custom_minimum_size = Vector2(560, 0)
 anchors_preset = 8
 anchor_left = 0.5
@@ -29,31 +43,31 @@ offset_bottom = 260.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Content" type="VBoxContainer" parent="Panel"]
+[node name="Content" type="VBoxContainer" parent="SafeArea/Content/Panel"]
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="Title" type="Label" parent="Panel/Content"]
+[node name="Title" type="Label" parent="SafeArea/Content/Panel/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 44
 text = "Привал"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="Panel/Content"]
+[node name="ResumeButton" type="Button" parent="SafeArea/Content/Panel/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Продолжить путь"
 
-[node name="RestartButton" type="Button" parent="Panel/Content"]
+[node name="RestartButton" type="Button" parent="SafeArea/Content/Panel/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Начать заново"
 
-[node name="MenuButton" type="Button" parent="Panel/Content"]
+[node name="MenuButton" type="Button" parent="SafeArea/Content/Panel/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(360, 84)
 layout_mode = 2
