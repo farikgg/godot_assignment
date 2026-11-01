@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/ui_gen/heart_full.png" id="3_heart_full"]
 [ext_resource type="PackedScene" path="res://scenes/ui/toast.tscn" id="4_toast"]
+[ext_resource type="Script" path="res://scripts/ui/safe_area.gd" id="safe_area"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_boss_track"]
 bg_color = Color(0.145098, 0.14902, 0.227451, 1)
@@ -26,66 +27,79 @@ corner_radius_bottom_left = 6
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_script")
 
-[node name="HudPanel" type="PanelContainer" parent="."]
+[node name="SafeArea" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("safe_area")
+
+[node name="Content" type="Control" parent="SafeArea"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HudPanel" type="PanelContainer" parent="SafeArea/Content"]
 offset_left = 20.0
 offset_top = 20.0
 theme_type_variation = &"HudPanel"
 
-[node name="HudBox" type="VBoxContainer" parent="HudPanel"]
+[node name="HudBox" type="VBoxContainer" parent="SafeArea/Content/HudPanel"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="NameRow" type="HBoxContainer" parent="HudPanel/HudBox"]
+[node name="NameRow" type="HBoxContainer" parent="SafeArea/Content/HudPanel/HudBox"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="NameCaption" type="Label" parent="HudPanel/HudBox/NameRow"]
+[node name="NameCaption" type="Label" parent="SafeArea/Content/HudPanel/HudBox/NameRow"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Игрок:"
 
-[node name="NameLabel" type="Label" parent="HudPanel/HudBox/NameRow"]
+[node name="NameLabel" type="Label" parent="SafeArea/Content/HudPanel/HudBox/NameRow"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HeartsBox" type="HBoxContainer" parent="HudPanel/HudBox"]
+[node name="HeartsBox" type="HBoxContainer" parent="SafeArea/Content/HudPanel/HudBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Heart1" type="TextureRect" parent="HudPanel/HudBox/HeartsBox"]
-custom_minimum_size = Vector2(40, 40)
+[node name="Heart1" type="TextureRect" parent="SafeArea/Content/HudPanel/HudBox/HeartsBox"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("3_heart_full")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Heart2" type="TextureRect" parent="HudPanel/HudBox/HeartsBox"]
-custom_minimum_size = Vector2(40, 40)
+[node name="Heart2" type="TextureRect" parent="SafeArea/Content/HudPanel/HudBox/HeartsBox"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("3_heart_full")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Heart3" type="TextureRect" parent="HudPanel/HudBox/HeartsBox"]
-custom_minimum_size = Vector2(40, 40)
+[node name="Heart3" type="TextureRect" parent="SafeArea/Content/HudPanel/HudBox/HeartsBox"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("3_heart_full")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CoinLabel" type="Label" parent="HudPanel/HudBox"]
+[node name="CoinLabel" type="Label" parent="SafeArea/Content/HudPanel/HudBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "Золото: 0 / 0"
 
-[node name="KeyLabel" type="Label" parent="HudPanel/HudBox"]
+[node name="KeyLabel" type="Label" parent="SafeArea/Content/HudPanel/HudBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Ключ: нет"
 
-[node name="BossBar" type="PanelContainer" parent="."]
+[node name="BossBar" type="PanelContainer" parent="SafeArea/Content"]
 unique_name_in_owner = true
 visible = false
 anchors_preset = 5
@@ -98,21 +112,21 @@ grow_horizontal = 2
 mouse_filter = 2
 theme_type_variation = &"HudPanel"
 
-[node name="BossBox" type="VBoxContainer" parent="BossBar"]
+[node name="BossBox" type="VBoxContainer" parent="SafeArea/Content/BossBar"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="BossName" type="Label" parent="BossBar/BossBox"]
+[node name="BossName" type="Label" parent="SafeArea/Content/BossBar/BossBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 36
 text = "Страж подземелья"
 horizontal_alignment = 1
 
-[node name="BossHp" type="ProgressBar" parent="BossBar/BossBox"]
+[node name="BossHp" type="ProgressBar" parent="SafeArea/Content/BossBar/BossBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 26)
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_boss_track")
@@ -121,5 +135,5 @@ max_value = 8.0
 value = 8.0
 show_percentage = false
 
-[node name="Toast" parent="." instance=ExtResource("4_toast")]
+[node name="Toast" parent="SafeArea/Content" instance=ExtResource("4_toast")]
 unique_name_in_owner = true

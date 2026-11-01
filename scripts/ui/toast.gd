@@ -24,6 +24,8 @@ func _ready() -> void:
 	_panel.visible = false
 	# a Label reshapes its wrapped lines a frame later; refit the plate whenever that settles
 	_panel.minimum_size_changed.connect(_fit_panel)
+	# inside a SafeArea the toast gets its real width only after the first layout pass
+	resized.connect(_on_resized)
 
 ## Shows `text` for `duration` seconds; duration <= 0 keeps it until the next toast or hide_toast().
 ## A toast raised while the game is paused animates during the pause; any other one freezes with the game.
@@ -76,7 +78,7 @@ func panel_rect() -> Rect2:
 
 # width follows the text up to MAX_WIDTH_SHARE of the screen, then the label wraps
 func _layout() -> void:
-	var screen_width: float = get_viewport_rect().size.x
+	var screen_width: float = _usable_width()
 	var style: StyleBox = _panel.get_theme_stylebox(&"panel")
 	var frame: float = style.get_margin(SIDE_LEFT) + style.get_margin(SIDE_RIGHT) if style != null else 0.0
 	var font: Font = _label.get_theme_font(&"font")
@@ -91,7 +93,16 @@ func _layout() -> void:
 func _fit_panel() -> void:
 	_panel.size = Vector2.ZERO
 	_panel.reset_size()
-	_panel.position.x = (get_viewport_rect().size.x - _panel.size.x) * 0.5
+	_panel.position.x = (_usable_width() - _panel.size.x) * 0.5
+
+# the toast fills the HUD's safe-area content, so its own width is the usable screen width;
+# before the first layout pass it has none yet, and the viewport stands in for it
+func _usable_width() -> float:
+	return size.x if size.x > 0.0 else get_viewport_rect().size.x
+
+func _on_resized() -> void:
+	if is_showing() or _panel.visible:
+		_layout()
 
 func _hide_now() -> void:
 	_panel.visible = false

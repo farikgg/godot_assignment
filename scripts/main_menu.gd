@@ -6,18 +6,18 @@ const SETTINGS_TEXT: String = "Настройки"
 const QUIT_TEXT: String = "Выйти"
 const NAME_PLACEHOLDER: String = "Имя героя"
 
-@onready var settings_panel: Control = $SettingsPanel
-@onready var main_menu: Control = $MainPanel
-@onready var volume_slider: HSlider = $"SettingsPanel/Content/Music volume"
-@onready var sign_board: Control = $Sign
-@onready var character_select: Control = $CharacterSelect
+@onready var settings_panel: Control = $SafeArea/Content/SettingsPanel
+@onready var main_menu: Control = $SafeArea/Content/MainPanel
+@onready var volume_slider: HSlider = $"SafeArea/Content/SettingsPanel/Content/Music volume"
+@onready var sign_board: Control = $SafeArea/Content/Sign
+@onready var character_select: Control = $SafeArea/Content/CharacterSelect
 
 func _ready() -> void:
-	($MainPanel/Buttons/ButtonStart as Button).text = START_TEXT
-	($MainPanel/Buttons/ButtonHeroes as Button).text = HEROES_TEXT
-	($MainPanel/Buttons/ButtonSetting as Button).text = SETTINGS_TEXT
-	($MainPanel/Buttons/ButtonQuit as Button).text = QUIT_TEXT
-	($MainPanel/Buttons/NameField as LineEdit).placeholder_text = NAME_PLACEHOLDER
+	($SafeArea/Content/MainPanel/Buttons/Grid/ButtonStart as Button).text = START_TEXT
+	($SafeArea/Content/MainPanel/Buttons/Grid/ButtonHeroes as Button).text = HEROES_TEXT
+	($SafeArea/Content/MainPanel/Buttons/Grid/ButtonSetting as Button).text = SETTINGS_TEXT
+	($SafeArea/Content/MainPanel/Buttons/Grid/ButtonQuit as Button).text = QUIT_TEXT
+	($SafeArea/Content/MainPanel/Buttons/NameField as LineEdit).placeholder_text = NAME_PLACEHOLDER
 	character_select.connect("closed", _on_character_select_closed)
 	MusicPlayer.play_menu()
 	volume_slider.set_value_no_signal(MusicPlayer.get_volume_linear())

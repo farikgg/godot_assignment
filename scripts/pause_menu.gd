@@ -8,7 +8,7 @@ const MENU_TEXT: String = "Покинуть подземелье"
 @onready var _resume_button: Button = %ResumeButton
 @onready var _restart_button: Button = %RestartButton
 @onready var _menu_button: Button = %MenuButton
-@onready var _title: Label = $Panel/Content/Title
+@onready var _title: Label = $SafeArea/Content/Panel/Content/Title
 
 func _ready() -> void:
 	# keeps receiving input while everything else is paused

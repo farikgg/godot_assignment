@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/win_screen.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/ui_gen/bg_menu.jpg" id="2_bg"]
+[ext_resource type="Script" path="res://scripts/ui/safe_area.gd" id="safe_area"]
 
 [node name="WinScreen" type="Control"]
 layout_mode = 3
@@ -24,7 +25,20 @@ texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="SafeArea" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("safe_area")
+
+[node name="Content" type="Control" parent="SafeArea"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="SafeArea/Content"]
 custom_minimum_size = Vector2(720, 0)
 layout_mode = 1
 anchors_preset = 8
@@ -39,11 +53,11 @@ offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Content" type="VBoxContainer" parent="Panel"]
+[node name="Content" type="VBoxContainer" parent="SafeArea/Content/Panel"]
 layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="TitleLabel" type="Label" parent="Panel/Content"]
+[node name="TitleLabel" type="Label" parent="SafeArea/Content/Panel/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
@@ -51,16 +65,16 @@ text = "Ты выбрался на свет!"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="GoldLabel" type="Label" parent="Panel/Content"]
+[node name="GoldLabel" type="Label" parent="SafeArea/Content/Panel/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 34
+theme_override_font_sizes/font_size = 40
 text = "Золота собрано: 0"
 horizontal_alignment = 1
 
-[node name="MenuButton" type="Button" parent="Panel/Content"]
+[node name="MenuButton" type="Button" parent="SafeArea/Content/Panel/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(380, 84)
+custom_minimum_size = Vector2(400, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "В главное меню"
