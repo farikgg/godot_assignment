@@ -13,10 +13,10 @@ const NAME_PLACEHOLDER: String = "Имя героя"
 @onready var character_select: Control = $SafeArea/Content/CharacterSelect
 
 func _ready() -> void:
-	($SafeArea/Content/MainPanel/Buttons/ButtonStart as Button).text = START_TEXT
-	($SafeArea/Content/MainPanel/Buttons/ButtonHeroes as Button).text = HEROES_TEXT
-	($SafeArea/Content/MainPanel/Buttons/ButtonSetting as Button).text = SETTINGS_TEXT
-	($SafeArea/Content/MainPanel/Buttons/ButtonQuit as Button).text = QUIT_TEXT
+	($SafeArea/Content/MainPanel/Buttons/Grid/ButtonStart as Button).text = START_TEXT
+	($SafeArea/Content/MainPanel/Buttons/Grid/ButtonHeroes as Button).text = HEROES_TEXT
+	($SafeArea/Content/MainPanel/Buttons/Grid/ButtonSetting as Button).text = SETTINGS_TEXT
+	($SafeArea/Content/MainPanel/Buttons/Grid/ButtonQuit as Button).text = QUIT_TEXT
 	($SafeArea/Content/MainPanel/Buttons/NameField as LineEdit).placeholder_text = NAME_PLACEHOLDER
 	character_select.connect("closed", _on_character_select_closed)
 	MusicPlayer.play_menu()

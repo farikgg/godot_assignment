@@ -70,14 +70,17 @@ script = ExtResource("6_title")
 
 [node name="MainPanel" type="PanelContainer" parent="SafeArea/Content" unique_id=915186810]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 7
 anchor_left = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-offset_left = -180.0
-offset_top = 520.0
-offset_right = 180.0
-offset_bottom = 992.0
+anchor_bottom = 1.0
+offset_left = -369.0
+offset_top = -412.0
+offset_right = 369.0
+offset_bottom = -40.0
 grow_horizontal = 2
+grow_vertical = 0
 theme_type_variation = &"ClearPanel"
 
 [node name="Buttons" type="VBoxContainer" parent="SafeArea/Content/MainPanel" unique_id=1288575377]
@@ -85,28 +88,34 @@ layout_mode = 2
 theme_override_constants/separation = 18
 
 [node name="NameField" type="LineEdit" parent="SafeArea/Content/MainPanel/Buttons" unique_id=839725896]
-custom_minimum_size = Vector2(360, 64)
+custom_minimum_size = Vector2(360, 96)
 layout_mode = 2
 placeholder_text = "Имя героя"
 max_length = 15
 
-[node name="ButtonStart" type="Button" parent="SafeArea/Content/MainPanel/Buttons" unique_id=1718474551]
-custom_minimum_size = Vector2(360, 84)
+[node name="Grid" type="GridContainer" parent="SafeArea/Content/MainPanel/Buttons"]
+layout_mode = 2
+theme_override_constants/h_separation = 18
+theme_override_constants/v_separation = 18
+columns = 2
+
+[node name="ButtonStart" type="Button" parent="SafeArea/Content/MainPanel/Buttons/Grid" unique_id=1718474551]
+custom_minimum_size = Vector2(360, 120)
 layout_mode = 2
 text = "Спуститься"
 
-[node name="ButtonHeroes" type="Button" parent="SafeArea/Content/MainPanel/Buttons" unique_id=1771300080]
-custom_minimum_size = Vector2(360, 84)
+[node name="ButtonHeroes" type="Button" parent="SafeArea/Content/MainPanel/Buttons/Grid" unique_id=1771300080]
+custom_minimum_size = Vector2(360, 120)
 layout_mode = 2
 text = "Герои"
 
-[node name="ButtonSetting" type="Button" parent="SafeArea/Content/MainPanel/Buttons" unique_id=223931339]
-custom_minimum_size = Vector2(360, 84)
+[node name="ButtonSetting" type="Button" parent="SafeArea/Content/MainPanel/Buttons/Grid" unique_id=223931339]
+custom_minimum_size = Vector2(360, 120)
 layout_mode = 2
 text = "Настройки"
 
-[node name="ButtonQuit" type="Button" parent="SafeArea/Content/MainPanel/Buttons" unique_id=540039282]
-custom_minimum_size = Vector2(360, 84)
+[node name="ButtonQuit" type="Button" parent="SafeArea/Content/MainPanel/Buttons/Grid" unique_id=540039282]
+custom_minimum_size = Vector2(360, 120)
 layout_mode = 2
 text = "Выйти"
 
@@ -114,14 +123,17 @@ text = "Выйти"
 visible = false
 custom_minimum_size = Vector2(640, 520)
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 8
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
+anchor_bottom = 0.5
 offset_left = -320.0
-offset_top = 460.0
+offset_top = -290.0
 offset_right = 320.0
-offset_bottom = 980.0
+offset_bottom = 290.0
 grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Content" type="VBoxContainer" parent="SafeArea/Content/SettingsPanel" unique_id=1678515835]
 layout_mode = 2
@@ -145,7 +157,7 @@ step = 0.01
 value = 1.0
 
 [node name="ButtonBack" type="Button" parent="SafeArea/Content/SettingsPanel/Content" unique_id=1392890709]
-custom_minimum_size = Vector2(360, 84)
+custom_minimum_size = Vector2(360, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Назад"
@@ -154,9 +166,9 @@ text = "Назад"
 layout_mode = 1
 
 [connection signal="text_changed" from="SafeArea/Content/MainPanel/Buttons/NameField" to="." method="_on_name_field_text_changed"]
-[connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/ButtonStart" to="." method="_on_button_start_pressed"]
-[connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/ButtonHeroes" to="." method="_on_button_heroes_pressed"]
-[connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/ButtonSetting" to="." method="_on_button_settings_pressed"]
-[connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/ButtonQuit" to="." method="_on_button_quit_pressed"]
+[connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/Grid/ButtonStart" to="." method="_on_button_start_pressed"]
+[connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/Grid/ButtonHeroes" to="." method="_on_button_heroes_pressed"]
+[connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/Grid/ButtonSetting" to="." method="_on_button_settings_pressed"]
+[connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/Grid/ButtonQuit" to="." method="_on_button_quit_pressed"]
 [connection signal="value_changed" from="SafeArea/Content/SettingsPanel/Content/Music volume" to="." method="_on_volume_slider_value_changed"]
 [connection signal="pressed" from="SafeArea/Content/SettingsPanel/Content/ButtonBack" to="." method="_on_button_back_pressed"]

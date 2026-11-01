@@ -55,21 +55,21 @@ horizontal_alignment = 1
 
 [node name="ResumeButton" type="Button" parent="SafeArea/Content/Panel/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(360, 84)
+custom_minimum_size = Vector2(400, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Продолжить путь"
 
 [node name="RestartButton" type="Button" parent="SafeArea/Content/Panel/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(360, 84)
+custom_minimum_size = Vector2(400, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Начать заново"
 
 [node name="MenuButton" type="Button" parent="SafeArea/Content/Panel/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(360, 84)
+custom_minimum_size = Vector2(400, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Покинуть подземелье"

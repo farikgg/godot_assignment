@@ -44,7 +44,7 @@ theme_override_constants/separation = 16
 
 [node name="PrevButton" type="Button" parent="Content/Row"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(110, 84)
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_vertical = 4
 icon = ExtResource("2_left")
@@ -78,7 +78,7 @@ unique_name_in_owner = true
 
 [node name="NextButton" type="Button" parent="Content/Row"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(110, 84)
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_vertical = 4
 icon = ExtResource("3_right")
@@ -97,12 +97,12 @@ theme_override_constants/separation = 18
 
 [node name="SelectButton" type="Button" parent="Content/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 84)
+custom_minimum_size = Vector2(260, 120)
 layout_mode = 2
 text = "Выбрать"
 
 [node name="BackButton" type="Button" parent="Content/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 84)
+custom_minimum_size = Vector2(260, 120)
 layout_mode = 2
 text = "Назад"
