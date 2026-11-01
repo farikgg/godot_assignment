@@ -6,3 +6,13 @@
 export_presets.cfg
 *.translation
 .idea/
+# builds
+*.apk
+*.aab
+*.idsig
+*.keystore
+build/
+export/
+
+# temporary screenshots from dev/capture_screens.gd (final ones live in docs/screenshots/)
+/screenshots/
