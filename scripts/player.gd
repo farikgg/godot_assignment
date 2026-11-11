@@ -9,6 +9,8 @@ extends CharacterBody3D
 @export var knockback_lift: float = 3.0
 ## Input is ignored for this long after a hit so the knockback is visible.
 @export var knockback_time: float = 0.25
+## HP lost by touching a saw or a trap (bodies in group `enemy` that are not an Enemy).
+@export var trap_contact_damage: int = 1
 ## Horizontal speed above which the run animation plays.
 @export var run_threshold: float = 0.5
 @export var hurt_sound: AudioStream
@@ -200,6 +202,10 @@ func _on_animation_finished(clip: StringName) -> void:
 func _on_hurtbox_body_entered(body: Node3D) -> void:
 	if _is_dead or not body.is_in_group("enemy"):
 		return
+	# AI enemies say how much their touch hurts (0 = harmless); saws and traps use our own value
+	var damage: int = (body as Enemy).contact_damage if body is Enemy else trap_contact_damage
+	if damage <= 0:
+		return
 	# push away horizontally from the enemy; straight back if we're right on top of it
 	var away: Vector3 = global_position - body.global_position
 	away.y = 0.0
@@ -208,7 +214,7 @@ func _on_hurtbox_body_entered(body: Node3D) -> void:
 	away = away.normalized()
 	velocity = Vector3(away.x * knockback_speed, knockback_lift, away.z * knockback_speed)
 	_knockback_left = knockback_time
-	health.take_damage(1)
+	health.take_damage(damage)
 
 func _on_health_changed(current: int, _max_hp: int) -> void:
 	if current < _last_hp:

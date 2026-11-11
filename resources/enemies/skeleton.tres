@@ -16,4 +16,5 @@ lose_radius = 9.0
 attack_range = 1.0
 attack_damage = 1
 attack_windup = 0.5
-attack_cooldown = 1.0
+attack_recovery = 0.4
+attack_cooldown = 0.6

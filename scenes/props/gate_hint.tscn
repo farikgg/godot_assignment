@@ -5,6 +5,7 @@ size = Vector3(1.6, 2, 2.6)
 
 [node name="GateHint" type="Area3D" groups=["gate_hint"]]
 collision_layer = 0
+collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

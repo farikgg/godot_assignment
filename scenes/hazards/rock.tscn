@@ -8,6 +8,8 @@
 size = Vector3(0.7, 0.35, 0.7)
 
 [node name="Rock" type="RigidBody3D"]
+collision_layer = 16
+collision_mask = 23
 mass = 2.0
 script = ExtResource("1_script")
 landing_fx = ExtResource("3_dust")

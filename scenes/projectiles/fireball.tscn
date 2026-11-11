@@ -53,6 +53,8 @@ material = SubResource("StandardMaterial3D_trail")
 size = Vector2(0.3, 0.3)
 
 [node name="Fireball" type="Area3D"]
+collision_layer = 8
+collision_mask = 3
 monitorable = false
 script = ExtResource("1_script")
 speed = 7.0

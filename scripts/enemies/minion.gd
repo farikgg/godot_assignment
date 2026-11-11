@@ -1,27 +1,40 @@
 class_name Minion
 extends Enemy
-## Rank-and-file enemy driven by EnemyData. PATROL between two points → CHASE once the hero is
-## within sight_radius and in plain view → ATTACK in attack_range (wind-up, blow, cooldown) →
-## back to PATROL beyond lose_radius. Never walks off a ledge: with no floor ahead it stands still.
+## Patroller driven by EnemyData. PATROL between two points → CHASE once the hero is inside the
+## view cone and no wall hides them → ATTACK (wind-up with a flash and a sound, then the blow) →
+## RECOVER (stands open) → CHASE; the next attack also waits for attack_cooldown.
+## Never walks off a ledge: with no floor ahead it stands still.
 
-enum State { PATROL, CHASE, ATTACK, DEAD }
+enum State { PATROL, CHASE, ATTACK, RECOVER, DEAD }
 
 @export var data: EnemyData
 ## Second patrol point relative to the start position (the first one is the start).
-@export var patrol_offset: Vector3 = Vector3(4.0, 0.0, 0.0)
+@export var patrol_offset: Vector3 = Vector3(4.0, 0.0, 0.0)  # m
 @export var alert_sound: AudioStream
-## How far ahead the ledge probe looks, and how deep a step down still counts as floor.
-@export var ledge_probe_distance: float = 0.5
-@export var max_step_down: float = 0.6
+## Played when the wind-up starts.
+@export var windup_sound: AudioStream
+## A patrol point counts as reached this close to it.
+@export var patrol_arrive_distance: float = 0.3  # m
 ## Patrol turns back after making no headway for this long (a crate or a wall in the way).
-@export var stuck_time: float = 1.0
+@export var stuck_time: float = 1.0  # s
+## "No headway" = real speed below this share of the wanted speed.
+@export var stuck_speed_ratio: float = 0.3
+## Below this speed the idle clip plays instead of walk / run.
+@export var idle_speed_threshold: float = 0.05  # m/s
+
+@export_group("Attack clip")
+## Share of the attack clip (0–1) at which the swing connects; the clip is sped up or slowed
+## so that this moment falls on the end of the wind-up.
+@export var attack_clip_hit_point: float = 0.5
+@export var attack_clip_min_speed: float = 0.3  # playback speed limits, 1 = normal
+@export var attack_clip_max_speed: float = 2.0
 
 var state: State = State.PATROL
 var _home: Vector3
 var _patrol_index: int = 1
 var _timer: Timer
-var _struck: bool = false
 var _stuck_left: float = 0.0
+var _cooldown_left: float = 0.0
 
 func _ready() -> void:
 	if data == null:
@@ -30,6 +43,7 @@ func _ready() -> void:
 	_build_model()
 	health.max_hp = data.max_hp
 	health.current = data.max_hp
+	view_range = data.sight_radius
 	super._ready()
 	_home = global_position
 	_timer = Timer.new()
@@ -53,110 +67,102 @@ func _build_model() -> void:
 func _think(delta: float) -> void:
 	var hero: Node3D = get_live_hero()
 	desired_velocity = Vector3.ZERO
+	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
 	match state:
 		State.PATROL:
-			if hero != null and can_see(hero):
+			if can_see_player():
 				_change_state(State.CHASE)
 				return
-			var to_goal: Vector3 = patrol_point(_patrol_index) - global_position
-			to_goal.y = 0.0
-			if to_goal.length() < 0.3:
-				_turn_back()
-			else:
-				desired_velocity = to_goal.normalized() * data.walk_speed
+			_patrol()
 		State.CHASE:
 			if hero == null or flat_distance_to(hero.global_position) > data.lose_radius:
 				_change_state(State.PATROL)
 				return
-			if flat_distance_to(hero.global_position) <= data.attack_range:
-				_change_state(State.ATTACK)
-				return
-			var to_hero: Vector3 = hero.global_position - global_position
-			to_hero.y = 0.0
-			desired_velocity = to_hero.normalized() * data.run_speed
+			_chase(hero, delta)
 		State.ATTACK:
 			if hero != null:
 				face_towards(hero.global_position, delta)
-	if desired_velocity != Vector3.ZERO and not has_floor_ahead(desired_velocity):
+	if not desired_velocity.is_zero_approx() and not has_floor_ahead(desired_velocity):
 		desired_velocity = Vector3.ZERO
 		if state == State.PATROL:
 			_turn_back()
 	_check_stuck(delta)
 	_play_move_anim()
 
+func _patrol() -> void:
+	var to_goal: Vector3 = patrol_point(_patrol_index) - global_position
+	to_goal.y = 0.0
+	if to_goal.length() < patrol_arrive_distance:
+		_turn_back()
+	else:
+		desired_velocity = to_goal.normalized() * data.walk_speed
+
+# runs at the hero; in reach it stops and attacks as soon as the cooldown allows
+func _chase(hero: Node3D, delta: float) -> void:
+	if flat_distance_to(hero.global_position) > data.attack_range:
+		var to_hero: Vector3 = hero.global_position - global_position
+		to_hero.y = 0.0
+		desired_velocity = to_hero.normalized() * data.run_speed
+		return
+	face_towards(hero.global_position, delta)
+	if _cooldown_left <= 0.0:
+		_change_state(State.ATTACK)
+
 func _change_state(next: State) -> void:
 	state = next
 	_timer.stop()
 	_stuck_left = stuck_time
+	stop_telegraph()
+	set_state_label(State.keys()[next])
 	match next:
 		State.CHASE:
 			Sfx.play(alert_sound, self)
 		State.ATTACK:
-			_struck = false
-			# slow or speed the clip so its swing lands at the end of the wind-up
-			var length: float = anim_length(anim_attack)
-			var speed: float = clampf(length * 0.5 / maxf(data.attack_windup, 0.05), 0.3, 2.0) if length > 0.0 else 1.0
-			restart_anim(anim_attack, speed)
+			restart_anim(anim_attack, _windup_clip_speed())
+			start_telegraph(data.attack_windup)
+			Sfx.play(windup_sound, self)
 			_timer.start(data.attack_windup)
+		State.RECOVER:
+			_timer.start(data.attack_recovery)
 
+# the only exits of the timed states: ATTACK ends with the blow, RECOVER ends in CHASE
 func _on_timer() -> void:
-	if state != State.ATTACK:
-		return
-	if not _struck:
-		_struck = true
-		_strike()
-		_timer.start(data.attack_cooldown)
-	else:
-		_change_state(State.CHASE)
+	match state:
+		State.ATTACK:
+			_strike()
+			_change_state(State.RECOVER)
+		State.RECOVER:
+			_cooldown_left = data.attack_cooldown
+			_change_state(State.CHASE)
+
+func _windup_clip_speed() -> float:
+	var length: float = anim_length(anim_attack)
+	if length <= 0.0 or data.attack_windup <= 0.0:
+		return 1.0
+	var speed: float = length * attack_clip_hit_point / data.attack_windup
+	return clampf(speed, attack_clip_min_speed, attack_clip_max_speed)
 
 # the blow lands only if the hero is still in reach when the wind-up ends
 func _strike() -> void:
 	var hero: Node3D = get_live_hero()
 	if hero == null:
 		return
-	if flat_distance_to(hero.global_position) > data.attack_range + 0.4:
+	if flat_distance_to(hero.global_position) > data.attack_range + data.strike_reach_margin:
 		return
-	if absf(hero.global_position.y - global_position.y) > 1.2:
+	if absf(hero.global_position.y - global_position.y) > data.strike_height:
 		return
-	var hero_health: Health = hero.get_node_or_null("Health") as Health
-	if hero_health != null:
-		hero_health.take_damage(data.attack_damage)
-
-## True when the hero is within sight_radius and nothing solid stands between the eyes and them.
-func can_see(hero: Node3D) -> bool:
-	if flat_distance_to(hero.global_position) > data.sight_radius:
-		return false
-	if absf(hero.global_position.y - global_position.y) > 3.0:
-		return false
-	var eyes: Vector3 = global_position + Vector3.UP * 0.9
-	var query := PhysicsRayQueryParameters3D.create(eyes, hero.global_position + Vector3.UP * 0.7)
-	query.exclude = [get_rid(), (hero as CollisionObject3D).get_rid()]
-	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
-
-## Probes the floor a little ahead along `direction`; false over a pit or a deep drop.
-func has_floor_ahead(direction: Vector3) -> bool:
-	var flat := Vector3(direction.x, 0.0, direction.z)
-	if flat.length_squared() < 0.0001:
-		return true
-	var from: Vector3 = global_position + flat.normalized() * ledge_probe_distance + Vector3.UP * 0.3
-	var query := PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * (0.3 + max_step_down))
-	var exclude: Array[RID] = [get_rid()]
-	var hero: Node3D = get_hero()
-	if hero != null:
-		exclude.append((hero as CollisionObject3D).get_rid())
-	query.exclude = exclude
-	return not get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+	hurt_hero(data.attack_damage)
 
 func _turn_back() -> void:
 	_patrol_index = 1 - _patrol_index
 	_stuck_left = stuck_time
 
 func _check_stuck(delta: float) -> void:
-	if state != State.PATROL or desired_velocity == Vector3.ZERO:
+	if state != State.PATROL or desired_velocity.is_zero_approx():
 		_stuck_left = stuck_time
 		return
 	var moved: float = Vector2(get_real_velocity().x, get_real_velocity().z).length()
-	if moved > desired_velocity.length() * 0.3:
+	if moved > desired_velocity.length() * stuck_speed_ratio:
 		_stuck_left = stuck_time
 		return
 	_stuck_left -= delta
@@ -164,14 +170,19 @@ func _check_stuck(delta: float) -> void:
 		_turn_back()
 
 func _play_move_anim() -> void:
-	if state == State.ATTACK:
+	if state == State.ATTACK or state == State.RECOVER:
 		return
-	if desired_velocity.length() < 0.05:
+	if desired_velocity.length() < idle_speed_threshold:
 		play_anim(anim_idle)
 	elif state == State.CHASE:
 		play_anim(anim_run)
 	else:
 		play_anim(anim_walk)
+
+# a hit from behind is felt even though it was not seen
+func _on_damaged() -> void:
+	if state == State.PATROL:
+		_change_state(State.CHASE)
 
 func _on_died() -> void:
 	_change_state(State.DEAD)

@@ -8,6 +8,8 @@
 size = Vector3(1.2, 1.0, 1.2)
 
 [node name="Slash" type="Area3D"]
+collision_layer = 0
+collision_mask = 20
 monitorable = false
 script = ExtResource("1_script")
 hit_sound = ExtResource("snd_hit_sound")

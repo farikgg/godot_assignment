@@ -43,6 +43,7 @@ _data = {
 
 [node name="SwordPickup" type="Area3D"]
 collision_layer = 0
+collision_mask = 2
 monitorable = false
 script = ExtResource("1_script")
 weapon_scene = ExtResource("3_weapon")

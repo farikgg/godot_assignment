@@ -26,6 +26,8 @@ rings = 48
 ring_segments = 8
 
 [node name="Boss" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 19
 script = ExtResource("1_script")
 roar_sound = ExtResource("snd_roar_sound")
 enraged_sound = ExtResource("snd_enraged_sound")
