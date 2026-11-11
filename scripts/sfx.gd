@@ -18,6 +18,7 @@ const VOLUME_DB: Dictionary = {
 	"res://assets/Audio/randomizers/sword_hit.tres": -4.0,
 	"res://assets/Audio/randomizers/boss_roar.tres": -2.0,
 	"res://assets/Audio/boss_sound/angry.wav": -2.0,
+	"res://assets/Audio/enemy_windup.wav": 0.0,
 }
 
 # paths already reported missing, so each one warns once per run

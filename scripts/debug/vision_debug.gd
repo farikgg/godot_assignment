@@ -9,6 +9,9 @@ const CONE_COLOR: Color = Color(1.0, 0.9, 0.2)
 const SEES_COLOR: Color = Color(0.2, 1.0, 0.3)
 const BLOCKED_COLOR: Color = Color(1.0, 0.2, 0.2)
 
+## Width of every drawn line.
+@export var line_thickness: float = 0.06  # m
+
 var _enemy: Enemy
 var _lines := ImmediateMesh.new()
 
@@ -27,13 +30,15 @@ func _ready() -> void:
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.vertex_color_use_as_albedo = true
 	material.no_depth_test = true
+	# the lines are flat ribbons that must be visible from both sides
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	material_override = material
 
 func _process(_delta: float) -> void:
 	_lines.clear_surfaces()
 	if _enemy.is_dead():
 		return
-	_lines.surface_begin(Mesh.PRIMITIVE_LINES)
+	_lines.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
 	_draw_cone()
 	_draw_ray()
 	_lines.surface_end()
@@ -58,8 +63,9 @@ func _draw_ray() -> void:
 		Enemy.Sight.BLOCKED:
 			_line(_enemy.eye_position(), _enemy.sight_block_point, BLOCKED_COLOR)
 
+# a line as a flat ribbon lying in the ground plane: two triangles, line_thickness wide
 func _line(from: Vector3, to: Vector3, color: Color) -> void:
-	_lines.surface_set_color(color)
-	_lines.surface_add_vertex(from)
-	_lines.surface_set_color(color)
-	_lines.surface_add_vertex(to)
+	var side: Vector3 = (to - from).cross(Vector3.UP).normalized() * line_thickness * 0.5
+	for corner in [from - side, from + side, to + side, from - side, to + side, to - side]:
+		_lines.surface_set_color(color)
+		_lines.surface_add_vertex(corner)

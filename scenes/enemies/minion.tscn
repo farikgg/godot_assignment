@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/enemies/minion.gd" id="1_script"]
 [ext_resource type="Script" path="res://scripts/health.gd" id="2_health"]
 [ext_resource type="Resource" path="res://resources/enemies/skeleton.tres" id="3_data"]
-[ext_resource type="AudioStream" path="res://assets/Audio/sword_swing.mp3" id="4_windup"]
+[ext_resource type="AudioStream" path="res://assets/Audio/enemy_windup.wav" id="4_windup"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.3

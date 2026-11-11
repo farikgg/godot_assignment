@@ -31,6 +31,8 @@ enum Sight { NO_HERO, TOO_FAR, OUT_OF_FOV, BLOCKED, CLEAR }
 @export var sight_height_limit: float = 3.0  # m
 ## Layers that block sight and count as floor (walls, floors, props).
 @export_flags_3d_physics var world_mask: int = 1
+## is_on_screen() is false this close to the screen edge (HUD and touch controls live there).
+@export var screen_margin: float = 100.0  # px of the 1920 x 1080 canvas
 
 @export_group("Ledge probe")
 @export var ledge_probe_distance: float = 0.5  # m ahead of the body
@@ -58,12 +60,15 @@ enum Sight { NO_HERO, TOO_FAR, OUT_OF_FOV, BLOCKED, CLEAR }
 @export var show_debug: bool = false
 @export var debug_label_height: float = 2.2  # m above the feet
 @export var debug_label_font_size: int = 96  # px of the Label3D font
+@export var debug_line_thickness: float = 0.06  # m, width of the vision lines
 
 @onready var health: Health = $Health
 @onready var visual: Node3D = $Visual
 
 ## Horizontal velocity the subclass wants this frame.
 var desired_velocity: Vector3 = Vector3.ZERO
+## The base turns the model towards its motion; a subclass that walks backwards switches it off.
+var turn_to_motion: bool = true
 ## Where the last sight ray hit the world (valid after Sight.BLOCKED).
 var sight_block_point: Vector3 = Vector3.ZERO
 var _anim: AnimationPlayer
@@ -104,7 +109,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = desired_velocity.x
 		velocity.z = desired_velocity.z
 	move_and_slide()
-	if not _dead and _knockback_left <= 0.0 and not desired_velocity.is_zero_approx():
+	if turn_to_motion and not _dead and _knockback_left <= 0.0 and not desired_velocity.is_zero_approx():
 		face_direction(desired_velocity, delta)
 
 ## Per-frame decision of the subclass: set desired_velocity, turn, change state.
@@ -183,6 +188,15 @@ func look_for_player() -> Sight:
 func can_see_player() -> bool:
 	return look_for_player() == Sight.CLEAR
 
+## True when the enemy is inside the camera picture (minus screen_margin). Attacks that start
+## only while this is true can never come from off-screen. No camera = nobody watches = false.
+func is_on_screen() -> bool:
+	var camera: Camera3D = get_viewport().get_camera_3d()
+	if camera == null or camera.is_position_behind(eye_position()):
+		return false
+	var screen: Rect2 = get_viewport().get_visible_rect().grow(-screen_margin)
+	return screen.has_point(camera.unproject_position(eye_position()))
+
 ## Probes the floor a little ahead along `direction`; false over a pit or a deep drop.
 func has_floor_ahead(direction: Vector3) -> bool:
 	var flat := Vector3(direction.x, 0.0, direction.z)
@@ -207,6 +221,12 @@ func face_direction(direction: Vector3, delta: float) -> void:
 
 func face_towards(point: Vector3, delta: float) -> void:
 	face_direction(point - global_position, delta)
+
+## Turns to `point` at once (a hit from behind makes the enemy look round).
+func face_instantly(point: Vector3) -> void:
+	var direction: Vector3 = point - global_position
+	if not Vector2(direction.x, direction.z).is_zero_approx():
+		visual.rotation.y = atan2(direction.x, direction.z)
 
 ## Plays a clip if the model has it and it is not already playing. False if it is missing.
 func play_anim(clip: StringName, speed: float = 1.0) -> bool:
@@ -241,6 +261,14 @@ func start_telegraph(time: float) -> void:
 func stop_telegraph() -> void:
 	if _flash != null:
 		_flash.stop()
+
+## One-shot Timer child for the timed states of a subclass FSM; it pauses with the game.
+func make_state_timer(on_timeout: Callable) -> Timer:
+	var timer := Timer.new()
+	timer.one_shot = true
+	timer.timeout.connect(on_timeout)
+	add_child(timer)
+	return timer
 
 ## Text of the debug label above the head; subclasses call it from their one state-change function.
 func set_state_label(text: String) -> void:
@@ -277,7 +305,9 @@ func _setup_debug() -> void:
 	_state_label.font_size = debug_label_font_size
 	_state_label.position = Vector3.UP * debug_label_height
 	add_child(_state_label)
-	add_child(VisionDebug.new())
+	var vision := VisionDebug.new()
+	vision.line_thickness = debug_line_thickness
+	add_child(vision)
 
 func _on_health_changed(current: int, _max_hp: int) -> void:
 	if current < _last_hp and current > 0:

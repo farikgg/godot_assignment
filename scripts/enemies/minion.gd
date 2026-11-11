@@ -46,10 +46,7 @@ func _ready() -> void:
 	view_range = data.sight_radius
 	super._ready()
 	_home = global_position
-	_timer = Timer.new()
-	_timer.one_shot = true
-	_timer.timeout.connect(_on_timer)
-	add_child(_timer)
+	_timer = make_state_timer(_on_timer)
 	_change_state(State.PATROL)
 
 func patrol_point(index: int) -> Vector3:
