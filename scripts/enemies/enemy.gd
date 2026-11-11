@@ -20,6 +20,8 @@ enum Sight { NO_HERO, TOO_FAR, OUT_OF_FOV, BLOCKED, CLEAR }
 @export var fall_limit_y: float = -20.0  # m
 ## HP the hero loses by touching this body; 0 = only telegraphed attacks hurt.
 @export var contact_damage: int = 1
+## Direction the model looks at the start: 0 = +Z (south), 90 = +X (east), 180 = -Z, 270 = -X.
+@export var start_yaw_degrees: float = 0.0
 
 @export_group("Senses")
 @export var view_range: float = 6.0  # m, on the ground plane
@@ -85,6 +87,7 @@ func _ready() -> void:
 	assert(health != null, "Enemy needs a Health child")
 	assert(visual != null, "Enemy needs a Visual child")
 	add_to_group("enemy")
+	visual.rotation.y = deg_to_rad(start_yaw_degrees)
 	_find_animation_player()
 	_find_hero()
 	_setup_debug()

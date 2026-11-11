@@ -30,3 +30,8 @@ max_hp = 2
 invincible_time = 0.3
 blink_interval = 0.06
 blink_target = NodePath("../Visual")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.4
+target_desired_distance = 0.2
+path_height_offset = 0.5

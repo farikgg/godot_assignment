@@ -1,14 +1,17 @@
 class_name Charger
 extends Enemy
-## Heavy rusher (zombie). IDLE until the hero is seen while on screen → WINDUP (crouch, red flash,
+## Heavy rusher (zombie). IDLE until the hero is seen while on screen, between min_trigger_distance
+## and trigger_range → WINDUP (crouch, red flash,
 ## sound) → DASH along a straight line fixed when the dash starts → STUNNED (open to hits) → IDLE.
 ## The dash ends on the hero, at a wall, at a ledge or after dash_distance, and it hurts only a
 ## hero who is within reach at that moment. Touching the Charger does not hurt.
 
 enum State { IDLE, WINDUP, DASH, STUNNED, DEAD }
 
-## The wind-up starts when the hero is seen this close.
+## The wind-up starts when the hero is seen this close…
 @export var trigger_range: float = 6.0  # m
+## …but not closer than this: point-blank it only turns to the hero and waits.
+@export var min_trigger_distance: float = 2.0  # m
 
 @export_group("Timing")
 @export var windup_time: float = 0.7  # s
@@ -48,7 +51,13 @@ func _think(delta: float) -> void:
 	var hero: Node3D = get_live_hero()
 	match state:
 		State.IDLE:
-			if can_see_player() and is_on_screen():
+			if not can_see_player():
+				return
+			# point-blank, or with a pit or a wall right in front, a dash makes no sense: it only watches
+			var too_close: bool = flat_distance_to(hero.global_position) < min_trigger_distance
+			if too_close or _dash_blocked(_direction_to_hero()):
+				face_towards(hero.global_position, delta)
+			elif is_on_screen():
 				_change_state(State.WINDUP)
 		State.WINDUP:
 			if hero == null:
@@ -66,6 +75,10 @@ func _dash(hero: Node3D) -> void:
 		_change_state(State.STUNNED)
 	else:
 		desired_velocity = _dash_direction * dash_speed
+
+# true when the first step of a dash along `direction` would end at a ledge or against a wall
+func _dash_blocked(direction: Vector3) -> bool:
+	return not has_floor_ahead(direction) or test_move(global_transform, direction * ledge_probe_distance)
 
 func _can_dash() -> bool:
 	return dash_speed > 0.0 and dash_distance > 0.0
