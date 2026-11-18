@@ -9,4 +9,4 @@ id = &"female_d"
 display_name = "Гвен"
 model = ExtResource("2_model")
 price = 300
-unlocked_by_default = false
+unlocked_by_default = true

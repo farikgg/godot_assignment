@@ -9,4 +9,4 @@ id = &"male_c"
 display_name = "Вигго"
 model = ExtResource("2_model")
 price = 200
-unlocked_by_default = false
+unlocked_by_default = true
