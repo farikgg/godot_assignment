@@ -10,6 +10,11 @@ const PLAYER_DATA: String = "res://resources/player.tres"
 ## Physics frames the hero runs right before the speed is read (accelerates to full speed).
 const RUN_FRAMES: int = 60
 const SETTLE_FRAMES: int = 10
+## Spawned enemies settle onto the floor and patrollers start walking during the settle frames.
+const MARKER_TOLERANCE: float = 1.0
+const WAKE_MARGIN_SEC: float = 0.5
+const PATROL_WAIT_SEC: float = 2.0
+const PATROL_MIN_MOVE: float = 0.5
 
 var _failures: int = 0
 
@@ -68,8 +73,37 @@ func _check_level(path: String) -> void:
 			var e: Enemy = enemy
 			_check(e.is_configured() and e.health.max_hp == e.data.max_hp,
 				"%s configured, HP %d from %s" % [e.name, e.data.max_hp, e.data.resource_path.get_file()])
+	var level_data: LevelData = level.get("data")
+	var spawned: int = 0
+	for enemy in level.get_tree().get_nodes_in_group("enemy"):
+		if enemy is Enemy:
+			spawned += 1
+	_check(level_data != null and spawned == level_data.enemy_spawns.size(),
+		"%d AI enemies spawned from LevelData" % spawned)
+	var spawners: int = 0
+	for child in level.get_children():
+		if child.get(&"data") is SpawnerData:
+			spawners += 1
+	_check(spawners == (1 if level_data.spawner != null else 0), "cave-in from LevelData: %d" % spawners)
+	for spawn in level_data.enemy_spawns:
+		var marker: Node3D = level.find_children(String(spawn.marker), "Marker3D", true, false)[0]
+		var near: bool = false
+		for enemy in level.get_tree().get_nodes_in_group("enemy"):
+			if enemy is Enemy and (enemy as Node3D).global_position.distance_to(marker.global_position) < MARKER_TOLERANCE:
+				near = true
+		_check(near, "an enemy stands on %s" % spawn.marker)
 	for boss in level.get_tree().get_nodes_in_group("boss"):
 		print("MEASURE boss_max_hp=%d" % (boss as Boss).health.max_hp)
+		await create_timer((boss as Boss).stats.wake_delay + WAKE_MARGIN_SEC).timeout
+		_check((boss as Boss).is_awake(), "spawned boss wakes up and fights")
+	if path.ends_with("level_1.tscn"):
+		var minion: Node3D = null
+		for enemy in level.get_tree().get_nodes_in_group("enemy"):
+			if enemy is Minion:
+				minion = enemy
+		var start: Vector3 = minion.global_position
+		await create_timer(PATROL_WAIT_SEC).timeout
+		_check(minion.global_position.distance_to(start) > PATROL_MIN_MOVE, "spawned Minion patrols (moved %.2f m)" % minion.global_position.distance_to(start))
 	if path.ends_with("level_1.tscn"):
 		# hold "right" and measure the speed the hero actually reaches
 		# PlayerInputHandler reads input events, so press the action as an event

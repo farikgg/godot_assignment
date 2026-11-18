@@ -1,6 +1,15 @@
 [gd_resource type="Resource" script_class="LevelData" format=3]
 
 [ext_resource type="Script" path="res://scripts/data/level_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/data/enemy_spawn.gd" id="2_spawn"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/boss.tscn" id="r1"]
+[ext_resource type="Resource" path="res://resources/enemies/boss.tres" id="r2"]
+
+[sub_resource type="Resource" id="boss"]
+script = ExtResource("2_spawn")
+scene = ExtResource("r1")
+data = ExtResource("r2")
+marker = &"BossSpawn"
 
 [resource]
 script = ExtResource("1_script")
@@ -10,3 +19,5 @@ scene_path = "res://scenes/levels/level_3_boss.tscn"
 unlocked_by_default = false
 next_level_id = &""
 par_time_sec = 120.0
+goal = 1
+enemy_spawns = Array[ExtResource("2_spawn")]([SubResource("boss")])

@@ -25,11 +25,6 @@
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="g_exit"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap.tscn" id="j_saw"]
 [ext_resource type="PackedScene" path="res://scenes/props/key_pickup.tscn" id="l_key"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/minion.tscn" id="minion"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/shooter.tscn" id="shooter"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/charger.tscn" id="charger"]
-[ext_resource type="Resource" path="res://resources/enemies/guard.tres" id="data_guard"]
-[ext_resource type="Resource" path="res://resources/enemies/shooter_short.tres" id="data_shooter_short"]
 [ext_resource type="Script" path="res://scripts/level_navigation.gd" id="level_nav"]
 [ext_resource type="PackedScene" path="res://scenes/props/tunnel.tscn" id="m_tunnel"]
 [ext_resource type="PackedScene" uid="uid://bkwmqvj85xlsc" path="res://scenes/props/locked_gate.tscn" id="n_locked_gate"]
@@ -329,18 +324,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.4, 0.1, 3)
 [node name="Saw" parent="Enemies" unique_id=1584203317 instance=ExtResource("j_saw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.029084, 0.1, 0.044257283)
 
-[node name="Minion" parent="Enemies" unique_id=746132482 instance=ExtResource("minion")]
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="MinionStart" type="Marker3D" parent="SpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.1, 5.5)
-data = ExtResource("data_guard")
-patrol_offset = Vector3(4, 0, 0)
-start_yaw_degrees = 90.0
 
-[node name="Shooter" parent="Enemies" instance=ExtResource("shooter")]
+[node name="ShooterStart" type="Marker3D" parent="SpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2, 0.1, 0.6)
-start_yaw_degrees = 90.0
-data = ExtResource("data_shooter_short")
 
-[node name="Charger" parent="Enemies" instance=ExtResource("charger")]
+[node name="ChargerStart" type="Marker3D" parent="SpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.1, -6.8)
 
 [node name="SwordPickup" parent="." unique_id=1771300090 instance=ExtResource("s_sword_pickup")]

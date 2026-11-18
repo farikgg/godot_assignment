@@ -48,6 +48,8 @@ func validate() -> PackedStringArray:
 			problems.append("'%s': scene '%s' not found" % [level.id, level.scene_path])
 		if level.par_time_sec < 0.0:
 			problems.append("'%s': negative par_time_sec" % level.id)
+		for problem in level.validate():
+			problems.append("'%s': %s" % [level.id, problem])
 		any_default = any_default or level.unlocked_by_default
 	for level in levels:
 		if level != null and level.next_level_id != &"" and index_of_id(level.next_level_id) == -1:

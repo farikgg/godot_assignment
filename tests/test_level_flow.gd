@@ -44,6 +44,14 @@ func _run() -> void:
 	await process_frame
 	_check(current_scene != null and current_scene.scene_file_path.ends_with("level_1.tscn"), "level_1 loaded")
 	_check(_flow.current_index == 0 and _flow.run_from_start, "index 0, run from start")
+	var required: int = current_scene.get("data").coins_required
+	_check(required > 0, "level_1 asks for gold at the exit")
+	current_scene.call("_on_exit_reached")
+	await create_timer(EXIT_WAIT_SEC).timeout
+	await process_frame
+	_check(current_scene.scene_file_path.ends_with("level_1.tscn"), "too little gold: the exit stays shut")
+	# as if the hero had picked up exactly the required gold
+	current_scene.set("coins_collected", required)
 	current_scene.call("_on_exit_reached")
 	await create_timer(EXIT_WAIT_SEC).timeout
 	await process_frame

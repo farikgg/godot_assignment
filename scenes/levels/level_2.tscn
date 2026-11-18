@@ -9,8 +9,6 @@
 [ext_resource type="PackedScene" path="res://scenes/props/chest.tscn" id="chest"]
 [ext_resource type="PackedScene" uid="uid://com1yoydlpm6f" path="res://scenes/coin.tscn" id="coin"]
 [ext_resource type="PackedScene" path="res://scenes/props/column.tscn" id="column"]
-[ext_resource type="Resource" path="res://resources/enemies/vampire.tres" id="data_vampire"]
-[ext_resource type="Resource" path="res://resources/enemies/zombie.tres" id="data_zombie"]
 [ext_resource type="PackedScene" path="res://scenes/props/exit.tscn" id="exit"]
 [ext_resource type="PackedScene" uid="uid://bkwmqvj85xlsc" path="res://scenes/props/locked_gate.tscn" id="gate"]
 [ext_resource type="PackedScene" path="res://scenes/props/gate_hint.tscn" id="gate_hint"]
@@ -19,7 +17,6 @@
 [ext_resource type="PackedScene" path="res://scenes/props/kill_zone.tscn" id="kill"]
 [ext_resource type="Script" uid="uid://o800sigabfwg" path="res://scripts/level.gd" id="level"]
 [ext_resource type="PackedScene" path="res://scenes/systems/lighting.tscn" id="lighting"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/minion.tscn" id="minion"]
 [ext_resource type="PackedScene" path="res://scenes/props/moving_platform.tscn" id="moving_platform"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="pause"]
 [ext_resource type="PackedScene" uid="uid://b3b70jygclukh" path="res://scenes/player.tscn" id="player"]
@@ -28,7 +25,6 @@
 [ext_resource type="PackedScene" path="res://scenes/props/rocks.tscn" id="rocks"]
 [ext_resource type="PackedScene" path="res://scenes/props/saw_trap_patrol.tscn" id="saw_patrol"]
 [ext_resource type="PackedScene" path="res://scenes/props/floor_slab.tscn" id="slab"]
-[ext_resource type="PackedScene" path="res://scenes/systems/spawner_cave_in.tscn" id="spawner_cave_in"]
 [ext_resource type="PackedScene" uid="uid://bgkuco0tckl8e" path="res://scenes/props/stones.tscn" id="stones"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/sword_pickup.tscn" id="sword"]
 [ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="touch"]
@@ -132,21 +128,18 @@ transform = Transform3D(0.9397, 0, -0.342, 0, 1, 0, 0.342, 0, 0.9397, 4.3, -0.6,
 [node name="SawPatrol" parent="Enemies" unique_id=1946507376 instance=ExtResource("saw_patrol")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4, 0.1, 0.5)
 
-[node name="Skeleton" parent="Enemies" unique_id=316932097 instance=ExtResource("minion")]
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="SkeletonStart" type="Marker3D" parent="SpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 0.1, -1.5)
-patrol_offset = Vector3(0, 0, 3)
 
-[node name="Zombie" parent="Enemies" unique_id=1666977102 instance=ExtResource("minion")]
+[node name="ZombieStart" type="Marker3D" parent="SpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0.1, 1.5)
-data = ExtResource("data_zombie")
-patrol_offset = Vector3(5, 0, 0)
 
-[node name="Vampire" parent="Enemies" unique_id=1434400369 instance=ExtResource("minion")]
+[node name="VampireStart" type="Marker3D" parent="SpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.5, 0.1, 1)
-data = ExtResource("data_vampire")
-patrol_offset = Vector3(-4, 0, 0)
 
-[node name="Spawner" parent="." unique_id=1471926363 instance=ExtResource("spawner_cave_in")]
+[node name="CaveIn" type="Marker3D" parent="SpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.2, 0, 4)
 
 [node name="Coins" type="Node3D" parent="." unique_id=1648862523]

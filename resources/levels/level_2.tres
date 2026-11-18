@@ -1,6 +1,33 @@
 [gd_resource type="Resource" script_class="LevelData" format=3]
 
 [ext_resource type="Script" path="res://scripts/data/level_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/data/enemy_spawn.gd" id="2_spawn"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/minion.tscn" id="r1"]
+[ext_resource type="Resource" path="res://resources/enemies/skeleton.tres" id="r2"]
+[ext_resource type="Resource" path="res://resources/enemies/zombie.tres" id="r3"]
+[ext_resource type="Resource" path="res://resources/enemies/vampire.tres" id="r4"]
+[ext_resource type="Resource" path="res://resources/spawners/cave_in.tres" id="r5"]
+
+[sub_resource type="Resource" id="skeleton"]
+script = ExtResource("2_spawn")
+scene = ExtResource("r1")
+data = ExtResource("r2")
+marker = &"SkeletonStart"
+patrol_offset = Vector3(0, 0, 3)
+
+[sub_resource type="Resource" id="zombie"]
+script = ExtResource("2_spawn")
+scene = ExtResource("r1")
+data = ExtResource("r3")
+marker = &"ZombieStart"
+patrol_offset = Vector3(5, 0, 0)
+
+[sub_resource type="Resource" id="vampire"]
+script = ExtResource("2_spawn")
+scene = ExtResource("r1")
+data = ExtResource("r4")
+marker = &"VampireStart"
+patrol_offset = Vector3(-4, 0, 0)
 
 [resource]
 script = ExtResource("1_script")
@@ -10,3 +37,8 @@ scene_path = "res://scenes/levels/level_2.tscn"
 unlocked_by_default = false
 next_level_id = &"level_3_boss"
 par_time_sec = 150.0
+goal = 0
+coins_required = 8
+enemy_spawns = Array[ExtResource("2_spawn")]([SubResource("skeleton"), SubResource("zombie"), SubResource("vampire")])
+spawner = ExtResource("r5")
+spawner_marker = &"CaveIn"

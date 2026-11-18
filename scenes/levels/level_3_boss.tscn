@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" path="res://scenes/props/abyss_rock.tscn" id="abyss_rock"]
 [ext_resource type="PackedScene" path="res://scenes/fx/ambient_dust.tscn" id="ambient_dust"]
 [ext_resource type="PackedScene" path="res://scenes/props/barrel.tscn" id="barrel"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/boss.tscn" id="boss"]
 [ext_resource type="PackedScene" path="res://scenes/systems/camera_rig.tscn" id="camera"]
 [ext_resource type="PackedScene" uid="uid://com1yoydlpm6f" path="res://scenes/coin.tscn" id="coin"]
 [ext_resource type="PackedScene" path="res://scenes/props/column.tscn" id="column"]
@@ -90,8 +89,6 @@ transform = Transform3D(0.9063, 0, -0.4226, 0, 1, 0, 0.4226, 0, 0.9063, 1, -0.6,
 
 [node name="BossSpawn" type="Marker3D" parent="." unique_id=2051348179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
-
-[node name="Boss" parent="BossSpawn" unique_id=1695340574 instance=ExtResource("boss")]
 
 [node name="Coins" type="Node3D" parent="." unique_id=350469798]
 

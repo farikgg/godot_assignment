@@ -1,6 +1,7 @@
 class_name Level
 extends Node3D
-## Shared logic of every level: gold, key and gate, HUD, exit to the next level, death and restart.
+## Shared logic of every level: spawns its enemies and cave-in from the LevelData, gold, key and
+## gate, HUD, exit (or boss) to the next level, death and restart.
 
 const MESSAGE_DURATION: float = 2.0
 const TITLE_DURATION: float = 2.5
@@ -17,6 +18,10 @@ const EXIT_DELAY: float = 1.5
 const BOSS_AWAKE_TEXT: String = "Страж подземелья пробудился"
 const BOSS_ENRAGED_TEXT: String = "Страж в ярости!"
 const BOSS_DEFEATED_TEXT: String = "Страж повержен!"
+const NEED_GOLD_TEXT: String = "Нужно больше золота: %d / %d"
+const SPAWNER_SCENE: PackedScene = preload("res://scenes/systems/spawner.tscn")
+## Spawned enemies go under this node when the scene has it (level 1 bakes navigation from it).
+const ENEMIES_NODE: NodePath = ^"Enemies"
 
 ## Played when the exit is reached and when the boss falls.
 @export var win_sound: AudioStream
@@ -30,11 +35,18 @@ var _has_won: bool = false
 var _game_over: bool = false
 ## Seconds played in this attempt; stops at the win and while the game is paused.
 var elapsed_sec: float = 0.0
+## This level's LevelData; null for a scene that is not in the catalog (nothing is spawned).
+var data: LevelData
 
 func _ready() -> void:
 	assert(hud != null, "Level needs a HUD instance (scenes/ui/hud.tscn)")
 	GameFlow.register_level(scene_file_path)
-	MusicPlayer.play_level(not get_tree().get_nodes_in_group("boss").is_empty())
+	data = GameFlow.current_level()
+	if data == null:
+		push_warning("Level: %s is not in the level catalog, no enemies are spawned" % scene_file_path)
+	else:
+		_spawn_content()
+	MusicPlayer.play_level(data != null and data.goal == LevelData.Goal.BOSS)
 	hud.set_player_name(Profile.player_name)
 
 	# the score is gold, not coins: each coin is worth its PickupData.value
@@ -42,6 +54,9 @@ func _ready() -> void:
 		if coin.has_signal("collected") and coin.has_method("get_value"):
 			coins_total += coin.call("get_value") as int
 			coin.connect("collected", _on_coin_collected)
+	if data != null and data.goal == LevelData.Goal.EXIT and data.coins_required > coins_total:
+		push_error("Level %s: coins_required %d but the coins are worth %d, the exit can never open"
+			% [data.id, data.coins_required, coins_total])
 
 	for key in get_tree().get_nodes_in_group("key"):
 		if key.has_signal("collected"):
@@ -71,9 +86,66 @@ func _ready() -> void:
 	hud.set_coins(coins_collected, coins_total)
 	hud.set_key(has_key)
 	# the title lives in the level's LevelData (resources/levels/)
-	var data: LevelData = GameFlow.current_level()
 	if data != null and not data.title.is_empty():
 		hud.show_message(data.title, TITLE_DURATION)
+
+# --- spawning from LevelData ----------------------------------------------------------------
+
+func _spawn_content() -> void:
+	var parent: Node3D = get_node_or_null(ENEMIES_NODE) as Node3D
+	if parent == null:
+		parent = self
+	for spawn in data.enemy_spawns:
+		if spawn != null:
+			_spawn_enemy(spawn, parent)
+	if data.spawner != null:
+		_spawn_cave_in()
+	# a goal the scene cannot satisfy would leave the level unwinnable: say so loudly
+	match data.goal:
+		LevelData.Goal.BOSS:
+			if get_tree().get_nodes_in_group("boss").is_empty():
+				push_error("Level %s: goal BOSS, but no boss was spawned" % data.id)
+		LevelData.Goal.EXIT:
+			if get_tree().get_nodes_in_group("exit").is_empty():
+				push_error("Level %s: goal EXIT, but the scene has no exit" % data.id)
+
+func _spawn_enemy(spawn: EnemySpawn, parent: Node3D) -> void:
+	var problems: PackedStringArray = spawn.validate()
+	var marker: Marker3D = _find_marker(spawn.marker)
+	if marker == null:
+		problems.append("no Marker3D named '%s' in the scene" % spawn.marker)
+	if not problems.is_empty():
+		push_error("Level %s: enemy spawn skipped: %s" % [data.id, ", ".join(problems)])
+		return
+	var node: Node = spawn.scene.instantiate()
+	var enemy: Enemy = node as Enemy
+	if enemy == null:
+		push_error("Level %s: %s is not an Enemy, skipped" % [data.id, spawn.scene.resource_path])
+		node.free()
+		return
+	# set before add_child: the enemy reads them in its _ready
+	enemy.data = spawn.data
+	enemy.start_yaw_degrees = spawn.start_yaw_degrees
+	if enemy is Minion:
+		(enemy as Minion).patrol_offset = spawn.patrol_offset
+	enemy.position = parent.to_local(marker.global_position)
+	parent.add_child(enemy, true)
+
+func _spawn_cave_in() -> void:
+	var marker: Marker3D = _find_marker(data.spawner_marker)
+	if marker == null:
+		push_error("Level %s: no Marker3D named '%s' for the cave-in" % [data.id, data.spawner_marker])
+		return
+	var spawner: Node3D = SPAWNER_SCENE.instantiate() as Node3D
+	spawner.set(&"data", data.spawner)
+	spawner.position = to_local(marker.global_position)
+	add_child(spawner, true)
+
+func _find_marker(marker_name: StringName) -> Marker3D:
+	if marker_name == &"":
+		return null
+	var found: Array[Node] = find_children(String(marker_name), "Marker3D", true, false)
+	return found[0] as Marker3D if not found.is_empty() else null
 
 func _process(delta: float) -> void:
 	if not _has_won and not _game_over:
@@ -144,6 +216,10 @@ func _on_player_died() -> void:
 func _on_exit_reached() -> void:
 	# after the exit is reached it is inert, so re-entering can't trigger the move twice
 	if _has_won or _game_over:
+		return
+	var required: int = data.coins_required if data != null else 0
+	if coins_collected < required:
+		_show_timed(NEED_GOLD_TEXT % [coins_collected, required])
 		return
 	_has_won = true
 	Sfx.play(win_sound, self)
