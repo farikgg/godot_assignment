@@ -3,7 +3,7 @@ extends Node
 ## Menu and win screen — the menu track (A3); levels — levels_music; the arena — final_round_music
 ## (falls back to levels_music when the file is missing). Changes crossfade over fade_time;
 ## asking for the track that is already playing changes nothing, so moving between levels
-## does not restart it. Plays during the pause too.
+## does not restart it. Plays during the pause too. The volume setting is the Music bus level.
 
 const MENU_TRACK: String = "res://assets/Audio/8-bit_sound.ogg"
 const LEVEL_TRACK: String = "res://assets/Audio/levels_music.wav"
@@ -25,7 +25,6 @@ const START_DELAY_FRAMES: int = 2
 var _players: Array[AudioStreamPlayer] = []
 var _active: int = 0
 var _current_path: String = ""
-var _volume_linear: float = 1.0
 var _tween: Tween
 
 func _ready() -> void:
@@ -80,21 +79,9 @@ func current_track() -> String:
 func active_player() -> AudioStreamPlayer:
 	return _players[_active]
 
-## Settings slider: 0..1 on top of the Music bus level.
-func set_volume_linear(value: float) -> void:
-	_volume_linear = clampf(value, 0.0, 1.0)
-	if _tween != null and _tween.is_valid():
-		_tween.kill()
-		_release(_players[1 - _active])
-	_players[_active].volume_db = _target_db()
-
-func get_volume_linear() -> float:
-	return _volume_linear
-
+# the settings slider is the Music bus volume (SaveGame), not this per-track gain
 func _target_db() -> float:
-	if _volume_linear <= 0.0:
-		return SILENT_DB
-	return linear_to_db(_volume_linear) + TRACK_GAIN_DB.get(_current_path, 0.0)
+	return TRACK_GAIN_DB.get(_current_path, 0.0)
 
 func _set_loop(stream: AudioStream) -> void:
 	if stream is AudioStreamOggVorbis:

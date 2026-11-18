@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/character_select.tscn" id="7_select"]
 [ext_resource type="Script" uid="uid://cs0w83a1volfc" path="res://scripts/main_menu.gd" id="2_ekxnf"]
 [ext_resource type="Script" path="res://scripts/ui/safe_area.gd" id="safe_area"]
+[ext_resource type="PackedScene" path="res://scenes/ui/confirm_panel.tscn" id="8_confirm"]
 
 [node name="MainMenu" type="Control" unique_id=846265366]
 layout_mode = 3
@@ -121,7 +122,7 @@ text = "Выйти"
 
 [node name="SettingsPanel" type="PanelContainer" parent="SafeArea/Content" unique_id=1845780512]
 visible = false
-custom_minimum_size = Vector2(640, 520)
+custom_minimum_size = Vector2(640, 760)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -129,9 +130,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -320.0
-offset_top = -290.0
+offset_top = -380.0
 offset_right = 320.0
-offset_bottom = 290.0
+offset_bottom = 380.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -150,11 +151,28 @@ layout_mode = 2
 text = "Громкость музыки"
 
 [node name="Music volume" type="HSlider" parent="SafeArea/Content/SettingsPanel/Content" unique_id=298705229]
-custom_minimum_size = Vector2(0, 36)
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 value = 1.0
+
+[node name="SfxLabel" type="Label" parent="SafeArea/Content/SettingsPanel/Content"]
+layout_mode = 2
+text = "Громкость звуков"
+
+[node name="SfxVolume" type="HSlider" parent="SafeArea/Content/SettingsPanel/Content"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="ButtonReset" type="Button" parent="SafeArea/Content/SettingsPanel/Content"]
+custom_minimum_size = Vector2(480, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Сбросить прогресс"
 
 [node name="ButtonBack" type="Button" parent="SafeArea/Content/SettingsPanel/Content" unique_id=1392890709]
 custom_minimum_size = Vector2(360, 120)
@@ -165,6 +183,9 @@ text = "Назад"
 [node name="CharacterSelect" parent="SafeArea/Content" unique_id=1771300081 instance=ExtResource("7_select")]
 layout_mode = 1
 
+[node name="ConfirmPanel" parent="." instance=ExtResource("8_confirm")]
+layout_mode = 1
+
 [connection signal="text_changed" from="SafeArea/Content/MainPanel/Buttons/NameField" to="." method="_on_name_field_text_changed"]
 [connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/Grid/ButtonStart" to="." method="_on_button_start_pressed"]
 [connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/Grid/ButtonHeroes" to="." method="_on_button_heroes_pressed"]
@@ -172,3 +193,5 @@ layout_mode = 1
 [connection signal="pressed" from="SafeArea/Content/MainPanel/Buttons/Grid/ButtonQuit" to="." method="_on_button_quit_pressed"]
 [connection signal="value_changed" from="SafeArea/Content/SettingsPanel/Content/Music volume" to="." method="_on_volume_slider_value_changed"]
 [connection signal="pressed" from="SafeArea/Content/SettingsPanel/Content/ButtonBack" to="." method="_on_button_back_pressed"]
+[connection signal="value_changed" from="SafeArea/Content/SettingsPanel/Content/SfxVolume" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="pressed" from="SafeArea/Content/SettingsPanel/Content/ButtonReset" to="." method="_on_button_reset_pressed"]

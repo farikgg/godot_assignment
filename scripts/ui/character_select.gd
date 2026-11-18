@@ -6,6 +6,7 @@ signal closed
 const TITLE_TEXT: String = "Выбери героя"
 const SELECT_TEXT: String = "Выбрать"
 const SELECTED_TEXT: String = "Выбран"
+const LOCKED_TEXT: String = "Закрыт"
 const BACK_TEXT: String = "Назад"
 
 ## Turntable speed in the preview, degrees per second.
@@ -81,8 +82,12 @@ func _show_current() -> void:
 func _refresh_select_button() -> void:
 	var data: CharacterData = current()
 	var chosen: bool = data != null and data.id == Profile.character_id
-	_select_button.text = SELECTED_TEXT if chosen else SELECT_TEXT
-	_select_button.disabled = chosen
+	var locked: bool = data != null and not SaveGame.is_hero_unlocked(data.id)
+	if locked:
+		_select_button.text = LOCKED_TEXT
+	else:
+		_select_button.text = SELECTED_TEXT if chosen else SELECT_TEXT
+	_select_button.disabled = chosen or locked
 
 func _on_select_pressed() -> void:
 	var data: CharacterData = current()

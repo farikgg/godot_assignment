@@ -30,6 +30,8 @@ var coins_total: int = 0
 var has_key: bool = false
 var _has_won: bool = false
 var _game_over: bool = false
+## Seconds played in this attempt; stops at the win and while the game is paused.
+var elapsed_sec: float = 0.0
 
 func _ready() -> void:
 	assert(hud != null, "Level needs a HUD instance (scenes/ui/hud.tscn)")
@@ -72,6 +74,10 @@ func _ready() -> void:
 	hud.set_key(has_key)
 	if not level_title.is_empty():
 		hud.show_message(level_title, TITLE_DURATION)
+
+func _process(delta: float) -> void:
+	if not _has_won and not _game_over:
+		elapsed_sec += delta
 
 func _on_coin_collected() -> void:
 	coins_collected += 1
@@ -123,6 +129,7 @@ func _on_boss_died() -> void:
 func _on_boss_defeated() -> void:
 	if _game_over:
 		return
+	_record_result()
 	GameFlow.go_to_win(coins_collected)
 
 func _on_player_died() -> void:
@@ -143,7 +150,14 @@ func _on_exit_reached() -> void:
 	var last: bool = GameFlow.current_index >= GameFlow.LEVELS.size() - 1
 	hud.show_message(WIN_TEXT if last else LEVEL_DONE_TEXT)
 	await get_tree().create_timer(EXIT_DELAY, false).timeout
+	_record_result()
 	GameFlow.next_level(coins_collected)
+
+# a level opened with F6 that is not in GameFlow's list has no id and records nothing
+func _record_result() -> void:
+	var level_id: StringName = GameFlow.current_level_id()
+	if level_id != &"":
+		SaveGame.record_level_result(level_id, coins_collected, elapsed_sec)
 
 ## Short hint toast for props (e.g. «Здоровье полное» from a potion).
 func show_hint(text: String) -> void:

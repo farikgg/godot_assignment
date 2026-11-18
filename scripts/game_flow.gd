@@ -16,6 +16,8 @@ const QUIT_DELAY: float = 0.15
 var current_index: int = -1
 ## Gold banked over the run: a level's coins count once it is completed.
 var total_coins: int = 0
+## True while the run started at the first level, so its total counts for SaveGame.best_total.
+var run_from_start: bool = false
 var _quitting: bool = false
 
 func _ready() -> void:
@@ -25,7 +27,24 @@ func _ready() -> void:
 func start_game() -> Error:
 	current_index = 0
 	total_coins = 0
+	run_from_start = true
 	return _change_scene(LEVELS[current_index])
+
+## Level ids used by the save: the scene file name without extension.
+func level_ids() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for path in LEVELS:
+		ids.append(StringName(path.get_file().get_basename()))
+	return ids
+
+func default_unlocked_level_ids() -> Array[StringName]:
+	return [level_ids()[0]]
+
+## Id of the level being played; empty outside a run.
+func current_level_id() -> StringName:
+	if current_index < 0 or current_index >= LEVELS.size():
+		return &""
+	return level_ids()[current_index]
 
 ## Banks `coins` from the finished level and loads the next one, or the win screen after the last.
 func next_level(coins: int = 0) -> Error:
@@ -44,11 +63,15 @@ func restart_level() -> Error:
 ## Opens the win screen; `coins` are the gold of the level just finished (the boss arena).
 func go_to_win(coins: int = 0) -> Error:
 	total_coins += maxi(coins, 0)
+	if run_from_start:
+		SaveGame.record_run_total(total_coins)
+	run_from_start = false
 	current_index = -1
 	return _change_scene(WIN_SCENE)
 
 func go_to_menu() -> Error:
 	current_index = -1
+	run_from_start = false
 	return _change_scene(MENU_SCENE)
 
 ## A level opened straight from the editor (F6) registers itself, so restart / next still work.
@@ -59,6 +82,8 @@ func quit_game(exit_code: int = 0) -> void:
 	if _quitting:
 		return
 	_quitting = true
+	# also the WM_CLOSE_REQUEST path: closing the window comes through here
+	SaveGame.save_game()
 	# frozen while the audio thread catches up, so the game can't start new sounds meanwhile
 	get_tree().paused = true
 	MusicPlayer.stop_all()
