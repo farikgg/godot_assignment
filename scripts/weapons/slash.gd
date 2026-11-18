@@ -2,7 +2,8 @@ class_name Slash
 extends Area3D
 
 @export var lifetime: float = 0.15
-@export var damage: int = 1
+## Set by the weapon that spawns it (PlayerData.sword_damage).
+var damage: int = 0
 ## Sparks spawned on every body the slash hits (enemy, boss, keg).
 @export var hit_fx: PackedScene
 @export var hit_sound: AudioStream

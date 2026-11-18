@@ -37,10 +37,10 @@ func _ready() -> void:
 	MusicPlayer.play_level(not get_tree().get_nodes_in_group("boss").is_empty())
 	hud.set_player_name(Profile.player_name)
 
-	var coins: Array[Node] = get_tree().get_nodes_in_group("coins")
-	coins_total = coins.size()
-	for coin in coins:
-		if coin.has_signal("collected"):
+	# the score is gold, not coins: each coin is worth its PickupData.value
+	for coin in get_tree().get_nodes_in_group("coins"):
+		if coin.has_signal("collected") and coin.has_method("get_value"):
+			coins_total += coin.call("get_value") as int
 			coin.connect("collected", _on_coin_collected)
 
 	for key in get_tree().get_nodes_in_group("key"):
@@ -79,8 +79,8 @@ func _process(delta: float) -> void:
 	if not _has_won and not _game_over:
 		elapsed_sec += delta
 
-func _on_coin_collected() -> void:
-	coins_collected += 1
+func _on_coin_collected(value: int) -> void:
+	coins_collected += value
 	hud.set_coins(coins_collected, coins_total)
 
 func _on_key_collected() -> void:

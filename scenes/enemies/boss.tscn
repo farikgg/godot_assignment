@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/projectiles/fire_rain_drop.tscn" id="5_rain"]
 [ext_resource type="AudioStreamRandomizer" path="res://assets/Audio/randomizers/boss_roar.tres" id="snd_roar_sound"]
 [ext_resource type="AudioStream" path="res://assets/Audio/boss_sound/angry.wav" id="snd_enraged_sound"]
+[ext_resource type="Resource" path="res://resources/enemies/boss.tres" id="d_boss"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.75
@@ -29,9 +30,9 @@ ring_segments = 8
 collision_layer = 4
 collision_mask = 19
 script = ExtResource("1_script")
+data = ExtResource("d_boss")
 roar_sound = ExtResource("snd_roar_sound")
 enraged_sound = ExtResource("snd_enraged_sound")
-knockback_speed = 0.0
 free_delay = 0.0
 fireball_scene = ExtResource("4_fireball")
 rain_drop_scene = ExtResource("5_rain")
@@ -50,8 +51,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 1.0)
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("3_health")
-max_hp = 8
-invincible_time = 0.4
 blink_interval = 0.08
 blink_target = NodePath("../Visual")
 

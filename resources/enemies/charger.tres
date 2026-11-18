@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ChargerData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/charger_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "Зомби-таран"
+max_hp = 3
+invincible_time = 0.3
+contact_damage = 0
+knockback_speed = 2.0
+knockback_time = 0.2
+sight_radius = 6.0
+fov_degrees = 200.0
+trigger_range = 6.0
+min_trigger_distance = 2.0
+windup_time = 0.7
+stun_time = 1.0
+dash_speed = 9.0
+dash_distance = 7.0
+dash_damage = 1
+hit_reach = 0.9
+hit_height = 1.2

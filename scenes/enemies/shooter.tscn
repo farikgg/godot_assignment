@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://scripts/health.gd" id="3_health"]
 [ext_resource type="PackedScene" path="res://scenes/projectiles/bone_bolt.tscn" id="4_bolt"]
 [ext_resource type="AudioStream" path="res://assets/Audio/enemy_windup.wav" id="5_windup"]
+[ext_resource type="Resource" path="res://resources/enemies/shooter.tres" id="d_shooter"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.3
@@ -24,10 +25,9 @@ size = Vector3(0.05, 0.05, 1)
 collision_layer = 4
 collision_mask = 19
 script = ExtResource("1_script")
+data = ExtResource("d_shooter")
 bolt_scene = ExtResource("4_bolt")
 aim_sound = ExtResource("5_windup")
-contact_damage = 0
-fov_degrees = 140.0
 show_debug = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -44,8 +44,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0.45)
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("3_health")
-max_hp = 2
-invincible_time = 0.3
 blink_interval = 0.06
 blink_target = NodePath("../Visual")
 

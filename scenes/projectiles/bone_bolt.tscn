@@ -23,7 +23,6 @@ collision_layer = 8
 collision_mask = 3
 monitorable = false
 script = ExtResource("1_script")
-speed = 5.0
 lifetime = 2.5
 impact_fx = ExtResource("2_fx")
 

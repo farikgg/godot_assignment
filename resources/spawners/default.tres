@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SpawnerData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/spawner_data.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/hazards/bomb.tscn" id="2_bomb"]
+[ext_resource type="PackedScene" path="res://scenes/hazards/rock.tscn" id="3_rock"]
+[ext_resource type="PackedScene" path="res://scenes/hazards/potion.tscn" id="4_potion"]
+
+[resource]
+script = ExtResource("1_script")
+hazard_scenes = Array[PackedScene]([ExtResource("2_bomb"), ExtResource("3_rock"), ExtResource("4_potion")])
+spawn_weights = Array[float]([1.0, 0.0, 0.0])
+interval = 1.5
+max_alive = 15
+area_size = Vector2(18, 18)
+telegraph_time = 0.8

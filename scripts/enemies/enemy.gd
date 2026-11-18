@@ -8,25 +8,29 @@ extends CharacterBody3D
 
 signal died
 
+## HP the hero loses by touching this body (from data); 0 = only telegraphed attacks hurt.
+var contact_damage: int:
+	get:
+		return data.contact_damage if _configured else 0
+## Sight distance and cone width, filled from data in _apply_data() (vision_debug draws them).
+var view_range: float = 0.0  # m, on the ground plane
+var fov_degrees: float = 0.0
+
 ## Result of look_for_player(), in the order the checks run.
 enum Sight { NO_HERO, TOO_FAR, OUT_OF_FOV, BLOCKED, CLEAR }
 
+## Every balance number of this enemy (HP, speeds, senses, damage); subclasses expect their own
+## subclass of EnemyData. Without valid data the enemy reports an error and stays inert.
+@export var data: EnemyData
 @export var turn_speed: float = 8.0  # higher = snappier turn, 1/s
-@export var knockback_speed: float = 5.0  # m/s
-@export var knockback_time: float = 0.2  # s
 ## Seconds the body stays after death before it is freed; <= 0 keeps it.
 @export var free_delay: float = 1.5
 ## Below this height (fell into a pit) the enemy is removed.
 @export var fall_limit_y: float = -20.0  # m
-## HP the hero loses by touching this body; 0 = only telegraphed attacks hurt.
-@export var contact_damage: int = 1
 ## Direction the model looks at the start: 0 = +Z (south), 90 = +X (east), 180 = -Z, 270 = -X.
 @export var start_yaw_degrees: float = 0.0
 
 @export_group("Senses")
-@export var view_range: float = 6.0  # m, on the ground plane
-## Full angle of the view cone around the facing direction.
-@export var fov_degrees: float = 90.0
 @export var eye_height: float = 0.9  # m above the feet, start of the sight ray
 @export var target_height: float = 0.7  # m above the hero's feet, end of the sight ray
 ## A hero this much higher or lower is not seen.
@@ -82,11 +86,18 @@ var _hero: Node3D
 var _hero_health: Health
 var _flash: ModelFlash
 var _state_label: Label3D
+var _configured: bool = false
 
 func _ready() -> void:
 	assert(health != null, "Enemy needs a Health child")
 	assert(visual != null, "Enemy needs a Visual child")
 	add_to_group("enemy")
+	_configured = _check_data()
+	if not _configured:
+		# inert instead of half-working: no thinking, no damage, still visible in the level
+		set_physics_process(false)
+		return
+	_apply_data()
 	visual.rotation.y = deg_to_rad(start_yaw_degrees)
 	_find_animation_player()
 	_find_hero()
@@ -115,6 +126,28 @@ func _physics_process(delta: float) -> void:
 	if turn_to_motion and not _dead and _knockback_left <= 0.0 and not desired_velocity.is_zero_approx():
 		face_direction(desired_velocity, delta)
 
+## True once _ready found valid data; subclasses return early from their _ready otherwise.
+func is_configured() -> bool:
+	return _configured
+
+## Whether `data` is usable; a subclass also checks the data class it needs.
+func _check_data() -> bool:
+	if data == null:
+		push_error("%s %s: no data set, enemy disabled" % [get_script().get_global_name(), name])
+		return false
+	var problems: PackedStringArray = data.validate()
+	if not problems.is_empty():
+		push_error("%s %s: data %s: %s; enemy disabled" % [get_script().get_global_name(), name,
+			data.resource_path, ", ".join(problems)])
+		return false
+	return true
+
+## Copies the numbers other nodes read from `data`; a subclass may extend it (super() first).
+func _apply_data() -> void:
+	health.setup(data.max_hp, data.invincible_time)
+	view_range = data.sight_radius
+	fov_degrees = data.fov_degrees
+
 ## Per-frame decision of the subclass: set desired_velocity, turn, change state.
 func _think(_delta: float) -> void:
 	pass
@@ -136,15 +169,15 @@ func hit_by_weapon(damage: int = 1) -> void:
 		return
 	var before: int = health.current
 	health.take_damage(damage)
-	if health.current >= before or _dead or knockback_speed <= 0.0:
+	if health.current >= before or _dead or data.knockback_speed <= 0.0:
 		return
 	var hero: Node3D = get_hero()
 	var away: Vector3 = global_position - hero.global_position if hero != null else -get_facing()
 	away.y = 0.0
 	away = -get_facing() if away.is_zero_approx() else away.normalized()
-	velocity.x = away.x * knockback_speed
-	velocity.z = away.z * knockback_speed
-	_knockback_left = knockback_time
+	velocity.x = away.x * data.knockback_speed
+	velocity.z = away.z * data.knockback_speed
+	_knockback_left = data.knockback_time
 
 ## The hero cached in _ready, or null if there is none (or it was freed).
 func get_hero() -> Node3D:

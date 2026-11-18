@@ -9,7 +9,6 @@ extends Enemy
 
 enum State { PATROL, CHASE, ATTACK, RECOVER, DEAD }
 
-@export var data: EnemyData
 ## Second patrol point relative to the start position (the first one is the start).
 @export var patrol_offset: Vector3 = Vector3(4.0, 0.0, 0.0)  # m
 @export var alert_sound: AudioStream
@@ -45,14 +44,12 @@ var _cooldown_left: float = 0.0
 var _has_nav_goal: bool = false
 
 func _ready() -> void:
-	if data == null:
-		push_error("Minion %s: no EnemyData, using defaults" % name)
-		data = EnemyData.new()
-	_build_model()
-	health.max_hp = data.max_hp
-	health.current = data.max_hp
-	view_range = data.sight_radius
+	# the body comes from data, and the base looks for its AnimationPlayer in _ready
+	if data != null:
+		_build_model()
 	super._ready()
+	if not is_configured():
+		return
 	if _agent == null:
 		push_warning("Minion %s: no NavigationAgent3D child, it will walk in straight lines" % name)
 	_home = global_position

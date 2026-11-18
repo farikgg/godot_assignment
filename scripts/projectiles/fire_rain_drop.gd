@@ -1,13 +1,18 @@
 class_name FireRainDrop
 extends Projectile
-## Fire rain: a red circle with «!» marks the spot for `warning_time`, then the drop falls
-## from `fall_height` and hurts the hero within `impact_radius` of the spot. Nothing hurts before that.
+## Fire rain: a red circle with «!» marks the spot for data.warning_time, then the drop falls
+## from `fall_height` and hurts the hero within data.impact_radius of the spot. Nothing hurts before that.
 
-@export var warning_time: float = 1.0
+## Damage, falling speed, warning time and impact radius (resources/hazards/fire_rain_drop.tres).
+@export var data: HazardData
+## Start height above the spot: out of the camera picture.
 @export var fall_height: float = 7.0
-@export var impact_radius: float = 1.2
 @export var marker_scene: PackedScene = preload("res://scenes/fx/telegraph_marker.tscn")
 @export var marker_color: Color = Color(0.9, 0.12, 0.05, 0.5)
+
+## The impact counts for a hero at most this far above or below the spot.
+const IMPACT_HEIGHT: float = 1.5  # m
+const MARKER_LIFT: float = 0.03  # m above the floor
 
 var _target: Vector3
 var _falling: bool = false
@@ -15,6 +20,11 @@ var _marker: TelegraphMarker
 
 func _ready() -> void:
 	super._ready()
+	if data == null:
+		push_error("FireRainDrop: no HazardData, the drop is harmless")
+	else:
+		speed = data.speed
+		damage = data.damage
 	# damage comes only from the impact check, never from touching the falling drop
 	monitoring = false
 	visible = false
@@ -29,13 +39,13 @@ func drop_at(point: Vector3) -> void:
 	global_position = point + Vector3.UP * fall_height
 	direction = Vector3.DOWN
 	_marker = marker_scene.instantiate() as TelegraphMarker
-	_marker.radius = impact_radius
+	_marker.radius = _impact_radius()
 	_marker.color = marker_color
 	_marker.show_mark = true
 	get_parent().add_child(_marker)
-	_marker.global_position = point + Vector3.UP * 0.03
+	_marker.global_position = point + Vector3.UP * MARKER_LIFT
 	_marker.finished.connect(_start_fall)
-	_marker.grow(warning_time)
+	_marker.grow(data.warning_time if data != null else 0.0)
 
 func is_falling() -> bool:
 	return _falling
@@ -56,6 +66,9 @@ func _impact() -> void:
 	var hero: Node3D = get_tree().get_first_node_in_group("player") as Node3D
 	if hero != null:
 		var offset: Vector3 = hero.global_position - _target
-		if Vector2(offset.x, offset.z).length() <= impact_radius and absf(offset.y) < 1.5:
+		if Vector2(offset.x, offset.z).length() <= _impact_radius() and absf(offset.y) < IMPACT_HEIGHT:
 			_hurt(hero)
 	_expire()
+
+func _impact_radius() -> float:
+	return data.impact_radius if data != null else 0.0

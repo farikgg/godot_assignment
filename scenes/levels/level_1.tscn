@@ -29,6 +29,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/shooter.tscn" id="shooter"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/charger.tscn" id="charger"]
 [ext_resource type="Resource" path="res://resources/enemies/guard.tres" id="data_guard"]
+[ext_resource type="Resource" path="res://resources/enemies/shooter_short.tres" id="data_shooter_short"]
 [ext_resource type="Script" path="res://scripts/level_navigation.gd" id="level_nav"]
 [ext_resource type="PackedScene" path="res://scenes/props/tunnel.tscn" id="m_tunnel"]
 [ext_resource type="PackedScene" uid="uid://bkwmqvj85xlsc" path="res://scenes/props/locked_gate.tscn" id="n_locked_gate"]
@@ -337,7 +338,7 @@ start_yaw_degrees = 90.0
 [node name="Shooter" parent="Enemies" instance=ExtResource("shooter")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2, 0.1, 0.6)
 start_yaw_degrees = 90.0
-fire_range = 6.0
+data = ExtResource("data_shooter_short")
 
 [node name="Charger" parent="Enemies" instance=ExtResource("charger")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.1, -6.8)

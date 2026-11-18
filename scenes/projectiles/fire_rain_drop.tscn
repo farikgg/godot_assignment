@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/projectiles/fire_rain_drop.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/fx/explosion_burst.tscn" id="2_fx"]
+[ext_resource type="Resource" path="res://resources/hazards/fire_rain_drop.tres" id="d_rain"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_drop"]
 radius = 0.35
@@ -57,7 +58,7 @@ collision_layer = 8
 collision_mask = 3
 monitorable = false
 script = ExtResource("1_script")
-speed = 16.0
+data = ExtResource("d_rain")
 lifetime = 4.0
 impact_fx = ExtResource("2_fx")
 

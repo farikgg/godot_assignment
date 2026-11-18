@@ -8,6 +8,8 @@ const HAS_KEY_TEXT: String = "Ключ: есть"
 const NO_KEY_TEXT: String = "Ключ: нет"
 const HEART_FULL: Texture2D = preload("res://assets/ui_gen/heart_full.png")
 const HEART_EMPTY: Texture2D = preload("res://assets/ui_gen/heart_empty.png")
+## Size of one heart icon in the HUD.
+const HEART_SIZE: Vector2 = Vector2(48, 48)
 ## Seconds the boss bar takes to slide down to the new HP.
 const BOSS_BAR_DRAIN_TIME: float = 0.4
 ## Gap between the boss bar and a toast below it.
@@ -31,14 +33,26 @@ func _ready() -> void:
 func set_player_name(player_name: String) -> void:
 	_name_label.text = player_name
 
+## One heart per HP of max_hp (PlayerData.max_hp through the hero's Health), full up to `current`.
 func set_hearts(current: int, max_hp: int) -> void:
-	var hearts: Array[Node] = _hearts_box.get_children()
-	if hearts.size() != max_hp:
-		push_error("Hud: HeartsBox has %d icons for max_hp %d" % [hearts.size(), max_hp])
-	for i in hearts.size():
-		var icon: TextureRect = hearts[i] as TextureRect
-		if icon != null:
-			icon.texture = HEART_FULL if i < current else HEART_EMPTY
+	if _hearts_box.get_child_count() != max_hp:
+		_build_hearts(max_hp)
+	for i in _hearts_box.get_child_count():
+		var icon: TextureRect = _hearts_box.get_child(i) as TextureRect
+		icon.texture = HEART_FULL if i < current else HEART_EMPTY
+
+func _build_hearts(count: int) -> void:
+	for child in _hearts_box.get_children():
+		_hearts_box.remove_child(child)
+		child.queue_free()
+	for i in maxi(count, 0):
+		var icon := TextureRect.new()
+		icon.name = "Heart%d" % (i + 1)
+		icon.custom_minimum_size = HEART_SIZE
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture = HEART_FULL
+		_hearts_box.add_child(icon)
 
 func set_coins(collected: int, total: int) -> void:
 	_coin_label.text = GOLD_TEXT % [collected, total]

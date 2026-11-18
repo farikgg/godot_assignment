@@ -7,15 +7,13 @@ const BLADE_LENGTH: float = 0.348
 ## Middle of the grip below the guard, model units.
 const GRIP_Y: float = -0.05
 
-@export var cooldown: float = 0.5
+## Damage, cooldown and reach come from the holder's PlayerData.
 @export var swing_sound: AudioStream
 @export var slash_scene: PackedScene
 ## Visible trail of the swing (the Slash hitbox itself is invisible).
 @export var arc_scene: PackedScene
 ## Trail height above the hero's feet, metres.
 @export var arc_height: float = 0.6
-## Hitbox centre in front of the hero, metres.
-@export var slash_distance: float = 0.9
 ## Blade length in metres (guard to tip); default ≈ 0.9 of the heroes' 0.39 m arm.
 @export var blade_length: float = 0.35
 ## Where the fist is along the arm, as a fraction of arm_length from the shoulder.
@@ -32,13 +30,25 @@ const GRIP_Y: float = -0.05
 @onready var _model: Node3D = $Pivot/Model
 @onready var _swing_sfx: AudioStreamPlayer = $SwingSfx
 
+const MSEC_PER_SEC: float = 1000.0
+## Arm length used when the hero's CharacterData is missing (Kenney rig).
+const FALLBACK_ARM_LENGTH: float = 0.28
+## Hitbox height above the hero's feet.
+const SLASH_HEIGHT: float = 0.5
+## The return swing takes this many times the forward swing.
+const RETURN_SWING_SCALE: float = 1.5
+
 var _last_attack_ms: int = -1_000_000
+var _stats: PlayerData
 var _tween: Tween
 
 func _ready() -> void:
 	assert(_player != null, "Sword must be a child of the player CharacterBody3D")
 	if slash_scene == null:
 		push_error("Sword: slash_scene is not set")
+	_stats = _player.get("data") as PlayerData
+	if _stats == null:
+		push_error("Sword: the holder has no PlayerData, the sword will not attack")
 	_swing_sfx.stream = swing_sound
 	_swing_sfx.volume_db = Sfx.volume_db_for(swing_sound)
 	# the player builds its model in its own _ready, which runs after ours
@@ -47,7 +57,7 @@ func _ready() -> void:
 func _attach_to_hand() -> void:
 	var socket: Node3D = _player.call("get_hand_socket")
 	var data: CharacterData = _player.call("get_character_data")
-	var arm: float = data.arm_length if data != null else 0.28
+	var arm: float = data.arm_length if data != null else FALLBACK_ARM_LENGTH
 	_pivot.reparent(socket, false)
 	_pivot.transform = Transform3D(Basis(), Vector3(-arm * grip_along_arm, 0.0, 0.0))
 	# the socket carries the hero's model scale, so convert metres to socket units
@@ -70,11 +80,13 @@ func _hold_basis() -> Basis:
 	return Basis(x_axis, y_axis, z_axis)
 
 func try_attack() -> bool:
+	if _stats == null:
+		return false
 	var health: Health = _player.get_node_or_null("Health") as Health
 	if health != null and health.is_dead():
 		return false
 	var now: int = Time.get_ticks_msec()
-	if now - _last_attack_ms < int(cooldown * 1000.0):
+	if now - _last_attack_ms < int(_stats.sword_cooldown * MSEC_PER_SEC):
 		return false
 	_last_attack_ms = now
 	if not _player.call("play_attack"):
@@ -91,7 +103,7 @@ func _play_swing_tween() -> void:
 	_tween = create_tween()
 	_tween.tween_property(_pivot, "rotation_degrees:y", -swing_arc_degrees, swing_time) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	_tween.tween_property(_pivot, "rotation_degrees:y", 0.0, swing_time * 1.5)
+	_tween.tween_property(_pivot, "rotation_degrees:y", 0.0, swing_time * RETURN_SWING_SCALE)
 
 func _spawn_slash() -> void:
 	if slash_scene == null:
@@ -100,11 +112,12 @@ func _spawn_slash() -> void:
 	if slash == null:
 		push_error("Sword: slash_scene root is not a Slash")
 		return
+	slash.damage = _stats.sword_damage
 	var facing: Vector3 = _player.call("get_facing")
 	var parent: Node = get_tree().current_scene if get_tree().current_scene != null else _player.get_parent()
 	parent.add_child(slash)
 	slash.global_transform = Transform3D(Basis.looking_at(facing, Vector3.UP),
-		_player.global_position + Vector3(0.0, 0.5, 0.0) + facing * slash_distance)
+		_player.global_position + Vector3.UP * SLASH_HEIGHT + facing * _stats.sword_reach)
 	if arc_scene != null:
 		var arc: Node3D = arc_scene.instantiate() as Node3D
 		parent.add_child(arc)

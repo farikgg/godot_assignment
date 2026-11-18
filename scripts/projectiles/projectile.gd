@@ -3,8 +3,11 @@ extends Area3D
 ## Base of enemy shots: flies along `direction`, hurts the hero through their Health,
 ## breaks on walls and props, ignores enemies, and frees itself after `lifetime` (pause-aware Timer).
 
-@export var speed: float = 8.0
-@export var damage: int = 1
+## Speed and damage are set by whoever fires it (BossData, ShooterData) before add_child,
+## or from the shot's own HazardData (fire rain).
+var speed: float = 0.0  # m/s
+var damage: int = 0  # HP
+## Despawn time of a shot that hit nothing (technical, not balance: it only has to outlast the arena).
 @export var lifetime: float = 4.0
 ## Optional burst spawned where the shot ends.
 @export var impact_fx: PackedScene

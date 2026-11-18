@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/hazards/rock.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://pw3gcqqyl76m" path="res://assets/Map/rocks.glb" id="2_model"]
 [ext_resource type="PackedScene" path="res://scenes/fx/dust_puff.tscn" id="3_dust"]
+[ext_resource type="Resource" path="res://resources/hazards/rock.tres" id="d_rock"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rock"]
 size = Vector3(0.7, 0.35, 0.7)
@@ -12,6 +13,7 @@ collision_layer = 16
 collision_mask = 23
 mass = 2.0
 script = ExtResource("1_script")
+data = ExtResource("d_rock")
 landing_fx = ExtResource("3_dust")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

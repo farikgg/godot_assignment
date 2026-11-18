@@ -14,37 +14,16 @@ enum State { IDLE, TELEGRAPH, ATTACK, REST, DEAD }
 enum Attack { FAN, RAIN }
 
 const DISPLAY_NAME: String = "Страж подземелья"
+## ATTACK lasts this long after the last fan volley, so the last balls leave the muzzle first.
+const FAN_ATTACK_TAIL: float = 0.3  # s
+## Random turn of each rain spot around the ring, so the pattern never repeats exactly.
+const RAIN_ANGLE_JITTER: float = 0.3  # rad
 
 @export var fireball_scene: PackedScene
 @export var rain_drop_scene: PackedScene
 
 @export_group("Timing")
-@export var idle_time: float = 1.0
-@export var telegraph_time: float = 0.8
-@export var rest_time: float = 2.5
 @export var defeat_delay: float = 2.0
-## Telegraph and rest are multiplied by this in phase 2.
-@export var enraged_time_scale: float = 0.7
-## The fight starts when the hero walks this far from their start, or after wake_delay seconds.
-@export var wake_distance: float = 2.0
-@export var wake_delay: float = 2.0
-
-@export_group("Fan")
-@export var fan_count: int = 5
-@export var fan_spread_degrees: float = 50.0
-@export var enraged_fan_count: int = 7
-@export var enraged_fan_spread_degrees: float = 80.0
-@export var fan_volleys: int = 2
-@export var volley_gap: float = 0.45
-
-@export_group("Rain")
-@export var rain_count: int = 4
-@export var enraged_rain_count: int = 6
-## Rain spots lie this far from the hero (the first one is right under them).
-@export var rain_min_radius: float = 1.5
-@export var rain_max_radius: float = 3.0
-## How long the boss stays in ATTACK after calling the rain.
-@export var rain_attack_time: float = 1.2
 
 @export_group("Look")
 @export var tint: Color = Color(0.55, 0.12, 0.1, 1.0)
@@ -63,6 +42,8 @@ const DISPLAY_NAME: String = "Страж подземелья"
 @onready var _aura_ring: MeshInstance3D = $AuraRing
 @onready var _telegraph_sfx: AudioStreamPlayer = $TelegraphSfx
 
+## `data` as BossData (set in _apply_data).
+var stats: BossData
 var state: State = State.IDLE
 var _awake: bool = false
 var _enraged: bool = false
@@ -75,6 +56,8 @@ var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	super._ready()
+	if not is_configured():
+		return
 	add_to_group("boss")
 	_rng.randomize()
 	if fireball_scene == null or rain_drop_scene == null:
@@ -93,7 +76,7 @@ func _ready() -> void:
 		if hero_health != null:
 			hero_health.died.connect(_on_hero_died)
 	_set_aura(0.5)
-	get_tree().create_timer(wake_delay, false).timeout.connect(awaken)
+	get_tree().create_timer(stats.wake_delay, false).timeout.connect(awaken)
 
 func is_awake() -> bool:
 	return _awake
@@ -103,10 +86,10 @@ func is_enraged() -> bool:
 
 ## Projectiles per fan volley in the current phase.
 func current_fan_count() -> int:
-	return enraged_fan_count if _enraged else fan_count
+	return stats.enraged_fan_count if _enraged else stats.fan_count
 
 func current_rain_count() -> int:
-	return enraged_rain_count if _enraged else rain_count
+	return stats.enraged_rain_count if _enraged else stats.rain_count
 
 ## Starts the fight (once).
 func awaken() -> void:
@@ -126,7 +109,7 @@ func _think(delta: float) -> void:
 	var hero: Node3D = get_live_hero()
 	if hero == null:
 		return
-	if not _awake and hero.global_position.distance_to(_hero_start) > wake_distance:
+	if not _awake and hero.global_position.distance_to(_hero_start) > stats.wake_distance:
 		awaken()
 	if state == State.IDLE or state == State.TELEGRAPH:
 		face_towards(hero.global_position, delta)
@@ -140,12 +123,12 @@ func _change_state(next: State) -> void:
 			_set_aura(1.0)
 			# with the hero dead the boss stays idle: no timer, no more attacks
 			if not _hero_dead:
-				_state_timer.start(idle_time)
+				_state_timer.start(stats.idle_time)
 		State.TELEGRAPH:
 			restart_anim(anim_telegraph)
 			_set_aura(4.0)
 			_telegraph_sfx.play()
-			_state_timer.start(telegraph_time * _time_scale())
+			_state_timer.start(stats.telegraph_time * _time_scale())
 		State.ATTACK:
 			restart_anim(anim_attack)
 			_set_aura(2.0)
@@ -154,7 +137,7 @@ func _change_state(next: State) -> void:
 			play_anim(anim_idle)
 			# dim glow: the window to strike back
 			_set_aura(0.2)
-			_state_timer.start(rest_time * _time_scale())
+			_state_timer.start(stats.rest_time * _time_scale())
 		State.DEAD:
 			_set_aura(0.0)
 			_state_timer.start(defeat_delay)
@@ -174,7 +157,7 @@ func _on_state_timeout() -> void:
 			defeated.emit()
 
 func _time_scale() -> float:
-	return enraged_time_scale if _enraged else 1.0
+	return stats.enraged_time_scale if _enraged else 1.0
 
 # fires the next pattern and returns how long the ATTACK state lasts
 func _start_attack() -> float:
@@ -182,17 +165,17 @@ func _start_attack() -> float:
 	_next_attack = Attack.RAIN if attack == Attack.FAN else Attack.FAN
 	if attack == Attack.FAN:
 		_fire_volleys()
-		return volley_gap * fan_volleys + 0.3
+		return stats.volley_gap * stats.fan_volleys + FAN_ATTACK_TAIL
 	_call_rain()
-	return rain_attack_time
+	return stats.rain_attack_time
 
 func _fire_volleys() -> void:
-	for volley in fan_volleys:
+	for volley in stats.fan_volleys:
 		if state != State.ATTACK or _hero_dead:
 			return
 		fire_fan()
-		if volley < fan_volleys - 1:
-			await get_tree().create_timer(volley_gap, false).timeout
+		if volley < stats.fan_volleys - 1:
+			await get_tree().create_timer(stats.volley_gap, false).timeout
 			if not is_inside_tree():
 				return
 
@@ -206,7 +189,7 @@ func fire_fan() -> void:
 	aim = aim.normalized() if aim.length_squared() > 0.0001 else get_facing()
 	Sfx.play(fireball_sound, self)
 	var count: int = current_fan_count()
-	var spread: float = enraged_fan_spread_degrees if _enraged else fan_spread_degrees
+	var spread: float = stats.enraged_fan_spread_degrees if _enraged else stats.fan_spread_degrees
 	for i in count:
 		var t: float = float(i) / float(count - 1) if count > 1 else 0.5
 		var angle: float = deg_to_rad(lerpf(-spread * 0.5, spread * 0.5, t))
@@ -214,6 +197,8 @@ func fire_fan() -> void:
 		if ball == null:
 			push_error("Boss: fireball_scene root is not a Projectile")
 			return
+		ball.speed = stats.fireball_speed
+		ball.damage = stats.fireball_damage
 		_projectile_parent().add_child(ball)
 		ball.launch(_muzzle.global_position, aim.rotated(Vector3.UP, angle))
 
@@ -228,8 +213,8 @@ func _call_rain() -> void:
 	for i in count:
 		var spot: Vector3 = hero.global_position
 		if i > 0:
-			var angle: float = base_angle + TAU * float(i - 1) / float(count - 1) + _rng.randf_range(-0.3, 0.3)
-			spot += Vector3(cos(angle), 0.0, sin(angle)) * _rng.randf_range(rain_min_radius, rain_max_radius)
+			var angle: float = base_angle + TAU * float(i - 1) / float(count - 1) + _rng.randf_range(-RAIN_ANGLE_JITTER, RAIN_ANGLE_JITTER)
+			spot += Vector3(cos(angle), 0.0, sin(angle)) * _rng.randf_range(stats.rain_min_radius, stats.rain_max_radius)
 		var ground: Dictionary = _ground_below(spot, hero)
 		if ground.is_empty():
 			continue  # over a pit: nothing to warn on
@@ -249,7 +234,7 @@ func _projectile_parent() -> Node:
 	return get_tree().current_scene if get_tree().current_scene != null else get_parent()
 
 func _on_damaged() -> void:
-	if not _enraged and health.current * 2 <= health.max_hp:
+	if not _enraged and health.current <= health.max_hp * stats.enrage_hp_fraction:
 		_enraged = true
 		Sfx.play(enraged_sound, self)
 		enraged.emit()
@@ -285,3 +270,13 @@ func _set_aura(level: float) -> void:
 	_aura_tween.tween_property(_aura_light, "light_energy", level * 1.5, 0.2)
 	_aura_tween.tween_property(_ring_material, "albedo_color", ring_color, 0.2)
 	_aura_tween.tween_property(_aura_ring, "scale", Vector3.ONE * (1.0 + level * 0.06), 0.2)
+
+func _check_data() -> bool:
+	if data != null and not data is BossData:
+		push_error("%s %s: data must be a BossData, got %s; enemy disabled" % [get_script().get_global_name(), name, data.resource_path])
+		return false
+	return super()
+
+func _apply_data() -> void:
+	stats = data as BossData
+	super()

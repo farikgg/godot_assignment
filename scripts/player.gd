@@ -1,16 +1,9 @@
 extends CharacterBody3D
 
-@export var move_speed: float = 5.0
-@export var acceleration: float = 30.0
-@export var jump_velocity: float = 5.5
+## Speed, jump, health, knockback and sword numbers (resources/player.tres).
+@export var data: PlayerData
 ## How fast Visual turns towards the movement direction (higher = snappier).
 @export var turn_speed: float = 12.0
-@export var knockback_speed: float = 7.0
-@export var knockback_lift: float = 3.0
-## Input is ignored for this long after a hit so the knockback is visible.
-@export var knockback_time: float = 0.25
-## HP lost by touching a saw or a trap (bodies in group `enemy` that are not an Enemy).
-@export var trap_contact_damage: int = 1
 ## Horizontal speed above which the run animation plays.
 @export var run_threshold: float = 0.5
 @export var hurt_sound: AudioStream
@@ -40,6 +33,11 @@ func _ready() -> void:
 	assert(health != null, "Player needs a Health child")
 	assert(visual != null, "Player needs a Visual child")
 	assert(input_handler != null, "Player needs a PlayerInputHandler child")
+	if not _check_data():
+		# a frozen hero with an error is easier to diagnose than one with zero speed
+		set_physics_process(false)
+		return
+	health.setup(data.max_hp, data.invincible_time)
 	_build_model()
 	hurt_sfx.stream = hurt_sound
 	hurt_sfx.volume_db = Sfx.volume_db_for(hurt_sound)
@@ -51,6 +49,16 @@ func _ready() -> void:
 	hurtbox.body_entered.connect(_on_hurtbox_body_entered)
 	input_handler.jump_pressed.connect(_on_jump_pressed)
 	input_handler.attack_pressed.connect(_on_attack_pressed)
+
+func _check_data() -> bool:
+	if data == null:
+		push_error("Player: no PlayerData set")
+		return false
+	var problems: PackedStringArray = data.validate()
+	if not problems.is_empty():
+		push_error("Player: %s: %s" % [data.resource_path, ", ".join(problems)])
+		return false
+	return true
 
 func _build_model() -> void:
 	_data = Roster.get_by_id(Profile.character_id)
@@ -90,7 +98,7 @@ func _physics_process(delta: float) -> void:
 		if camera != null:
 			direction = direction.rotated(Vector3.UP, camera.global_rotation.y)
 
-	horizontal = horizontal.move_toward(direction * move_speed, acceleration * delta)
+	horizontal = horizontal.move_toward(direction * data.move_speed, data.acceleration * delta)
 	velocity.x = horizontal.x
 	velocity.z = horizontal.z
 	move_and_slide()
@@ -107,7 +115,7 @@ func _can_act() -> bool:
 
 func _on_jump_pressed() -> void:
 	if _can_act() and is_on_floor():
-		velocity.y = jump_velocity
+		velocity.y = data.jump_velocity
 		jump_sfx.play()
 
 func _on_attack_pressed() -> void:
@@ -203,7 +211,7 @@ func _on_hurtbox_body_entered(body: Node3D) -> void:
 	if _is_dead or not body.is_in_group("enemy"):
 		return
 	# AI enemies say how much their touch hurts (0 = harmless); saws and traps use our own value
-	var damage: int = (body as Enemy).contact_damage if body is Enemy else trap_contact_damage
+	var damage: int = (body as Enemy).contact_damage if body is Enemy else data.trap_contact_damage
 	if damage <= 0:
 		return
 	# push away horizontally from the enemy; straight back if we're right on top of it
@@ -212,8 +220,8 @@ func _on_hurtbox_body_entered(body: Node3D) -> void:
 	if away.length_squared() < 0.0001:
 		away = -get_facing()
 	away = away.normalized()
-	velocity = Vector3(away.x * knockback_speed, knockback_lift, away.z * knockback_speed)
-	_knockback_left = knockback_time
+	velocity = Vector3(away.x * data.knockback_speed, data.knockback_lift, away.z * data.knockback_speed)
+	_knockback_left = data.knockback_time
 	health.take_damage(damage)
 
 func _on_health_changed(current: int, _max_hp: int) -> void:

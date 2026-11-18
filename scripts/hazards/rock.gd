@@ -1,15 +1,18 @@
 class_name Rock
 extends Hazard
 
-@export var damage: int = 1
+## Damage on a hit (resources/hazards/rock.tres).
+@export var data: HazardData
 ## Dust puff spawned where the rock first lands.
 @export var landing_fx: PackedScene
 
 func _ready() -> void:
 	super._ready()
+	if data == null:
+		push_error("Rock: no HazardData, it is harmless")
 
 func _on_hit_player(health: Health) -> void:
-	health.take_damage(damage)
+	health.take_damage(data.damage if data != null else 0)
 	queue_free()
 
 func _on_landed() -> void:

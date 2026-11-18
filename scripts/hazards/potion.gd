@@ -7,7 +7,8 @@ extends Hazard
 
 const FULL_HEALTH_TEXT: String = "Здоровье полное"
 
-@export var heal_amount: int = 1
+## Heal amount (resources/pickups/potion.tres).
+@export var data: PickupData
 @export var heal_sound: AudioStream
 
 @onready var _pickup_zone: Area3D = $PickupZone
@@ -17,6 +18,8 @@ var _taken: bool = false
 func _ready() -> void:
 	super._ready()
 	_pickup_zone.body_entered.connect(_on_pickup_zone_body_entered)
+	if data == null:
+		push_error("Potion: no PickupData, it heals nothing")
 
 # touching the rigid body itself does nothing; the zone does the work
 func _on_hit_player(_health: Health) -> void:
@@ -27,7 +30,7 @@ func _on_landed() -> void:
 	set_deferred("freeze", true)
 
 func _on_pickup_zone_body_entered(body: Node3D) -> void:
-	if _taken or not body.is_in_group("player"):
+	if _taken or data == null or not body.is_in_group("player"):
 		return
 	var health: Health = body.get_node_or_null("Health") as Health
 	if health == null:
@@ -42,6 +45,6 @@ func _on_pickup_zone_body_entered(body: Node3D) -> void:
 			level.call("show_hint", FULL_HEALTH_TEXT)
 		return
 	_taken = true
-	health.heal(heal_amount)
+	health.heal(data.heal_amount)
 	Sfx.play(heal_sound, self)
 	queue_free()

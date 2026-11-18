@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PlayerData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/player_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+move_speed = 5.0
+acceleration = 30.0
+jump_velocity = 5.5
+max_hp = 3
+invincible_time = 2.0
+trap_contact_damage = 1
+knockback_speed = 7.0
+knockback_lift = 3.0
+knockback_time = 0.25
+sword_damage = 1
+sword_cooldown = 0.5
+sword_reach = 0.9

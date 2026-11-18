@@ -4,8 +4,9 @@ extends Node
 signal changed(current: int, max_hp: int)
 signal died
 
-@export var max_hp: int = 3
-@export var invincible_time: float = 2.0
+## Set by the owner from its data asset (PlayerData / EnemyData) through setup().
+var max_hp: int = 1
+var invincible_time: float = 0.0
 @export var blink_interval: float = 0.1
 ## Visual node that blinks while invincible (a mesh, not the RigidBody itself).
 @export var blink_target: NodePath
@@ -21,6 +22,17 @@ func _ready() -> void:
 		_blink_node = get_node_or_null(blink_target) as Node3D
 		if _blink_node == null:
 			push_error("Health: blink_target %s is not a Node3D" % blink_target)
+	changed.emit(current, max_hp)
+
+## Called by the owner in its _ready with the numbers from its data asset; refills the health.
+func setup(new_max_hp: int, new_invincible_time: float) -> void:
+	if new_max_hp <= 0:
+		push_error("Health: max_hp %d must be above 0, keeping %d" % [new_max_hp, max_hp])
+	else:
+		max_hp = new_max_hp
+	invincible_time = maxf(new_invincible_time, 0.0)
+	current = max_hp
+	_dead = false
 	changed.emit(current, max_hp)
 
 func is_invincible() -> bool:

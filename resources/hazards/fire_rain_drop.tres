@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="HazardData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/hazard_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+damage = 1
+speed = 16.0
+warning_time = 1.0
+impact_radius = 1.2

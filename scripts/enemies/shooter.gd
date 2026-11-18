@@ -1,34 +1,13 @@
 class_name Shooter
 extends Enemy
 ## Ranged sentry (skeleton). IDLE until the hero is seen → RETREAT while they are too close →
-## AIM (laser, flash and sound for aim_time) → FIRE (one slow bolt along the laser) → COOLDOWN → IDLE.
+## AIM (laser, flash and sound for stats.aim_time) → FIRE (one slow bolt along the laser) → COOLDOWN → IDLE.
 ## It never aims at a hero it cannot see, or while it is itself off-screen. Touching it does not hurt.
 
 enum State { IDLE, RETREAT, AIM, FIRE, COOLDOWN, DEAD }
 
 ## Scene whose root is a Projectile.
 @export var bolt_scene: PackedScene
-## Sight and shot range; capped at 8 m so a shot never starts outside the camera picture.
-@export_range(1.0, 8.0) var fire_range: float = 7.0  # m
-@export var bolt_speed: float = 5.0  # m/s
-@export var bolt_damage: int = 1  # HP
-
-@export_group("Timing")
-## Wind-up: the laser is on for this long before the shot.
-@export var aim_time: float = 0.6  # s
-## Recovery: stands still after the shot.
-@export var fire_time: float = 0.3  # s
-## Then waits this long before it may aim again.
-@export var cooldown_time: float = 1.5  # s
-
-@export_group("Keep distance")
-## Backs away when the hero is closer than this…
-@export var retreat_distance: float = 3.0  # m
-## …until they are this far away,
-@export var keep_distance: float = 5.0  # m
-## or this much time has passed.
-@export var retreat_max_time: float = 1.5  # s
-@export var retreat_speed: float = 2.0  # m/s
 
 @export_group("Look")
 @export var aim_sound: AudioStream
@@ -39,16 +18,19 @@ enum State { IDLE, RETREAT, AIM, FIRE, COOLDOWN, DEAD }
 @onready var _muzzle: Marker3D = get_node_or_null("Visual/Muzzle") as Marker3D
 @onready var _laser: MeshInstance3D = get_node_or_null("Laser") as MeshInstance3D
 
+## `data` as ShooterData (set in _apply_data).
+var stats: ShooterData
 var state: State = State.IDLE
 var _timer: Timer
 # where the laser points; the bolt flies along it
 var _aim_direction: Vector3 = Vector3.BACK
 
 func _ready() -> void:
-	view_range = fire_range
 	# it backs away while still looking at the hero
 	turn_to_motion = false
 	super._ready()
+	if not is_configured():
+		return
 	if bolt_scene == null:
 		push_warning("Shooter %s: bolt_scene is not set, it will not shoot" % name)
 	if _muzzle == null:
@@ -68,7 +50,7 @@ func _think(delta: float) -> void:
 		State.IDLE:
 			if not can_see_player():
 				return
-			if flat_distance_to(hero.global_position) < retreat_distance:
+			if flat_distance_to(hero.global_position) < stats.retreat_distance:
 				_change_state(State.RETREAT)
 			elif is_on_screen():
 				_change_state(State.AIM)
@@ -90,12 +72,12 @@ func _retreat_from(hero: Node3D, delta: float) -> void:
 	var away: Vector3 = global_position - hero.global_position
 	away.y = 0.0
 	away = away.normalized()
-	var far_enough: bool = flat_distance_to(hero.global_position) >= keep_distance
+	var far_enough: bool = flat_distance_to(hero.global_position) >= stats.keep_distance
 	# cornered at a wall or a ledge: stop backing away and shoot instead
 	if far_enough or is_on_wall() or not has_floor_ahead(away):
 		_end_retreat()
 	else:
-		desired_velocity = away * retreat_speed
+		desired_velocity = away * stats.retreat_speed
 
 func _end_retreat() -> void:
 	_change_state(State.AIM if _can_aim() else State.IDLE)
@@ -114,19 +96,19 @@ func _change_state(next: State) -> void:
 			play_anim(anim_idle)
 		State.RETREAT:
 			play_anim(anim_walk)
-			_timer.start(retreat_max_time)
+			_timer.start(stats.retreat_max_time)
 		State.AIM:
 			play_anim(anim_aim)
-			start_telegraph(aim_time)
+			start_telegraph(stats.aim_time)
 			Sfx.play(aim_sound, self)
-			_timer.start(aim_time)
+			_timer.start(stats.aim_time)
 		State.FIRE:
 			restart_anim(anim_shoot)
 			_fire()
-			_timer.start(fire_time)
+			_timer.start(stats.fire_time)
 		State.COOLDOWN:
 			play_anim(anim_idle)
-			_timer.start(cooldown_time)
+			_timer.start(stats.cooldown_time)
 
 # every timed state leaves here
 func _on_timer() -> void:
@@ -170,8 +152,8 @@ func _fire() -> void:
 		push_warning("Shooter %s: bolt_scene root is not a Projectile" % name)
 		node.free()
 		return
-	bolt.speed = bolt_speed
-	bolt.damage = bolt_damage
+	bolt.speed = stats.bolt_speed
+	bolt.damage = stats.bolt_damage
 	var parent: Node = get_tree().current_scene if get_tree().current_scene != null else get_parent()
 	parent.add_child(bolt)
 	bolt.launch(_muzzle_position(), _aim_direction)
@@ -190,3 +172,14 @@ func _on_damaged() -> void:
 
 func _on_died() -> void:
 	_change_state(State.DEAD)
+
+func _check_data() -> bool:
+	if data != null and not data is ShooterData:
+		push_error("%s %s: data must be a ShooterData, got %s; enemy disabled" % [get_script().get_global_name(), name, data.resource_path])
+		return false
+	return super()
+
+func _apply_data() -> void:
+	stats = data as ShooterData
+	super()
+	view_range = stats.fire_range
