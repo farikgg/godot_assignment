@@ -18,6 +18,7 @@ const RESET_QUESTION: String = "Сбросить прогресс? Открыт�
 @onready var name_field: LineEdit = $SafeArea/Content/MainPanel/Buttons/NameField
 @onready var sign_board: Control = $SafeArea/Content/Sign
 @onready var character_select: Control = $SafeArea/Content/CharacterSelect
+@onready var level_select: Control = $SafeArea/Content/LevelSelect
 @onready var confirm_panel: ConfirmPanel = $ConfirmPanel
 
 func _ready() -> void:
@@ -31,7 +32,8 @@ func _ready() -> void:
 	name_field.placeholder_text = NAME_PLACEHOLDER
 	name_field.max_length = SaveGame.MAX_NAME_LENGTH
 	name_field.text = Profile.player_name
-	character_select.connect("closed", _on_character_select_closed)
+	character_select.connect("closed", _on_subpanel_closed)
+	level_select.connect("closed", _on_subpanel_closed)
 	confirm_panel.confirmed.connect(_on_reset_confirmed)
 	confirm_panel.cancelled.connect(reset_button.grab_focus)
 	MusicPlayer.play_menu()
@@ -41,8 +43,11 @@ func _show_settings_values() -> void:
 	volume_slider.set_value_no_signal(SaveGame.music_volume)
 	sfx_slider.set_value_no_signal(SaveGame.sfx_volume)
 
+# the level select doubles as "continue": it opens on the last unlocked level
 func _on_button_start_pressed() -> void:
-	GameFlow.start_game()
+	main_menu.visible = false
+	sign_board.visible = false
+	level_select.call("open")
 
 func _on_button_quit_pressed() -> void:
 	GameFlow.quit_game()
@@ -52,7 +57,8 @@ func _on_button_heroes_pressed() -> void:
 	sign_board.visible = false
 	character_select.call("open")
 
-func _on_character_select_closed() -> void:
+# shared by the hero and level panels
+func _on_subpanel_closed() -> void:
 	sign_board.visible = true
 	main_menu.visible = true
 

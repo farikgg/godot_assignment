@@ -405,11 +405,15 @@ func is_level_unlocked(level_id: StringName) -> bool:
 func is_hero_unlocked(hero_id: StringName) -> bool:
 	return unlocked_heroes.has(hero_id)
 
-## A completed level: keeps the best coins and time, banks the coins, saves at once.
+## A completed level: keeps the best coins and time, banks the coins, opens the level's
+## next_level_id and saves at once.
 func record_level_result(level_id: StringName, coins: int, time_sec: float) -> void:
-	if not _known_levels().has(level_id):
+	var level: LevelData = GameFlow.get_level(level_id)
+	if level == null:
 		push_warning("SaveGame: result for unknown level '%s' not recorded" % level_id)
 		return
+	if level.next_level_id != &"" and not unlocked_levels.has(level.next_level_id):
+		unlocked_levels.append(level.next_level_id)
 	var safe_coins: int = clampi(coins, 0, MAX_COINS)
 	best_score[level_id] = maxi(best_score.get(level_id, 0), safe_coins)
 	if is_finite(time_sec) and time_sec > 0.0 and time_sec <= MAX_TIME_SEC:

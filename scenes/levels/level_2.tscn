@@ -37,7 +37,6 @@
 
 [node name="Main" type="Node3D" unique_id=1337536333]
 script = ExtResource("level")
-level_title = "Уровень 2 — Обвальные шахты"
 
 [node name="Ground" type="Node3D" parent="." unique_id=310918094]
 

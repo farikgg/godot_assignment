@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cs0w83a1volfc" path="res://scripts/main_menu.gd" id="2_ekxnf"]
 [ext_resource type="Script" path="res://scripts/ui/safe_area.gd" id="safe_area"]
 [ext_resource type="PackedScene" path="res://scenes/ui/confirm_panel.tscn" id="8_confirm"]
+[ext_resource type="PackedScene" path="res://scenes/ui/level_select.tscn" id="9_levels"]
 
 [node name="MainMenu" type="Control" unique_id=846265366]
 layout_mode = 3
@@ -181,6 +182,9 @@ size_flags_horizontal = 4
 text = "Назад"
 
 [node name="CharacterSelect" parent="SafeArea/Content" unique_id=1771300081 instance=ExtResource("7_select")]
+layout_mode = 1
+
+[node name="LevelSelect" parent="SafeArea/Content" instance=ExtResource("9_levels")]
 layout_mode = 1
 
 [node name="ConfirmPanel" parent="." instance=ExtResource("8_confirm")]

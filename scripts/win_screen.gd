@@ -3,6 +3,7 @@ extends Control
 
 const TITLE_TEXT: String = "Ты выбрался на свет!"
 const GOLD_TEXT: String = "Золота собрано: %d"
+const RECORD_TEXT: String = "Рекорд забега: %d"
 const MENU_TEXT: String = "В главное меню"
 
 @onready var _title: Label = %TitleLabel
@@ -12,7 +13,7 @@ const MENU_TEXT: String = "В главное меню"
 func _ready() -> void:
 	MusicPlayer.play_menu()
 	_title.text = TITLE_TEXT
-	_gold.text = GOLD_TEXT % GameFlow.total_coins
+	_gold.text = "%s\n%s" % [GOLD_TEXT % GameFlow.total_coins, RECORD_TEXT % SaveGame.best_total]
 	_menu_button.text = MENU_TEXT
 	_menu_button.pressed.connect(_on_menu_pressed)
 	_menu_button.grab_focus()

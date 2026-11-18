@@ -56,7 +56,6 @@ agent_max_climb = 0.25
 
 [node name="Main" type="Node3D" unique_id=1563209637]
 script = ExtResource("1_0cso3")
-level_title = "Уровень 1 — Верхние залы"
 
 [node name="Coin6" parent="." unique_id=1355599650 instance=ExtResource("2_2klcf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.5, 2.7)

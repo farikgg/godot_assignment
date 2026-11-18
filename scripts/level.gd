@@ -18,8 +18,6 @@ const BOSS_AWAKE_TEXT: String = "Страж подземелья пробуди�
 const BOSS_ENRAGED_TEXT: String = "Страж в ярости!"
 const BOSS_DEFEATED_TEXT: String = "Страж повержен!"
 
-## Shown as a toast when the level starts, e.g. «Уровень 1 — Верхние залы».
-@export var level_title: String = ""
 ## Played when the exit is reached and when the boss falls.
 @export var win_sound: AudioStream
 
@@ -72,8 +70,10 @@ func _ready() -> void:
 
 	hud.set_coins(coins_collected, coins_total)
 	hud.set_key(has_key)
-	if not level_title.is_empty():
-		hud.show_message(level_title, TITLE_DURATION)
+	# the title lives in the level's LevelData (resources/levels/)
+	var data: LevelData = GameFlow.current_level()
+	if data != null and not data.title.is_empty():
+		hud.show_message(data.title, TITLE_DURATION)
 
 func _process(delta: float) -> void:
 	if not _has_won and not _game_over:
@@ -147,8 +147,7 @@ func _on_exit_reached() -> void:
 		return
 	_has_won = true
 	Sfx.play(win_sound, self)
-	var last: bool = GameFlow.current_index >= GameFlow.LEVELS.size() - 1
-	hud.show_message(WIN_TEXT if last else LEVEL_DONE_TEXT)
+	hud.show_message(WIN_TEXT if GameFlow.is_last_level() else LEVEL_DONE_TEXT)
 	await get_tree().create_timer(EXIT_DELAY, false).timeout
 	_record_result()
 	GameFlow.next_level(coins_collected)

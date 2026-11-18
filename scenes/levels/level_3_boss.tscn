@@ -23,7 +23,6 @@
 
 [node name="Main" type="Node3D" unique_id=326689077]
 script = ExtResource("level")
-level_title = "Уровень 3 — Арена стража"
 
 [node name="Ground" type="Node3D" parent="." unique_id=131950084]
 
