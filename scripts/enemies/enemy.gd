@@ -25,6 +25,8 @@ enum Sight { NO_HERO, TOO_FAR, OUT_OF_FOV, BLOCKED, CLEAR }
 @export var turn_speed: float = 8.0  # higher = snappier turn, 1/s
 ## Seconds the body stays after death before it is freed; <= 0 keeps it.
 @export var free_delay: float = 1.5
+## Played once at death, positioned where the enemy fell (3D, see Sfx.play_3d).
+@export var death_sound: AudioStream
 ## Below this height (fell into a pit) the enemy is removed.
 @export var fall_limit_y: float = -20.0  # m
 ## Direction the model looks at the start: 0 = +Z (south), 90 = +X (east), 180 = -Z, 270 = -X.
@@ -361,6 +363,8 @@ func _die() -> void:
 	remove_from_group("enemy")
 	collision_layer = 0
 	restart_anim(anim_die)
+	# left at the spot: the body is freed after free_delay, a shorter death sound must not be cut
+	Sfx.play_3d(death_sound, self, false)
 	_on_died()
 	died.emit()
 	if free_delay > 0.0:

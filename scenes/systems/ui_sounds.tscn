@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_sounds.gd" id="1_script"]
+[ext_resource type="AudioStream" path="res://assets/Audio/generated/ui_click.wav" id="snd_click_sound"]
+
+[node name="UiSounds" type="Node"]
+script = ExtResource("1_script")
+click_sound = ExtResource("snd_click_sound")

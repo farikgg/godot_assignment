@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/key_pickup.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://46vti5t2abc6" path="res://assets/Map/key.glb" id="2_model"]
+[ext_resource type="AudioStream" path="res://assets/Audio/randomizers/pickup.tres" id="snd_pickup_sound"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_key"]
 radius = 0.45
@@ -44,6 +45,7 @@ _data = {
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_script")
+pickup_sound = ExtResource("snd_pickup_sound")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_key")

@@ -30,8 +30,14 @@ func _unhandled_input(event: InputEvent) -> void:
 func set_paused(value: bool) -> void:
 	get_tree().paused = value
 	visible = value
+	MusicPlayer.set_pause_softened(value)
 	if value:
 		_resume_button.grab_focus()
+
+# the level is leaving (restart, menu, next level, quit, any scene change): the music must not
+# stay muffled, so the pause effects are disabled now (not after a fade-out tween)
+func _exit_tree() -> void:
+	MusicPlayer.clear_pause_softening()
 
 # GameFlow unpauses before every scene change
 func _on_restart_pressed() -> void:

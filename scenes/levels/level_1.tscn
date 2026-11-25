@@ -38,6 +38,8 @@
 [ext_resource type="PackedScene" path="res://scenes/props/kill_zone.tscn" id="t_kill"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/potion_pickup.tscn" id="t_potion"]
 [ext_resource type="PackedScene" path="res://scenes/props/floor_slab.tscn" id="t_slab"]
+[ext_resource type="AudioStream" path="res://assets/Audio/generated/win.wav" id="snd_win_sound"]
+[ext_resource type="AudioStream" path="res://assets/Audio/generated/lose.wav" id="snd_lose_sound"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_level"]
 geometry_parsed_geometry_type = 1
@@ -52,6 +54,8 @@ agent_max_climb = 0.25
 
 [node name="Main" type="Node3D" unique_id=1563209637]
 script = ExtResource("1_0cso3")
+win_sound = ExtResource("snd_win_sound")
+lose_sound = ExtResource("snd_lose_sound")
 
 [node name="Coin6" parent="." unique_id=1355599650 instance=ExtResource("2_2klcf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.5, 2.7)

@@ -100,7 +100,7 @@ func _change_state(next: State) -> void:
 		State.AIM:
 			play_anim(anim_aim)
 			start_telegraph(stats.aim_time)
-			Sfx.play(aim_sound, self)
+			Sfx.play_3d(aim_sound, self)
 			_timer.start(stats.aim_time)
 		State.FIRE:
 			restart_anim(anim_shoot)
@@ -157,7 +157,7 @@ func _fire() -> void:
 	var parent: Node = get_tree().current_scene if get_tree().current_scene != null else get_parent()
 	parent.add_child(bolt)
 	bolt.launch(_muzzle_position(), _aim_direction)
-	Sfx.play(shoot_sound, self)
+	Sfx.play_3d(shoot_sound, self)
 
 func _on_damaged() -> void:
 	var hero: Node3D = get_live_hero()

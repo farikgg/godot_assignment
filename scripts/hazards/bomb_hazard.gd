@@ -40,7 +40,7 @@ func explode() -> void:
 		else:
 			health.take_damage(data.damage)
 	_spawn_flash()
-	Sfx.play(explosion_sound, self)
+	Sfx.play_3d(explosion_sound, self, false)
 	queue_free()
 
 func _spawn_flash() -> void:

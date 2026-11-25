@@ -72,6 +72,7 @@ func _run() -> void:
 	print("Level flow tests: %s (%d failures)" % ["PASS" if _failures == 0 else "FAIL", _failures])
 	# not GameFlow.quit_game: it would save the test file again after the cleanup
 	root.get_node("MusicPlayer").stop_all()
+	root.get_node("GameFlow").stop_all_sounds()
 	await create_timer(0.2).timeout
 	_cleanup()
 	quit(1 if _failures > 0 else 0)

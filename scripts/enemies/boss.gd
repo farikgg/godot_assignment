@@ -40,7 +40,7 @@ const RAIN_ANGLE_JITTER: float = 0.3  # rad
 @onready var _muzzle: Marker3D = $Visual/Muzzle
 @onready var _aura_light: OmniLight3D = $AuraLight
 @onready var _aura_ring: MeshInstance3D = $AuraRing
-@onready var _telegraph_sfx: AudioStreamPlayer = $TelegraphSfx
+@onready var _telegraph_sfx: AudioStreamPlayer3D = $TelegraphSfx
 
 ## `data` as BossData (set in _apply_data).
 var stats: BossData
@@ -66,7 +66,7 @@ func _ready() -> void:
 	_ring_material = (_aura_ring.mesh.surface_get_material(0) as StandardMaterial3D).duplicate() as StandardMaterial3D
 	_aura_ring.material_override = _ring_material
 	_telegraph_sfx.stream = roar_sound
-	_telegraph_sfx.volume_db = Sfx.volume_db_for(roar_sound)
+	Sfx.setup_3d(_telegraph_sfx)
 	_state_timer.one_shot = true
 	_state_timer.timeout.connect(_on_state_timeout)
 	var hero: Node3D = get_hero()
@@ -187,7 +187,7 @@ func fire_fan() -> void:
 	var aim: Vector3 = (hero.global_position - global_position) if hero != null else get_facing()
 	aim.y = 0.0
 	aim = aim.normalized() if aim.length_squared() > 0.0001 else get_facing()
-	Sfx.play(fireball_sound, self)
+	Sfx.play_3d(fireball_sound, self)
 	var count: int = current_fan_count()
 	var spread: float = stats.enraged_fan_spread_degrees if _enraged else stats.fan_spread_degrees
 	for i in count:
@@ -207,7 +207,7 @@ func _call_rain() -> void:
 	var hero: Node3D = get_live_hero()
 	if hero == null or rain_drop_scene == null:
 		return
-	Sfx.play(fireball_sound, self)
+	Sfx.play_3d(fireball_sound, self)
 	var count: int = current_rain_count()
 	var base_angle: float = _rng.randf() * TAU
 	for i in count:
@@ -236,7 +236,7 @@ func _projectile_parent() -> Node:
 func _on_damaged() -> void:
 	if not _enraged and health.current <= health.max_hp * stats.enrage_hp_fraction:
 		_enraged = true
-		Sfx.play(enraged_sound, self)
+		Sfx.play_3d(enraged_sound, self)
 		enraged.emit()
 
 func _on_died() -> void:

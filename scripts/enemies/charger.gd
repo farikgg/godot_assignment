@@ -81,7 +81,7 @@ func _change_state(next: State) -> void:
 		State.WINDUP:
 			restart_anim(anim_windup)
 			start_telegraph(stats.windup_time)
-			Sfx.play(windup_sound, self)
+			Sfx.play_3d(windup_sound, self)
 			_timer.start(stats.windup_time)
 		State.DASH:
 			_dash_direction = _direction_to_hero()

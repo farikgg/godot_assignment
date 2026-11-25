@@ -136,10 +136,16 @@ func quit_game(exit_code: int = 0) -> void:
 	# frozen while the audio thread catches up, so the game can't start new sounds meanwhile
 	get_tree().paused = true
 	MusicPlayer.stop_all()
-	for node in get_tree().root.find_children("*", "AudioStreamPlayer", true, false):
-		(node as AudioStreamPlayer).stop()
+	stop_all_sounds()
 	await get_tree().create_timer(QUIT_DELAY, true, false, true).timeout
 	get_tree().quit(exit_code)
+
+## Stops every 2D and 3D sound player in the tree (quitting; the tests before they exit).
+func stop_all_sounds() -> void:
+	for node in get_tree().root.find_children("*", "AudioStreamPlayer", true, false):
+		(node as AudioStreamPlayer).stop()
+	for node in get_tree().root.find_children("*", "AudioStreamPlayer3D", true, false):
+		(node as AudioStreamPlayer3D).stop()
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -155,6 +161,7 @@ func register_level(scene_path: String) -> void:
 func _change_scene(path: String) -> Error:
 	# a scene loaded while the tree is paused would start frozen
 	get_tree().paused = false
+	MusicPlayer.clear_pause_softening()
 	var error: Error = get_tree().change_scene_to_file(path)
 	if error != OK:
 		push_error("GameFlow: cannot load %s (%s)" % [path, error_string(error)])

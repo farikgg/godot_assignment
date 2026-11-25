@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b4sv0q6ng3nx3" path="res://scripts/coin.gd" id="1_rwqht"]
 [ext_resource type="PackedScene" uid="uid://dkflr5ud82sis" path="res://assets/Map/coin.glb" id="2_coinm"]
-[ext_resource type="AudioStream" path="res://assets/Audio/coin.wav" id="snd_pickup_sound"]
+[ext_resource type="AudioStream" path="res://assets/Audio/randomizers/pickup.tres" id="snd_pickup_sound"]
 [ext_resource type="Resource" path="res://resources/pickups/coin.tres" id="d_coin"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7yv6r"]
