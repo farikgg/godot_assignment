@@ -35,7 +35,7 @@ func set_paused(value: bool) -> void:
 		_resume_button.grab_focus()
 
 # the level is leaving (restart, menu, next level, quit, any scene change): the music must not
-# stay muffled, and a tween fading it back would die with the scene's pause, so remove it now
+# stay muffled, so the pause effects are disabled now (not after a fade-out tween)
 func _exit_tree() -> void:
 	MusicPlayer.clear_pause_softening()
 

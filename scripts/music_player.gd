@@ -6,8 +6,9 @@ extends Node
 ## silence). Asking for the track that is playing, or one still fading out, never restarts it, so a
 ## level reload or the next level keeps the music going. Plays during the pause too. The volume
 ## setting is the Music bus level (SaveGame), not the per-track gain here.
-## The pause menu softens the music (set_pause_softened): a low-pass and a level drop on the Music
-## bus, added only while needed and removed again on resume, scene change, menu and quit.
+## The pause menu softens the music (set_pause_softened): the Music bus carries a low-pass and an
+## Amplify (default_bus_layout.tres, disabled); they are enabled and tweened only while paused and
+## disabled again on resume, scene change, menu and quit.
 
 const MENU_TRACK: String = "res://assets/Audio/8-bit_sound.ogg"
 const LEVEL_TRACK: String = "res://assets/Audio/levels_music.wav"
@@ -17,6 +18,9 @@ const BUS: StringName = &"Music"
 const SILENT_GAIN: float = 0.001
 ## A track starts this many frames after it is asked for (see play_track).
 const START_DELAY_FRAMES: int = 2
+## Names of the pause effects on the Music bus in default_bus_layout.tres (disabled by default).
+const PAUSE_LOWPASS: String = "Paused LowPass"
+const PAUSE_AMPLIFY: String = "Paused Amplify"
 
 ## Number of play() calls on a new playback since the start (tests: a no-restart adds none).
 var starts: int = 0
@@ -32,9 +36,12 @@ var _track_db: Dictionary[AudioStreamPlayer, float] = {}
 var _path_of: Dictionary[AudioStreamPlayer, String] = {}
 var _tween: Tween
 var _serial: int = 0
-# pause softening: effects this node put on the Music bus (null when none), 0..1 strength
+# pause softening: the two permanent Music bus effects (found by name), their slots, 0..1 strength
 var _soft_filter: AudioEffectLowPassFilter
 var _soft_amp: AudioEffectAmplify
+var _soft_filter_index: int = -1
+var _soft_amp_index: int = -1
+var _warned_soft_missing: bool = false
 var _soft_amount: float = 0.0
 var _soft_tween: Tween
 
@@ -43,6 +50,9 @@ func _ready() -> void:
 	_mix = AudioMix.get_mix()
 	if AudioServer.get_bus_index(BUS) == -1:
 		push_warning("MusicPlayer: bus '%s' not found, music plays on Master and the pause leaves it alone" % BUS)
+	else:
+		_find_soft_effects()  # warns now when the layout lacks them
+		clear_pause_softening()  # whatever the layout says, start disabled at "no change"
 
 func play_menu() -> void:
 	play_track(MENU_TRACK)
@@ -85,17 +95,16 @@ func player_count() -> int:
 	return _players.size()
 
 ## Pause menu open (true) or closed (false): fades the softening in or out over pause_fade_time.
-## Runs while the tree is paused. After the fade-out the effects are removed from the bus.
+## Runs while the tree is paused. The two effects are enabled before the fade-in and disabled
+## again after the fade-out, so outside the pause they cost nothing and change nothing.
 func set_pause_softened(on: bool) -> void:
-	if not _mix.pause_ok():
-		return  # AudioMix reported the problem; music stays as it is
-	var bus: int = AudioServer.get_bus_index(BUS)
-	if bus == -1:
-		return
-	if on and _soft_filter == null:
-		_add_soft_effects(bus)
-	elif not on and _soft_filter == null:
+	if not _mix.pause_ok() or not _find_soft_effects():
+		return  # the problem was reported once; music stays as it is
+	if not on and not is_pause_softened():
 		return  # nothing to undo
+	if on and not is_pause_softened():
+		_apply_soft(0.0)  # enabled at "no change", so switching them on is inaudible
+		_set_soft_enabled(true)
 	if _soft_tween != null and _soft_tween.is_valid():
 		_soft_tween.kill()
 	_soft_tween = create_tween()
@@ -107,41 +116,62 @@ func set_pause_softened(on: bool) -> void:
 	if not on:
 		_soft_tween.tween_callback(clear_pause_softening)
 
-## Removes the pause softening at once (scene change, back to menu, restart, quit). Safe to call
-## any time; does nothing when it is not active.
+## Turns the pause softening off at once (scene change, back to menu, restart, quit): values back to
+## "no change", both effects disabled. Safe to call any time.
 func clear_pause_softening() -> void:
 	if _soft_tween != null and _soft_tween.is_valid():
 		_soft_tween.kill()
 	_soft_tween = null
-	_soft_amount = 0.0
+	if not _find_soft_effects():
+		_soft_amount = 0.0
+		return
+	_apply_soft(0.0)
+	_set_soft_enabled(false)
+
+## True while either pause effect is enabled on the Music bus (tests).
+func is_pause_softened() -> bool:
+	if not _find_soft_effects():
+		return false
 	var bus: int = AudioServer.get_bus_index(BUS)
-	if bus != -1:
-		# from the end: removing an effect shifts the indexes after it
-		for i in range(AudioServer.get_bus_effect_count(bus) - 1, -1, -1):
-			var effect: AudioEffect = AudioServer.get_bus_effect(bus, i)
-			if effect == _soft_filter or effect == _soft_amp:
-				AudioServer.remove_bus_effect(bus, i)
+	return AudioServer.is_bus_effect_enabled(bus, _soft_filter_index) 		or AudioServer.is_bus_effect_enabled(bus, _soft_amp_index)
+
+# Looks up the two effects of default_bus_layout.tres by name (once; again only after a failure).
+# False, with one warning, when the bus or either effect is missing.
+func _find_soft_effects() -> bool:
+	var bus: int = AudioServer.get_bus_index(BUS)
+	if bus == -1:
+		return false  # warned in _ready
+	if _soft_filter != null and _soft_amp != null 			and _soft_filter_index < AudioServer.get_bus_effect_count(bus) 			and AudioServer.get_bus_effect(bus, _soft_filter_index) == _soft_filter 			and _soft_amp_index < AudioServer.get_bus_effect_count(bus) 			and AudioServer.get_bus_effect(bus, _soft_amp_index) == _soft_amp:
+		return true
 	_soft_filter = null
 	_soft_amp = null
+	for i in AudioServer.get_bus_effect_count(bus):
+		var effect: AudioEffect = AudioServer.get_bus_effect(bus, i)
+		if effect is AudioEffectLowPassFilter and effect.resource_name == PAUSE_LOWPASS:
+			_soft_filter = effect as AudioEffectLowPassFilter
+			_soft_filter_index = i
+		elif effect is AudioEffectAmplify and effect.resource_name == PAUSE_AMPLIFY:
+			_soft_amp = effect as AudioEffectAmplify
+			_soft_amp_index = i
+	if _soft_filter == null or _soft_amp == null:
+		_soft_filter = null
+		_soft_amp = null
+		if not _warned_soft_missing:
+			_warned_soft_missing = true
+			push_warning("MusicPlayer: bus '%s' lacks the '%s' / '%s' effects (default_bus_layout.tres), the pause leaves the music alone"
+				% [BUS, PAUSE_LOWPASS, PAUSE_AMPLIFY])
+		return false
+	return true
 
-## True while the softening effects sit on the Music bus (tests).
-func is_pause_softened() -> bool:
-	return _soft_filter != null
-
-func _add_soft_effects(bus: int) -> void:
-	_soft_filter = AudioEffectLowPassFilter.new()
-	_soft_filter.resource_name = "PauseLowPass"
-	_soft_amp = AudioEffectAmplify.new()
-	_soft_amp.resource_name = "PauseDrop"
-	_soft_amount = 0.0
-	_apply_soft(0.0)  # added at "no change", so adding them is inaudible
-	AudioServer.add_bus_effect(bus, _soft_filter)
-	AudioServer.add_bus_effect(bus, _soft_amp)
+func _set_soft_enabled(on: bool) -> void:
+	var bus: int = AudioServer.get_bus_index(BUS)
+	AudioServer.set_bus_effect_enabled(bus, _soft_filter_index, on)
+	AudioServer.set_bus_effect_enabled(bus, _soft_amp_index, on)
 
 # cutoff moves on a log scale (as the ear hears it), the drop linearly in dB
 func _apply_soft(amount: float) -> void:
 	_soft_amount = amount
-	if _soft_filter == null:
+	if _soft_filter == null or _soft_amp == null:
 		return
 	var open: float = log(_mix.pause_lowpass_open_hz)
 	var shut: float = log(_mix.pause_lowpass_cutoff_hz)

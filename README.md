@@ -115,5 +115,5 @@ pause softening are tuned in `resources/audio_mix.tres`. Imported audio is about
 
 ## Ассеты и журнал ИИ
 
-Список ассетов с источниками и лицензиями — в [`README.txt`](README.txt).
+Источники и лицензии звуков — в разделе [Audio sources](#audio-sources) выше.
 Подробный журнал работы ИИ-ассистентов — в [`docs/ai_log.md`](docs/ai_log.md).

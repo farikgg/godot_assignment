@@ -15,6 +15,9 @@ const SETTLE_FRAMES: int = 6
 ## linear_to_db(0.5) = -6.0206 dB.
 const HALF_DB: float = -6.0206
 const DB_TOLERANCE: float = 0.01
+## The permanent pause effects on the Music bus (default_bus_layout.tres).
+const PAUSE_LOWPASS: String = "Paused LowPass"
+const PAUSE_AMPLIFY: String = "Paused Amplify"
 
 var _failures: int = 0
 var _music: Node
@@ -267,54 +270,80 @@ func _test_pause_softening() -> void:
 	print("pause softening")
 	var mix: AudioMix = AudioMix.get_mix()
 	var bus: int = AudioServer.get_bus_index(&"Music")
+	var filter_index: int = _effect_index(bus, PAUSE_LOWPASS)
+	var amp_index: int = _effect_index(bus, PAUSE_AMPLIFY)
+	_check(filter_index != -1 and AudioServer.get_bus_effect(bus, filter_index) is AudioEffectLowPassFilter,
+		"bus layout: Music has '%s' (low-pass)" % PAUSE_LOWPASS)
+	_check(amp_index != -1 and AudioServer.get_bus_effect(bus, amp_index) is AudioEffectAmplify,
+		"bus layout: Music has '%s' (Amplify)" % PAUSE_AMPLIFY)
+	if filter_index == -1 or amp_index == -1:
+		return
 	var base_effects: int = AudioServer.get_bus_effect_count(bus)
+	_check(_pause_effects_off(bus, filter_index, amp_index), "pause effects disabled by default")
+	var filter: AudioEffectLowPassFilter = AudioServer.get_bus_effect(bus, filter_index)
+	var amp: AudioEffectAmplify = AudioServer.get_bus_effect(bus, amp_index)
+
 	var menu: CanvasLayer = await _open_level_and_pause()
-	_check(paused and _music.is_pause_softened(), "pause: effects on the Music bus")
-	_check(AudioServer.get_bus_effect_count(bus) == base_effects + 2, "pause: exactly 2 effects added")
+	_check(paused and _music.is_pause_softened() and AudioServer.is_bus_effect_enabled(bus, filter_index)
+		and AudioServer.is_bus_effect_enabled(bus, amp_index), "pause: both effects enabled")
+	_check(AudioServer.get_bus_effect_count(bus) == base_effects, "pause: no effect added (still %d)" % base_effects)
 	await _wait(mix.pause_fade_time * 0.5)
-	var filter: AudioEffectLowPassFilter = _music.get("_soft_filter")
 	var halfway: float = filter.cutoff_hz
 	_check(halfway < mix.pause_lowpass_open_hz * 0.9 and halfway > mix.pause_lowpass_cutoff_hz * 1.1,
 		"tween runs while paused: cutoff %.0f Hz halfway" % halfway)
 	await _wait(mix.pause_fade_time * 0.5 + 0.1)
-	var amp: AudioEffectAmplify = _music.get("_soft_amp")
 	_check(absf(filter.cutoff_hz - mix.pause_lowpass_cutoff_hz) < 1.0 and is_equal_approx(amp.volume_db, mix.pause_volume_drop_db),
 		"fully softened: %.0f Hz, %.1f dB" % [filter.cutoff_hz, amp.volume_db])
 
-	# resume: fades back, then the effects are gone
+	# resume: fades back, then both are disabled at "no change"
 	menu.call("set_paused", false)
 	await _wait(mix.pause_fade_time + 0.1)
-	_check(not paused and not _music.is_pause_softened() and AudioServer.get_bus_effect_count(bus) == base_effects,
-		"resume: effects removed (%d on the bus)" % AudioServer.get_bus_effect_count(bus))
+	_check(not paused and _pause_effects_off(bus, filter_index, amp_index), "resume: effects disabled")
+	_check(absf(filter.cutoff_hz - mix.pause_lowpass_open_hz) < 1.0 and is_zero_approx(amp.volume_db),
+		"resume: values back to %.0f Hz, 0 dB" % mix.pause_lowpass_open_hz)
 
-	# quick toggling never stacks effects
+	# quick toggling ends disabled and never changes the bus
 	for i in 4:
 		menu.call("set_paused", i % 2 == 0)
 		await _frames(2)
-	_check(AudioServer.get_bus_effect_count(bus) <= base_effects + 2, "pause/resume x4: no stacked effects")
 	menu.call("set_paused", false)
 	await _wait(mix.pause_fade_time + 0.1)
-	_check(AudioServer.get_bus_effect_count(bus) == base_effects, "after toggling: effects removed")
+	_check(_pause_effects_off(bus, filter_index, amp_index) and AudioServer.get_bus_effect_count(bus) == base_effects,
+		"pause/resume x4: effects disabled, bus unchanged")
 
 	# every way out of a paused level
 	await _open_level_and_pause()
 	_flow.restart_level()
 	await _frames(SETTLE_FRAMES)
-	_check(not _music.is_pause_softened() and AudioServer.get_bus_effect_count(bus) == base_effects, "restart: effects removed")
+	_check(_pause_effects_off(bus, filter_index, amp_index), "restart: effects disabled")
 	await _open_level_and_pause()
 	_flow.go_to_menu()
 	await _frames(SETTLE_FRAMES)
-	_check(not _music.is_pause_softened() and AudioServer.get_bus_effect_count(bus) == base_effects, "back to menu: effects removed")
+	_check(_pause_effects_off(bus, filter_index, amp_index), "back to menu: effects disabled")
 	await _open_level_and_pause()
 	paused = false
 	change_scene_to_file(MAIN_MENU)  # bypasses GameFlow: the pause menu's _exit_tree cleans up
 	await _frames(SETTLE_FRAMES)
-	_check(not _music.is_pause_softened() and AudioServer.get_bus_effect_count(bus) == base_effects, "plain scene change: effects removed")
+	_check(_pause_effects_off(bus, filter_index, amp_index), "plain scene change: effects disabled")
 	# quit: GameFlow.quit_game calls MusicPlayer.stop_all (the real quit would end this test)
 	await _open_level_and_pause()
 	_music.stop_all()
-	_check(not _music.is_pause_softened() and AudioServer.get_bus_effect_count(bus) == base_effects, "quit path (stop_all): effects removed")
+	_check(_pause_effects_off(bus, filter_index, amp_index), "quit path (stop_all): effects disabled")
+	_check(AudioServer.get_bus_effect_count(bus) == base_effects, "bus never gained or lost an effect")
 	paused = false
+
+# index of the Music bus effect with this resource name, -1 when absent
+func _effect_index(bus: int, effect_name: String) -> int:
+	if bus == -1:
+		return -1
+	for i in AudioServer.get_bus_effect_count(bus):
+		if AudioServer.get_bus_effect(bus, i).resource_name == effect_name:
+			return i
+	return -1
+
+# both pause effects disabled, and MusicPlayer agrees
+func _pause_effects_off(bus: int, filter_index: int, amp_index: int) -> bool:
+	return not AudioServer.is_bus_effect_enabled(bus, filter_index) 		and not AudioServer.is_bus_effect_enabled(bus, amp_index) and not _music.is_pause_softened()
 
 # loads level 1, opens its pause menu and returns it
 func _open_level_and_pause() -> CanvasLayer:
