@@ -23,6 +23,12 @@ sfx_volume_db = Dictionary[String, float]({
 "res://assets/Audio/generated/lose.wav": -4.0
 })
 random_pitch = 1.08
+music_fade_time = 1.0
+music_track_gain_db = Dictionary[String, float]({
+"res://assets/Audio/8-bit_sound.ogg": 0.0,
+"res://assets/Audio/levels_music.wav": -9.0,
+"res://assets/Audio/final_round_music.wav": -2.5
+})
 spatial_unit_size = 8.0
 spatial_max_distance = 32.0
 spatial_max_db = 0.0

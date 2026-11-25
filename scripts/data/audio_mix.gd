@@ -16,6 +16,13 @@ const FILTER_OFF_HZ: float = 20500.0
 ## a pitch in [1 / random_pitch, random_pitch]: 1.08 measured as -7.0 % .. +8.4 %.
 @export var random_pitch: float = 0.0
 
+@export_group("Music")
+## Seconds of the equal-power crossfade between two tracks.
+@export var music_fade_time: float = 0.0
+## volume_db per music file so the recordings sound equally loud (loudest 400 ms: menu -18.3,
+## levels -9.0, arena -15.7 dBFS); the Music bus (-10 dB) keeps all of them under the effects.
+@export var music_track_gain_db: Dictionary[String, float] = {}
+
 @export_group("Enemy sounds in 3D")
 ## Distance (m) at which a 3D sound plays at its own volume; it halves (-6 dB) at twice that.
 @export var spatial_unit_size: float = 0.0
@@ -62,6 +69,11 @@ func validate() -> PackedStringArray:
 	for path in sfx_volume_db:
 		if not ResourceLoader.exists(path):
 			problems.append("sfx_volume_db lists %s, which does not exist" % path)
+	for path in music_track_gain_db:
+		if not ResourceLoader.exists(path):
+			problems.append("music_track_gain_db lists %s, which does not exist" % path)
+	if music_fade_time <= 0.0:
+		problems.append("music_fade_time must be > 0 (a cut would click)")
 	if random_pitch < 1.0:
 		problems.append("random_pitch %.3f must be >= 1 (1 = no variation)" % random_pitch)
 	if not spatial_ok():
