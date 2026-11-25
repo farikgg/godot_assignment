@@ -161,6 +161,7 @@ func register_level(scene_path: String) -> void:
 func _change_scene(path: String) -> Error:
 	# a scene loaded while the tree is paused would start frozen
 	get_tree().paused = false
+	MusicPlayer.clear_pause_softening()
 	var error: Error = get_tree().change_scene_to_file(path)
 	if error != OK:
 		push_error("GameFlow: cannot load %s (%s)" % [path, error_string(error)])

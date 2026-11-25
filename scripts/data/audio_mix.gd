@@ -23,6 +23,16 @@ const FILTER_OFF_HZ: float = 20500.0
 ## levels -9.0, arena -15.7 dBFS); the Music bus (-10 dB) keeps all of them under the effects.
 @export var music_track_gain_db: Dictionary[String, float] = {}
 
+@export_group("Pause softening")
+## Low-pass cutoff (Hz) on the Music bus while the pause menu is open.
+@export var pause_lowpass_cutoff_hz: float = 0.0
+## Cutoff (Hz) the low-pass starts from and returns to: high enough to change nothing audible.
+@export var pause_lowpass_open_hz: float = 0.0
+## Music level change (dB, <= 0) while paused, on top of the slider.
+@export var pause_volume_drop_db: float = 0.0
+## Seconds to soften on pause and to recover on resume (real time, runs while paused).
+@export var pause_fade_time: float = 0.0
+
 @export_group("Enemy sounds in 3D")
 ## Distance (m) at which a 3D sound plays at its own volume; it halves (-6 dB) at twice that.
 @export var spatial_unit_size: float = 0.0
@@ -59,6 +69,11 @@ func volume_db_for(stream: AudioStream) -> float:
 		return 0.0
 	return sfx_volume_db.get(stream.resource_path, 0.0)
 
+## True when the pause numbers can be used; otherwise the pause leaves the music alone.
+func pause_ok() -> bool:
+	return pause_lowpass_cutoff_hz > 0.0 and pause_lowpass_open_hz > pause_lowpass_cutoff_hz \
+		and pause_volume_drop_db <= 0.0 and pause_fade_time > 0.0
+
 ## True when the 3D numbers can be used; otherwise enemy sounds fall back to plain 2D.
 func spatial_ok() -> bool:
 	return spatial_unit_size > 0.0 and spatial_max_distance > spatial_unit_size
@@ -74,6 +89,13 @@ func validate() -> PackedStringArray:
 			problems.append("music_track_gain_db lists %s, which does not exist" % path)
 	if music_fade_time <= 0.0:
 		problems.append("music_fade_time must be > 0 (a cut would click)")
+	if pause_lowpass_cutoff_hz <= 0.0 or pause_lowpass_open_hz <= pause_lowpass_cutoff_hz:
+		problems.append("pause low-pass: need 0 < cutoff (%.0f) < open (%.0f) Hz"
+			% [pause_lowpass_cutoff_hz, pause_lowpass_open_hz])
+	if pause_volume_drop_db > 0.0:
+		problems.append("pause_volume_drop_db %.1f must be <= 0" % pause_volume_drop_db)
+	if pause_fade_time <= 0.0:
+		problems.append("pause_fade_time must be > 0")
 	if random_pitch < 1.0:
 		problems.append("random_pitch %.3f must be >= 1 (1 = no variation)" % random_pitch)
 	if not spatial_ok():

@@ -6,6 +6,8 @@ extends Node
 ## silence). Asking for the track that is playing, or one still fading out, never restarts it, so a
 ## level reload or the next level keeps the music going. Plays during the pause too. The volume
 ## setting is the Music bus level (SaveGame), not the per-track gain here.
+## The pause menu softens the music (set_pause_softened): a low-pass and a level drop on the Music
+## bus, added only while needed and removed again on resume, scene change, menu and quit.
 
 const MENU_TRACK: String = "res://assets/Audio/8-bit_sound.ogg"
 const LEVEL_TRACK: String = "res://assets/Audio/levels_music.wav"
@@ -30,12 +32,17 @@ var _track_db: Dictionary[AudioStreamPlayer, float] = {}
 var _path_of: Dictionary[AudioStreamPlayer, String] = {}
 var _tween: Tween
 var _serial: int = 0
+# pause softening: effects this node put on the Music bus (null when none), 0..1 strength
+var _soft_filter: AudioEffectLowPassFilter
+var _soft_amp: AudioEffectAmplify
+var _soft_amount: float = 0.0
+var _soft_tween: Tween
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_mix = AudioMix.get_mix()
 	if AudioServer.get_bus_index(BUS) == -1:
-		push_warning("MusicPlayer: bus '%s' not found, music plays on Master" % BUS)
+		push_warning("MusicPlayer: bus '%s' not found, music plays on Master and the pause leaves it alone" % BUS)
 
 func play_menu() -> void:
 	play_track(MENU_TRACK)
@@ -77,8 +84,73 @@ func active_player() -> AudioStreamPlayer:
 func player_count() -> int:
 	return _players.size()
 
+## Pause menu open (true) or closed (false): fades the softening in or out over pause_fade_time.
+## Runs while the tree is paused. After the fade-out the effects are removed from the bus.
+func set_pause_softened(on: bool) -> void:
+	if not _mix.pause_ok():
+		return  # AudioMix reported the problem; music stays as it is
+	var bus: int = AudioServer.get_bus_index(BUS)
+	if bus == -1:
+		return
+	if on and _soft_filter == null:
+		_add_soft_effects(bus)
+	elif not on and _soft_filter == null:
+		return  # nothing to undo
+	if _soft_tween != null and _soft_tween.is_valid():
+		_soft_tween.kill()
+	_soft_tween = create_tween()
+	_soft_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	var target: float = 1.0 if on else 0.0
+	# the remaining distance only, so a quick pause/resume does not jump
+	var time: float = _mix.pause_fade_time * absf(target - _soft_amount)
+	_soft_tween.tween_method(_apply_soft, _soft_amount, target, time)
+	if not on:
+		_soft_tween.tween_callback(clear_pause_softening)
+
+## Removes the pause softening at once (scene change, back to menu, restart, quit). Safe to call
+## any time; does nothing when it is not active.
+func clear_pause_softening() -> void:
+	if _soft_tween != null and _soft_tween.is_valid():
+		_soft_tween.kill()
+	_soft_tween = null
+	_soft_amount = 0.0
+	var bus: int = AudioServer.get_bus_index(BUS)
+	if bus != -1:
+		# from the end: removing an effect shifts the indexes after it
+		for i in range(AudioServer.get_bus_effect_count(bus) - 1, -1, -1):
+			var effect: AudioEffect = AudioServer.get_bus_effect(bus, i)
+			if effect == _soft_filter or effect == _soft_amp:
+				AudioServer.remove_bus_effect(bus, i)
+	_soft_filter = null
+	_soft_amp = null
+
+## True while the softening effects sit on the Music bus (tests).
+func is_pause_softened() -> bool:
+	return _soft_filter != null
+
+func _add_soft_effects(bus: int) -> void:
+	_soft_filter = AudioEffectLowPassFilter.new()
+	_soft_filter.resource_name = "PauseLowPass"
+	_soft_amp = AudioEffectAmplify.new()
+	_soft_amp.resource_name = "PauseDrop"
+	_soft_amount = 0.0
+	_apply_soft(0.0)  # added at "no change", so adding them is inaudible
+	AudioServer.add_bus_effect(bus, _soft_filter)
+	AudioServer.add_bus_effect(bus, _soft_amp)
+
+# cutoff moves on a log scale (as the ear hears it), the drop linearly in dB
+func _apply_soft(amount: float) -> void:
+	_soft_amount = amount
+	if _soft_filter == null:
+		return
+	var open: float = log(_mix.pause_lowpass_open_hz)
+	var shut: float = log(_mix.pause_lowpass_cutoff_hz)
+	_soft_filter.cutoff_hz = exp(lerpf(open, shut, amount))
+	_soft_amp.volume_db = _mix.pause_volume_drop_db * amount
+
 ## Stops all music at once (before quitting; GameFlow.quit_game waits for the audio thread).
 func stop_all() -> void:
+	clear_pause_softening()
 	_requested = ""
 	_active = null
 	if _tween != null and _tween.is_valid():

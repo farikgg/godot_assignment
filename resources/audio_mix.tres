@@ -29,6 +29,10 @@ music_track_gain_db = Dictionary[String, float]({
 "res://assets/Audio/levels_music.wav": -9.0,
 "res://assets/Audio/final_round_music.wav": -2.5
 })
+pause_lowpass_cutoff_hz = 800.0
+pause_lowpass_open_hz = 20000.0
+pause_volume_drop_db = -6.0
+pause_fade_time = 0.3
 spatial_unit_size = 8.0
 spatial_max_distance = 32.0
 spatial_max_db = 0.0
