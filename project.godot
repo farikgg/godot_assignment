@@ -22,7 +22,7 @@ GameFlow="*res://scripts/game_flow.gd"
 SaveGame="*res://scripts/save_game.gd"
 Profile="*uid://yslerpjvmluu"
 MusicPlayer="*res://scripts/music_player.gd"
-UiSounds="*res://scripts/ui/ui_sounds.gd"
+UiSounds="*res://scenes/systems/ui_sounds.tscn"
 DevicePreview="*res://scripts/debug/device_preview.gd"
 
 [display]

@@ -5,10 +5,11 @@
 [ext_resource type="Script" path="res://scripts/health.gd" id="3_health"]
 [ext_resource type="Script" path="res://scripts/input/player_input_handler.gd" id="6_input"]
 [ext_resource type="Script" path="res://scripts/blob_shadow.gd" id="7_shadow"]
-[ext_resource type="AudioStream" path="res://assets/Audio/hurt.wav" id="snd_hurt_sound"]
-[ext_resource type="AudioStream" path="res://assets/Audio/jump.wav" id="snd_jump_sound"]
+[ext_resource type="AudioStream" path="res://assets/Audio/randomizers/hurt.tres" id="snd_hurt_sound"]
+[ext_resource type="AudioStream" path="res://assets/Audio/randomizers/jump.tres" id="snd_jump_sound"]
 [ext_resource type="AudioStream" path="res://assets/Audio/death.wav" id="snd_death_sound"]
 [ext_resource type="Resource" path="res://resources/player.tres" id="d_player"]
+[ext_resource type="Script" path="res://scripts/audio/hero_listener.gd" id="8_listener"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.3
@@ -85,3 +86,6 @@ max_polyphony = 2
 [node name="BlobShadow" type="MeshInstance3D" parent="." unique_id=1771300121]
 mesh = SubResource("CylinderMesh_shadow")
 script = ExtResource("7_shadow")
+
+[node name="HeroListener" type="AudioListener3D" parent="."]
+script = ExtResource("8_listener")

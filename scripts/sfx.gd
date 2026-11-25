@@ -1,25 +1,11 @@
 class_name Sfx
 extends RefCounted
+## One-shot sound effects. Every effect plays on the SFX bus (music has its own, see MusicPlayer).
+## Levels come from AudioMix (resources/audio_mix.tres); the files themselves are not changed.
+## The hero's own sounds are 2D (the listener sits on the hero); enemy sounds are 3D (play_3d),
+## so a wind-up off-screen is still heard, from its side.
 
-## Every sound effect plays on this bus (music has its own, see MusicPlayer).
 const BUS: StringName = &"SFX"
-## Mixing table: volume_db per sound file or randomizer, so recordings made at different levels sit
-## together (measured by the loudest 400 ms, aiming at about −14 dBFS; the boss roar a little below
-## the hits). Streams not listed play at 0 dB. The files themselves are not changed.
-const VOLUME_DB: Dictionary = {
-	"res://assets/Audio/hurt.wav": -4.5,
-	"res://assets/Audio/death.wav": -3.0,
-	"res://assets/Audio/jump.wav": -2.0,
-	"res://assets/Audio/coin.wav": 0.0,
-	"res://assets/Audio/heal.wav": 5.0,
-	"res://assets/Audio/gate_open.wav": 4.0,
-	"res://assets/Audio/explosion.wav": 6.0,
-	"res://assets/Audio/sword_swing.mp3": 10.0,
-	"res://assets/Audio/randomizers/sword_hit.tres": -4.0,
-	"res://assets/Audio/randomizers/boss_roar.tres": -2.0,
-	"res://assets/Audio/boss_sound/angry.wav": -2.0,
-	"res://assets/Audio/enemy_windup.wav": 0.0,
-}
 
 # paths already reported missing, so each one warns once per run
 static var _missing: Dictionary = {}
@@ -38,11 +24,9 @@ static func load_stream(path: String) -> AudioStream:
 		push_warning("Sfx: %s is not an AudioStream" % path)
 	return stream
 
-## Level for `stream` from VOLUME_DB (0 dB when not listed or null).
+## Level for `stream` from the mix (0 dB when not listed or null).
 static func volume_db_for(stream: AudioStream) -> float:
-	if stream == null:
-		return 0.0
-	return VOLUME_DB.get(stream.resource_path, 0.0)
+	return AudioMix.get_mix().volume_db_for(stream)
 
 ## Plays a one-shot sound on the SFX bus that outlives the caller (hazards free themselves on hit).
 ## Any AudioStream works, an AudioStreamRandomizer too; null is silence.
@@ -50,11 +34,9 @@ static func volume_db_for(stream: AudioStream) -> float:
 static func play(stream: AudioStream, context: Node, always: bool = false) -> void:
 	if stream == null:
 		return
-	if context == null or not context.is_inside_tree():
-		push_error("Sfx.play: context is not in the tree")
+	var parent: Node = _scene_of(context)
+	if parent == null:
 		return
-	var tree: SceneTree = context.get_tree()
-	var parent: Node = tree.current_scene if tree.current_scene != null else tree.root
 	var player := AudioStreamPlayer.new()
 	player.stream = stream
 	player.bus = BUS
@@ -64,3 +46,49 @@ static func play(stream: AudioStream, context: Node, always: bool = false) -> vo
 	player.finished.connect(player.queue_free)
 	parent.add_child(player)
 	player.play()
+
+## Plays a positional one-shot at `source`. `follow` = true makes it a child of the source, so it
+## moves with it (a wind-up) and stops if the source is freed; false leaves it at the spot in the
+## current scene (a death, an explosion). Without a usable 3D mix it falls back to play().
+static func play_3d(stream: AudioStream, source: Node3D, follow: bool = true) -> void:
+	if stream == null:
+		return
+	if not AudioMix.get_mix().spatial_ok():
+		play(stream, source)
+		return
+	var parent: Node = source if follow else _scene_of(source)
+	if parent == null or not source.is_inside_tree():
+		push_error("Sfx.play_3d: source is not in the tree")
+		return
+	var player := AudioStreamPlayer3D.new()
+	player.stream = stream
+	setup_3d(player)
+	player.finished.connect(player.queue_free)
+	parent.add_child(player)
+	if not follow:
+		player.global_position = source.global_position
+	player.play()
+
+## Bus, level and falloff for an AudioStreamPlayer3D placed in a scene (e.g. the boss telegraph).
+## Call after its stream is set.
+static func setup_3d(player: AudioStreamPlayer3D) -> void:
+	if player == null:
+		push_error("Sfx.setup_3d: player is null")
+		return
+	var mix: AudioMix = AudioMix.get_mix()
+	player.bus = BUS
+	player.volume_db = mix.volume_db_for(player.stream)
+	if not mix.spatial_ok():
+		return  # engine defaults; AudioMix already reported the problem
+	player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+	player.unit_size = mix.spatial_unit_size
+	player.max_distance = mix.spatial_max_distance
+	player.max_db = mix.spatial_max_db
+	player.attenuation_filter_cutoff_hz = mix.spatial_filter_cutoff_hz
+
+static func _scene_of(context: Node) -> Node:
+	if context == null or not context.is_inside_tree():
+		push_error("Sfx: context is not in the tree")
+		return null
+	var tree: SceneTree = context.get_tree()
+	return tree.current_scene if tree.current_scene != null else tree.root

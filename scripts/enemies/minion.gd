@@ -134,11 +134,11 @@ func _change_state(next: State) -> void:
 	set_state_label(State.keys()[next])
 	match next:
 		State.CHASE:
-			Sfx.play(alert_sound, self)
+			Sfx.play_3d(alert_sound, self)
 		State.ATTACK:
 			restart_anim(anim_attack, _windup_clip_speed())
 			start_telegraph(data.attack_windup)
-			Sfx.play(windup_sound, self)
+			Sfx.play_3d(windup_sound, self)
 			_timer.start(data.attack_windup)
 		State.RECOVER:
 			_timer.start(data.attack_recovery)

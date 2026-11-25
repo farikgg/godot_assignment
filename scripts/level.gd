@@ -25,6 +25,8 @@ const ENEMIES_NODE: NodePath = ^"Enemies"
 
 ## Played when the exit is reached and when the boss falls.
 @export var win_sound: AudioStream
+## Played when the hero dies, before the restart.
+@export var lose_sound: AudioStream
 
 @onready var hud: Hud = $HUD
 
@@ -208,6 +210,7 @@ func _on_player_died() -> void:
 	if _game_over or _has_won:
 		return
 	_game_over = true
+	Sfx.play(lose_sound, self)
 	hud.show_message(GAME_OVER_TEXT)
 	# process_always = false: the countdown waits while the game is paused
 	await get_tree().create_timer(RESTART_DELAY, false).timeout

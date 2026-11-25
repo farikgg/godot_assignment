@@ -30,6 +30,7 @@ func _run() -> void:
 	await _check_level("res://scenes/levels/level_3_boss.tscn")
 	print("Balance data tests: %s (%d failures)" % ["PASS" if _failures == 0 else "FAIL", _failures])
 	root.get_node("MusicPlayer").stop_all()
+	root.get_node("GameFlow").stop_all_sounds()
 	await create_timer(0.2).timeout
 	DirAccess.remove_absolute("user://test_balance_save.json")
 	quit(1 if _failures > 0 else 0)

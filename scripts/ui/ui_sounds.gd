@@ -1,10 +1,13 @@
 extends Node
-## Autoload UiSounds: a click on every Button in any scene, menus and pause included.
+## Autoload UiSounds (scenes/systems/ui_sounds.tscn, so the click can be set in the inspector):
+## a click on every Button in any scene, menus and pause included.
 
 @export var click_sound: AudioStream
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	if click_sound == null:
+		push_warning("UiSounds: click_sound is not set, buttons stay silent")
 	get_tree().node_added.connect(_on_node_added)
 
 func _on_node_added(node: Node) -> void:

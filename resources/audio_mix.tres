@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="AudioMix" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/audio_mix.gd" id="1_mix"]
+
+[resource]
+script = ExtResource("1_mix")
+sfx_volume_db = Dictionary[String, float]({
+"res://assets/Audio/randomizers/hurt.tres": -4.5,
+"res://assets/Audio/death.wav": -3.0,
+"res://assets/Audio/randomizers/jump.tres": -2.0,
+"res://assets/Audio/randomizers/pickup.tres": 0.0,
+"res://assets/Audio/heal.wav": 5.0,
+"res://assets/Audio/gate_open.wav": 4.0,
+"res://assets/Audio/explosion.wav": 6.0,
+"res://assets/Audio/sword_swing.mp3": 10.0,
+"res://assets/Audio/randomizers/sword_hit.tres": -4.0,
+"res://assets/Audio/randomizers/boss_roar.tres": -2.0,
+"res://assets/Audio/boss_sound/angry.wav": -2.0,
+"res://assets/Audio/randomizers/enemy_windup.tres": 10.0,
+"res://assets/Audio/randomizers/enemy_death.tres": 3.0,
+"res://assets/Audio/generated/ui_click.wav": -8.0,
+"res://assets/Audio/generated/win.wav": -3.0,
+"res://assets/Audio/generated/lose.wav": -4.0
+})
+random_pitch = 1.08
+spatial_unit_size = 8.0
+spatial_max_distance = 32.0
+spatial_max_db = 0.0
+spatial_filter_cutoff_hz = 20500.0
+listener_height = 1.0
