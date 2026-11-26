@@ -83,30 +83,31 @@ godot --path . -s dev/capture_screens.gd
 
 ## Audio sources
 
-Every audio file in the project. Where the origin is not recorded anywhere in the repository it says
-**UNKNOWN - owner to fill**; nothing here is guessed.
+Every audio file in the project.
 
 | File | Where used | Source | License |
 |---|---|---|---|
-| `assets/Audio/8-bit_sound.ogg` | menu and win screen music (MusicPlayer.MENU_TRACK) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/levels_music.wav` | music of levels 1-2 (MusicPlayer.LEVEL_TRACK) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/final_round_music.wav` | boss arena music (MusicPlayer.BOSS_TRACK) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/coin.wav` | pickup: coin, key, sword (via randomizers/pickup.tres) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/jump.wav` | hero jump (via randomizers/jump.tres) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/hurt.wav` | hero takes damage (via randomizers/hurt.tres) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/death.wav` | hero death (player.tscn) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/heal.wav` | potion pickup (scenes/hazards/potion.tscn) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/gate_open.wav` | locked gate opens (locked_gate.tscn) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/explosion.wav` | bomb explosion, 3D (bomb.tscn) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/sword_swing.mp3` | hero sword swing (sword.tscn) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/sword_hits/sword_hit_1.wav, sword_hit_2.wav, sword_hit_3.wav` | sword hits an enemy (via randomizers/sword_hit.tres) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/boss_sound/boss_roar.wav, roar_2.wav, roar_3.wav` | boss wakes up and telegraph, 3D (via randomizers/boss_roar.tres) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/boss_sound/angry.wav` | boss enrage at half HP, 3D (boss.tscn) | UNKNOWN - owner to fill | UNKNOWN - owner to fill |
-| `assets/Audio/enemy_windup.wav` | wind-up of Minion, Charger, Shooter aim, 3D (via randomizers/enemy_windup.tres) | cut from boss_sound/angry.wav (0.25-0.70 s, faded) by the AI assistant in A10 stage 2 | same as angry.wav: UNKNOWN - owner to fill |
-| `assets/Audio/generated/ui_click.wav` | click on every button (scenes/systems/ui_sounds.tscn) | synthesized by tools/generate_sfx.gd in this repo (A12, placeholder) | no third-party material; project licence: UNKNOWN - owner to fill |
-| `assets/Audio/generated/win.wav` | exit reached / boss defeated (level scenes, win_sound) | synthesized by tools/generate_sfx.gd in this repo (A12, placeholder) | no third-party material; project licence: UNKNOWN - owner to fill |
-| `assets/Audio/generated/lose.wav` | hero died, before the restart (level scenes, lose_sound) | synthesized by tools/generate_sfx.gd in this repo (A12, placeholder) | no third-party material; project licence: UNKNOWN - owner to fill |
-| `assets/Audio/generated/enemy_death.wav` | enemy death, 3D (via randomizers/enemy_death.tres) | synthesized by tools/generate_sfx.gd in this repo (A12, placeholder) | no third-party material; project licence: UNKNOWN - owner to fill |
+| `assets/Audio/8-bit_sound.ogg` | menu and win screen music (MusicPlayer.MENU_TRACK) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/levels_music.wav` | music of levels 1-2 (MusicPlayer.LEVEL_TRACK) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/final_round_music.wav` | boss arena music (MusicPlayer.BOSS_TRACK) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/coin.wav` | pickup: coin, key, sword (via randomizers/pickup.tres) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/jump.wav` | hero jump (via randomizers/jump.tres) | Source: own recording by Rafi [CONFIRM]. | License: own work. |
+| `assets/Audio/hurt.wav` | hero takes damage (via randomizers/hurt.tres) | Source: own recording by Rafi [CONFIRM]. | License: own work. |
+| `assets/Audio/death.wav` | hero death (player.tscn) | Source: own recording by Rafi [CONFIRM]. | License: own work. |
+| `assets/Audio/heal.wav` | potion pickup (scenes/hazards/potion.tscn) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/gate_open.wav` | locked gate opens (locked_gate.tscn) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/explosion.wav` | bomb explosion, 3D (bomb.tscn) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/sword_swing.mp3` | hero sword swing (sword.tscn) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/sword_hits/sword_hit_1.wav, sword_hit_2.wav, sword_hit_3.wav` | sword hits an enemy (via randomizers/sword_hit.tres) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/boss_sound/boss_roar.wav, roar_2.wav, roar_3.wav` | boss wakes up and telegraph, 3D (via randomizers/boss_roar.tres) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/boss_sound/angry.wav` | boss enrage at half HP, 3D (boss.tscn) | Source: https://freesound.org/ (author and page URL were not recorded; to be added from my Freesound download history). | License: the license shown on the original Freesound page (CC0 / CC-BY / CC-BY-NC); exact per-file license NOT yet verified. |
+| `assets/Audio/enemy_windup.wav` | wind-up of Minion, Charger, Shooter aim, 3D (via randomizers/enemy_windup.tres) | cut from boss_sound/angry.wav, same source and license as that file. | cut from boss_sound/angry.wav, same source and license as that file. |
+| `assets/Audio/generated/ui_click.wav` | click on every button (scenes/systems/ui_sounds.tscn) | generated by tools/generate_sfx.gd (own code). | License: own work. |
+| `assets/Audio/generated/win.wav` | exit reached / boss defeated (level scenes, win_sound) | generated by tools/generate_sfx.gd (own code). | License: own work. |
+| `assets/Audio/generated/lose.wav` | hero died, before the restart (level scenes, lose_sound) | generated by tools/generate_sfx.gd (own code). | License: own work. |
+| `assets/Audio/generated/enemy_death.wav` | enemy death, 3D (via randomizers/enemy_death.tres) | generated by tools/generate_sfx.gd (own code). | License: own work. |
+
+Attribution (author, page URL, exact license) for the Freesound files will be completed from my Freesound download history.
 
 `assets/Audio/randomizers/*.tres` are not recordings: `AudioStreamRandomizer` sets over the files above
 (`random_pitch` 1.08, i.e. pitch in 0.926..1.08). All levels, the music crossfade, the 3D falloff and the
