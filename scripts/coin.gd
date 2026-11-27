@@ -23,5 +23,6 @@ func _on_body_entered(body: Node3D) -> void:
 		return
 	_taken = true
 	collected.emit(get_value())
+	GameEventBus.get_bus().pickup_collected.emit(global_position, GameEventBus.PICKUP_COIN)
 	Sfx.play(pickup_sound, self)
 	queue_free()

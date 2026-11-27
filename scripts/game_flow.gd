@@ -133,6 +133,7 @@ func quit_game(exit_code: int = 0) -> void:
 	_quitting = true
 	# also the WM_CLOSE_REQUEST path: closing the window comes through here
 	SaveGame.save_game()
+	HitStop.restore()
 	# frozen while the audio thread catches up, so the game can't start new sounds meanwhile
 	get_tree().paused = true
 	MusicPlayer.stop_all()
@@ -161,6 +162,8 @@ func register_level(scene_path: String) -> void:
 func _change_scene(path: String) -> Error:
 	# a scene loaded while the tree is paused would start frozen
 	get_tree().paused = false
+	# a hit stop must not carry over into the next scene (restart, menu, next level, win)
+	HitStop.restore()
 	MusicPlayer.clear_pause_softening()
 	var error: Error = get_tree().change_scene_to_file(path)
 	if error != OK:

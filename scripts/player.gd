@@ -101,7 +101,11 @@ func _physics_process(delta: float) -> void:
 	horizontal = horizontal.move_toward(direction * data.move_speed, data.acceleration * delta)
 	velocity.x = horizontal.x
 	velocity.z = horizontal.z
+	var was_on_floor: bool = is_on_floor()
+	var fall_speed: float = maxf(-velocity.y, 0.0)
 	move_and_slide()
+	if not was_on_floor and is_on_floor():
+		GameEventBus.get_bus().hero_landed.emit(global_position, fall_speed)
 
 	if direction.length_squared() > 0.01:
 		# the model looks along +Z
@@ -226,6 +230,7 @@ func _on_hurtbox_body_entered(body: Node3D) -> void:
 
 func _on_health_changed(current: int, _max_hp: int) -> void:
 	if current < _last_hp:
+		GameEventBus.get_bus().hero_hurt.emit(global_position, _last_hp - current)
 		hurt_sfx.play()
 		if current > 0 and _data != null:
 			_play_action(_data.anim_hit)
@@ -233,6 +238,7 @@ func _on_health_changed(current: int, _max_hp: int) -> void:
 
 func _on_died() -> void:
 	_is_dead = true
+	GameEventBus.get_bus().hero_died.emit(global_position)
 	Sfx.play(death_sound, self)
 	if _data != null and not _play_action(_data.anim_die):
 		_action_playing = true

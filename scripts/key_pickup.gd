@@ -8,5 +8,6 @@ signal collected
 func _on_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player"):
 		collected.emit()
+		GameEventBus.get_bus().pickup_collected.emit(global_position, GameEventBus.PICKUP_KEY)
 		Sfx.play(pickup_sound, self)
 		queue_free()

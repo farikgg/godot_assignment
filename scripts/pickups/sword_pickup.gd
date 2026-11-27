@@ -21,4 +21,5 @@ func _on_body_entered(body: Node3D) -> void:
 	body.call("equip_weapon", weapon_scene)
 	Sfx.play(pickup_sound, self)
 	picked_up.emit()
+	GameEventBus.get_bus().pickup_collected.emit(global_position, GameEventBus.PICKUP_SWORD)
 	queue_free()

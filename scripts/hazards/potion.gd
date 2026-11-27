@@ -46,5 +46,6 @@ func _on_pickup_zone_body_entered(body: Node3D) -> void:
 		return
 	_taken = true
 	health.heal(data.heal_amount)
+	GameEventBus.get_bus().pickup_collected.emit(global_position, GameEventBus.PICKUP_POTION)
 	Sfx.play(heal_sound, self)
 	queue_free()

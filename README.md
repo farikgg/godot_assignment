@@ -63,6 +63,28 @@ godot --path .
 godot --path . -- --device=notch_19_5_9
 ```
 
+### Счётчик FPS и профилирование на телефоне
+
+Автозагрузка `FpsOverlay` (`scripts/debug/fps_overlay.gd`): FPS, время кадра (среднее и худшее),
+время CPU / физики, draw calls, объекты, примитивы, узлы, активные частицы, память и `time_scale`.
+Есть в debug-сборке и в release-APK, только если в пресете экспорта в **Features → Custom** указано
+`fps_overlay` (сборка для тестеров). По умолчанию скрыт:
+
+- **F3** — показать / скрыть;
+- на телефоне — **долгое нажатие (1.2 с) в левом верхнем углу** (касание не перехватывается);
+- запуск сразу с счётчиком: `godot --path . -- --fps-overlay`.
+
+Те же данные (и `juice/time_scale`, `juice/particles_emitting`) видны в **Debugger → Monitors** при
+удалённой отладке: на телефоне включить «Для разработчиков» → «Отладка по USB», в
+Editor Settings указать Android SDK, подключить телефон и нажать кнопку Android (Remote Deploy) справа
+вверху при включённом **Debug → Deploy with Remote Debug**; Profiler и Visual Profiler работают так же.
+
+Замер на компьютере с мобильным рендерером (окно, без v-sync):
+
+```bash
+godot --path . --rendering-method mobile --resolution 1920x1080 -s res://tools/measure_fps.gd -- --level=0 [--stress]
+```
+
 ### Скриншоты
 
 Нужен обычный запуск с окном (не `--headless`):

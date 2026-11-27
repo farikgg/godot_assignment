@@ -197,6 +197,7 @@ func _on_boss_died() -> void:
 		return
 	# the hero can no longer lose: nothing restarts the level from here
 	_has_won = true
+	GameEventBus.get_bus().level_won.emit(_hero_position())
 	Sfx.play(win_sound, self)
 	hud.show_message(BOSS_DEFEATED_TEXT)
 
@@ -210,6 +211,7 @@ func _on_player_died() -> void:
 	if _game_over or _has_won:
 		return
 	_game_over = true
+	GameEventBus.get_bus().level_lost.emit(_hero_position())
 	Sfx.play(lose_sound, self)
 	hud.show_message(GAME_OVER_TEXT)
 	# process_always = false: the countdown waits while the game is paused
@@ -225,11 +227,17 @@ func _on_exit_reached() -> void:
 		_show_timed(NEED_GOLD_TEXT % [coins_collected, required])
 		return
 	_has_won = true
+	GameEventBus.get_bus().level_won.emit(_hero_position())
 	Sfx.play(win_sound, self)
 	hud.show_message(WIN_TEXT if GameFlow.is_last_level() else LEVEL_DONE_TEXT)
 	await get_tree().create_timer(EXIT_DELAY, false).timeout
 	_record_result()
 	GameFlow.next_level(coins_collected)
+
+# where effects for the level result play; the level origin when there is no hero
+func _hero_position() -> Vector3:
+	var hero: Node3D = get_tree().get_first_node_in_group("player") as Node3D
+	return hero.global_position if hero != null else global_position
 
 # a level opened with F6 that is not in GameFlow's list has no id and records nothing
 func _record_result() -> void:

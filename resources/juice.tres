@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="JuiceData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/juice_data.gd" id="1_juice"]
+
+[resource]
+script = ExtResource("1_juice")
+hit_stop_time_scale = 0.05
+hit_stop_enemy_kill_sec = 0.05
+hit_stop_boss_hit_sec = 0.05
+hit_stop_hero_hurt_sec = 0.05
+hit_stop_max_sec = 0.15
+overlay_refresh_sec = 0.5
+overlay_long_press_sec = 1.2
+overlay_corner_px = 200.0
+overlay_press_slop_px = 40.0

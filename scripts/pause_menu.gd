@@ -28,6 +28,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func set_paused(value: bool) -> void:
+	# a hit stop would otherwise resume slowed after the menu closes
+	HitStop.restore()
 	get_tree().paused = value
 	visible = value
 	MusicPlayer.set_pause_softened(value)

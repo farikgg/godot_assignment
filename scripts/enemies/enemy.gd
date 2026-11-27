@@ -171,6 +171,8 @@ func hit_by_weapon(damage: int = 1) -> void:
 		return
 	var before: int = health.current
 	health.take_damage(damage)
+	if health.current < before:
+		GameEventBus.get_bus().enemy_hit.emit(global_position, self, health.is_dead())
 	if health.current >= before or _dead or data.knockback_speed <= 0.0:
 		return
 	var hero: Node3D = get_hero()
@@ -366,6 +368,7 @@ func _die() -> void:
 	# left at the spot: the body is freed after free_delay, a shorter death sound must not be cut
 	Sfx.play_3d(death_sound, self, false)
 	_on_died()
+	GameEventBus.get_bus().enemy_died.emit(global_position, self)
 	died.emit()
 	if free_delay > 0.0:
 		get_tree().create_timer(free_delay, false).timeout.connect(queue_free)
